@@ -1,8 +1,6 @@
-CREATE DATABASE  IF NOT EXISTS `worldlier_data` /*!40100 DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci */ /*!80016 DEFAULT ENCRYPTION='N' */;
-USE `worldlier_data`;
 -- MySQL dump 10.13  Distrib 8.0.32, for Win64 (x86_64)
 --
--- Host: localhost    Database: worldlier_data
+-- Host: localhost    Database: crud_user
 -- ------------------------------------------------------
 -- Server version	8.0.32
 
@@ -25,16 +23,24 @@ DROP TABLE IF EXISTS `users`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `users` (
-  `id` int unsigned NOT NULL,
-  `username` varchar(30) NOT NULL,
-  `password` varchar(30) NOT NULL,
+  `id` bigint unsigned NOT NULL AUTO_INCREMENT,
+  `username` longtext NOT NULL,
+  `password` longtext NOT NULL,
+  `biography` longtext,
   `birthday` date DEFAULT NULL,
   `email` varchar(45) DEFAULT NULL,
-  `phone-number` int DEFAULT NULL,
+  `phone` int DEFAULT NULL,
+  `gender` varchar(45) DEFAULT NULL,
+  `address_1` varchar(45) DEFAULT NULL,
+  `address_2` varchar(45) DEFAULT NULL,
+  `address_3` varchar(45) DEFAULT NULL,
+  `country` varchar(45) DEFAULT NULL,
+  `emergency_contact_name` varchar(45) DEFAULT NULL,
+  `emergency_contact_phone_number` varchar(45) DEFAULT NULL,
+  `emergency_contact_address` varchar(45) DEFAULT NULL,
   PRIMARY KEY (`id`),
-  UNIQUE KEY `id_UNIQUE` (`id`),
-  UNIQUE KEY `usersname_UNIQUE` (`username`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+  UNIQUE KEY `id_UNIQUE` (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -43,6 +49,7 @@ CREATE TABLE `users` (
 
 LOCK TABLES `users` WRITE;
 /*!40000 ALTER TABLE `users` DISABLE KEYS */;
+INSERT INTO `users` VALUES (1,'Darrion Ramos','superSECUREpass123','This is my biography!',NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL),(2,'Adam Wujuletski','GoG8torz!','Big BrAIN',NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL),(3,'MATT','acktumally','Da!',NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL);
 /*!40000 ALTER TABLE `users` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
@@ -55,4 +62,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2023-02-07 16:15:22
+-- Dump completed on 2023-02-07 16:34:16
