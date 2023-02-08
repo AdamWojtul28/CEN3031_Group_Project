@@ -17,7 +17,16 @@ Backend:
 - Learning basics of go
 - Learning and implementing basic rest api functions such as updating, creating, and deleting a "user" in our SQL database
 - Creating an SQL database and making a table with user's information
+
+Frontend:
+- Home page with navbar and other UI components
+- Angular Routing set up to other pages
+- Contact info form set up (submit does not yet function)
 ## What was not successfully completed and why?
 Backend: 
 - Making the rest api requests use variables and create a working system where http requests from the frontend can be processed for a working login
   - We could not complete this because we had trouble understanding how to connect angular and go. We also need a better understanding of rest api
+
+Frontend:
+- Login system
+  - We wanted to figure out connection with the backend before implementing the login system. However, we were not able to get this working before Sprint 1.
