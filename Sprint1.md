@@ -7,6 +7,13 @@
 - Team: Frontend or backend feature
 - Sprint: Projected completion of feature (1-4)
 
+## Videos
+Back End:
+https://youtu.be/psfypXq4Xy8
+
+Front End:
+https://www.youtube.com/watch?v=ayY1DU3MBbM&ab_channel=NicolasLopera
+
 ## Issues planned for Sprint 1
 
 - Login screen implementation for the front end
