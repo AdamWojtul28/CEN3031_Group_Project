@@ -9,4 +9,9 @@
 
 ## Issues planned for Sprint 1
 
-- Login screen
+- Login screen implementation for the front end
+- Basic login database for the backend
+
+## What was successfully completed
+
+## What was not successfully completed and why?
