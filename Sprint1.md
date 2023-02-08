@@ -1,7 +1,7 @@
 # Sprint 1
 
-## User Stories 🔴Not sure if they want them copied and pasted into here🔴
 #### User Stories created as issues, placed in project with the following fields:
+- PLEASE LOOK IN THE PROJECTS TAB TO SEE A COMPLETE LIST OF ALL USER STORIES
 - Assignees: People who are working on the feature / issue
 - Status: ideas, to do, in progress, or done
 - Team: Frontend or backend feature
