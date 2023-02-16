@@ -11,7 +11,11 @@ export class UsersHttpService {
     return this.http.post('https://worldier-testing-default-rtdb.firebaseio.com/users.json', user);
   }
 
-  deleteUsers(){
-    return this.http.delete('https://worldier-testing-default-rtdb.firebaseio.com/post.json');
+  deleteUsers() {
+    return this.http.delete('https://worldier-testing-default-rtdb.firebaseio.com/users.json');
+  }
+
+  fetchUsers() {
+    return this.http.get('https://worldier-testing-default-rtdb.firebaseio.com/users.json');
   }
 }

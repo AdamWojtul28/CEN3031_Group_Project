@@ -25,10 +25,21 @@ export class AppComponent {
       });
   }
 
-  onDeleteUsers(){
+  onDeleteUsers() {
     this.userHttp.deleteUsers()
-      .subscribe(v => {
-        console.log('deleted');
+      .subscribe({
+        next: () => {
+          console.log('deleted');
+        }
+      })
+  }
+
+  onFetchUsers() {
+    this.userHttp.fetchUsers()
+      .subscribe({
+        next: (data) => {
+          console.log(data);
+        }
       })
   }
 }
