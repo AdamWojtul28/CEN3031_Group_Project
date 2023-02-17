@@ -2,6 +2,8 @@ import { HttpClient } from "@angular/common/http";
 import { Injectable } from "@angular/core";
 import { User } from "./app.component";
 
+import { map } from 'rxjs/operators';
+
 @Injectable({providedIn: 'root'})
 export class UsersHttpService {
   constructor(private http: HttpClient) {}
@@ -16,6 +18,18 @@ export class UsersHttpService {
   }
 
   fetchUsers() {
-    return this.http.get('https://worldier-testing-default-rtdb.firebaseio.com/users.json');
+    return this.http
+      .get<{[key: string] : User}>('https://worldier-testing-default-rtdb.firebaseio.com/users.json')
+        .pipe(
+          map(data => {
+            const postsArray : User[] = [];
+            for (const key in data) {
+              if (data.hasOwnProperty(key)){
+                postsArray.push({ ...data[key], id: key });
+              } 
+            }
+            return postsArray;
+          })
+        )
   }
 }
