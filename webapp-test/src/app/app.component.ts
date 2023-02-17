@@ -12,6 +12,7 @@ export interface User {
   styleUrls: ['./app.component.css']
 })
 export class AppComponent {
+  users: User[] = [];
   
   constructor(private userHttp: UsersHttpService) {}
 
