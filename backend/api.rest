@@ -1,0 +1,41 @@
+@host = localhost:5000
+
+// Create User
+POST http://{{host}}/api/users HTTP/1.1
+content-type: application/json
+    
+{
+    "username": "John Doe",
+    "password": "password123",
+    "biography": "I love UF so muuch, this place rules."
+}
+
+###
+
+// Get User By ID
+GET http://{{host}}/api/users/1 HTTP/1.1
+content-type: application/json
+
+###
+
+// Get All User
+GET http://{{host}}/api/users/ HTTP/1.1
+content-type: application/json
+
+###
+
+// Update User
+PUT http://{{host}}/api/users/6 HTTP/1.1
+content-type: application/json
+
+{
+    "username": "MATT",
+    "password": "acktumally",
+    "biography": "Da!"
+}
+
+###
+
+// Delete User
+DELETE http://{{host}}/api/users/5 HTTP/1.1
+content-type: application/json
