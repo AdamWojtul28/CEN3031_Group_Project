@@ -1,4 +1,4 @@
-<form #postForm="ngForm" (ngSubmit)="onCreateUser(postForm.value)">
+<form #postForm="ngForm" (ngSubmit)="onCreateUser(postForm.value)" style="max-width: 500px">
   <div class="form-group">
     <label for="username">Username</label>
     <input
@@ -29,9 +29,7 @@
   </button>
 </form>
 
-<button
-  class="btn btn-danger"
-  (click)="onDeleteUsers()">Clear Users
+<button class="btn btn-danger"(click)="onDeleteUsers()">Clear Users
 </button>
 
 <button class="btn btn-primary" (click)="onFetchUsers()">
