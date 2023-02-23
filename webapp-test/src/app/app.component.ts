@@ -4,7 +4,7 @@ import { UsersHttpService } from './users-http.service';
 export interface User {
   username: string;
   password: string;
-  id?: string;
+  id?: number;
 }
 
 @Component({
@@ -19,7 +19,7 @@ export class AppComponent implements OnInit {
   constructor(private userHttp: UsersHttpService) {}
 
   ngOnInit() {
-    this.onFetchUsers();
+    //this.onFetchUsers();
   }
 
   onCreateUser(userData: User) {
@@ -32,11 +32,12 @@ export class AppComponent implements OnInit {
       });
   }
 
-  onDeleteUsers() {
-    this.userHttp.deleteUsers()
+  onDeleteUser(userId: number = -1) {
+    if (userId == -1) return;
+    this.userHttp.deleteUser(userId)
       .subscribe({
         next: () => {
-          this.users = [];
+          this.onFetchUsers();
         }
       })
   }
@@ -46,7 +47,6 @@ export class AppComponent implements OnInit {
       .subscribe({
         next: (data) => {
           this.users = data;
-          console.log(data);
         },
         error: (e) => {
           this.fetchError = e;

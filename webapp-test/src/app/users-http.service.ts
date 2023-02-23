@@ -4,29 +4,29 @@ import { User } from "./app.component";
 
 import { map } from 'rxjs/operators';
 
+//https://worldier-testing-default-rtdb.firebaseio.com/users.
+
 @Injectable({providedIn: 'root'})
 export class UsersHttpService {
   constructor(private http: HttpClient) {}
 
   createNewUser(username: string, password: string) {
     const user: User = {username: username, password: password};
-    return this.http.post('https://worldier-testing-default-rtdb.firebaseio.com/users.json', user);
+    return this.http.post('http://localhost:5000/api/users', user);
   }
 
-  deleteUsers() {
-    return this.http.delete('https://worldier-testing-default-rtdb.firebaseio.com/users.json');
+  deleteUser(userId: number) {
+    return this.http.delete('http://localhost:5000/api/users/' + userId);
   }
 
   fetchUsers() {
     return this.http
-      .get<{[key: string] : User}>('https://worldier-testing-default-rtdb.firebaseio.com/users.json')
+      .get<{[key: number] : User}>('http://localhost:5000/api/users')
         .pipe(
           map(data => {
             const postsArray : User[] = [];
             for (const key in data) {
-              if (data.hasOwnProperty(key)){
-                postsArray.push({ ...data[key], id: key });
-              } 
+              postsArray.push(data[key]);
             }
             return postsArray;
           })
