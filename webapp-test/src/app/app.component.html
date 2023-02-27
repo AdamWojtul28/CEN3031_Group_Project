@@ -32,9 +32,7 @@
           Create User
         </button>
       </form>
-      <button class="btn btn-danger"(click)="onDeleteUsers()">
-        Clear Users
-      </button>
+      <hr style="max-width: 500px;">
       <button class="btn btn-primary" (click)="onFetchUsers()">
         Fetch Users
       </button>
@@ -44,8 +42,15 @@
       <p>Retrieved Users</p>
       <ul class="list-group">
         <li *ngFor="let user of users" class="list-group-item">
-          <label><b>Username: </b>{{ user.username }}</label>
+          <div class="col-8">
+            <label><b>Username: </b>{{ user.username }}</label>
           <p><b>Password: </b>{{ user.password }}</p>
+          </div>
+          <div class="col-4">
+            <button class="btn btn-danger"(click)="onDeleteUser(user.id)">
+              Delete user
+            </button>
+          </div>
         </li>
       </ul>
     </div>
