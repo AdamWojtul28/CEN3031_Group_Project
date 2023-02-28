@@ -2,7 +2,6 @@ package main
 
 import (
 	"encoding/json"
-	"fmt"
 	"golang_angular/database"
 	"golang_angular/entities"
 	"net/http"
@@ -54,13 +53,6 @@ func GetUserByName(w http.ResponseWriter, r *http.Request) {
 	database.Instance.First(&user, userName)
 	w.Header().Set("Content-Type", "application/json")
 	json.NewEncoder(w).Encode(user)
-}
-
-func QueryHandler(w http.ResponseWriter, r *http.Request) {
-	queryParams := r.URL.Query()
-	w.WriteHeader(http.StatusOK)
-	fmt.Fprintf(w, "Got parameter username:%s!\n", queryParams["username"][0])
-	fmt.Fprintf(w, "Got parameter password:%s!", queryParams["password"][0])
 }
 
 func GetUserById(w http.ResponseWriter, r *http.Request) {
