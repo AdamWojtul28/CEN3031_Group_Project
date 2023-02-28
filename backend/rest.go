@@ -17,8 +17,7 @@ func httpHandler() http.Handler {
 	// each URL can only have one of each get, post, etc .. or it will use the first
 
 	router.HandleFunc("/api/users", GetUsers).Methods("GET")
-	//router.HandleFunc("/api/users", UserLoginAttempt)
-	router.Queries("username", "password")
+	router.HandleFunc("/api/signin", UserLoginAttempt)
 	router.HandleFunc("/api/users", GetUsers).Methods("GET")
 	router.HandleFunc("/api/users/{id}", GetUserById).Methods("GET")
 	router.HandleFunc("/api/users/username/{username}", GetUserByName).Methods("GET")

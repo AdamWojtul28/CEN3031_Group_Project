@@ -18,13 +18,19 @@ content-type: application/json
 
 ###
 
-// Get User By Name
+// Login to profile
 // For Adam: I think we were close here the other day. One problem i found at least the way I was doing it is that we need 
 // the URL for the request to be different or it will call the get user by ID function which is why we were getting all the users
 // when we had a ? because that was like saying any ID number. There is still something I am missing though, but this also might not be necessary if the front 
 // can just send the whole user they need as an object and we can use the user ID
 POST http://{{host}}/api/signin HTTP/1.1
 content-type: application/json
+    
+{
+    "username": "TomSawyer",
+    "password": "whoknows",
+    "biography": "I love UF so muuch, this place rules."
+}
 
 ###
 
