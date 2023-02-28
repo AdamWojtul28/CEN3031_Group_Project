@@ -14,12 +14,12 @@ import (
 func CreateUser(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
 	var user entities.User
+	json.NewDecoder(r.Body).Decode(&user)
 	userName := user.Username
 	if CheckIfUserNameExists(userName) {
 		json.NewEncoder(w).Encode("Username is Taken!")
 		return
 	}
-	json.NewDecoder(r.Body).Decode(&user)
 	database.Instance.Create(&user)
 	json.NewEncoder(w).Encode(user)
 }
@@ -36,12 +36,32 @@ func CheckIfUserIdExists(userId string) bool {
 
 func CheckIfUserNameExists(userName string) bool {
 	var user entities.User
-	database.Instance.First(&user, userName)
-	if user.Username == userName {
-		return true
+	result := database.Instance.Where("username = ?", userName).First(&user)
+	err := result.Scan(&user)
+	if err != nil {
+		if user.Username == userName {
+			return true
+		}
 	}
+
 	return false
 }
+
+// ** AUTHENTICATION/QUERY FUNCTIONS ** //
+//func UserLoginAttempt(w http.ResponseWriter, r *http.Request){
+//	w.Header().Set("Content-Type", "application/json")
+//	var user entities.User
+//	userName := user.Username
+//	err := json.NewDecoder(r.Body).Decode(user)
+//	if err != nil {
+//		// If there is something wrong with the request body, return a 400 status
+//		w.WriteHeader(http.StatusInternalServerError)
+//		return
+//	}
+//	result := db
+//	database.Instance.Create(&user)
+//	json.NewEncoder(w).Encode(user)
+//}
 
 // ** GET FUNCTIONS ** //
 func GetUserByName(w http.ResponseWriter, r *http.Request) {
