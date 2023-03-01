@@ -29,7 +29,18 @@ NEED TO FILM
 
 ## List unit tests for backend
 - To test backend functionality, Postman was used to mock requests; the effectiveness of the tests was considered based on whether they generated the desired outcome. 
-- The following tests were used:
-
+- The following requests were used for each of the following API calls (which are documented below):
+	- POST Create User: Ensures that the incoming response has a body and that the outgoing response is successful (200 response)
+	- POST Create Identical User (non-unique username): HAVE TO ADD
+	- POST Proper Username, Password Login: Ensures that the incoming response has a body and that the outgoing response is a 202 response (Accepted), indicating a username, password match
+	- POST Proper Username, Bad Password Login:Ensures that the incoming response has a body and that the outgoing response is a 401 response (Unauthorized), indicating a username match but incorrect password
+	- POST User Does Not Exist Login: Ensures that the incoming response has a body and that the outgoing response is a 404 response, indicating that no such username exists in the DB
+	- GET Get All Users: Ensures that the incoming response has a body and that the outgoing response is successful (200 response)
+	- GET Get User By ID - Successful: Ensures that the incoming response has a body and that the outgoing response is successful (200 response)
+	- GET Get User By ID - Unsuccessful: Ensures that the incoming response has a body and that the outgoing response conveys that the user was not found (404 response)
+	- PUT Update User Info - Successful: Ensures that the incoming response has a body and that the outgoing response is successful (200 response)
+	- PUT Update User Info - User Not Found: Ensures that the incoming response has a body and that the outgoing response conveys that the user was not found (404 response)
+	- DELETE Delete User - Successful: Ensures that the incoming response has a body and that the outgoing response is successful (200 response)
+	- DELETE Delete User - User Not Found: Ensures that the incoming response has a body and that the outgoing response conveys that the user was not found (404 response)
 
 ## Add documentation for your backend API
