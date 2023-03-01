@@ -66,15 +66,19 @@ func UserLoginAttempt(w http.ResponseWriter, r *http.Request) {
 	userName := user.Username
 	password := user.Password
 	if !(CheckIfUserNameExists(userName)) {
+		w.WriteHeader(http.StatusNotFound)
 		json.NewEncoder(w).Encode("No such username exists!")
 		return
 		// Checks if username does not exist
 	}
 	if !(CheckIfExactUserExists(userName, password)) {
+		w.WriteHeader(401)
 		json.NewEncoder(w).Encode("Incorrect password!")
 		return
 		// Checks if username exists, but password is incorrect
 	}
+	w.WriteHeader(202)
+	// Code for 'Accepted'
 	json.NewEncoder(w).Encode("Proceed to page!")
 	// Checks if username and password check out, from here, proceed to profile page
 }
@@ -83,6 +87,7 @@ func UserLoginAttempt(w http.ResponseWriter, r *http.Request) {
 func GetUserByName(w http.ResponseWriter, r *http.Request) {
 	userName := mux.Vars(r)["username"]
 	if !CheckIfUserNameExists(userName) {
+		w.WriteHeader(http.StatusNotFound)
 		json.NewEncoder(w).Encode("User Not Found! (NAME)")
 		return
 	}
@@ -102,6 +107,7 @@ func QueryHandler(w http.ResponseWriter, r *http.Request) {
 func GetUserById(w http.ResponseWriter, r *http.Request) {
 	userId := mux.Vars(r)["id"]
 	if !CheckIfUserIdExists(userId) {
+		w.WriteHeader(http.StatusNotFound)
 		json.NewEncoder(w).Encode("User Not Found!")
 		return
 	}
@@ -123,6 +129,7 @@ func GetUsers(w http.ResponseWriter, r *http.Request) {
 func UpdateUser(w http.ResponseWriter, r *http.Request) {
 	userId := mux.Vars(r)["id"]
 	if !CheckIfUserIdExists(userId) {
+		w.WriteHeader(http.StatusNotFound)
 		json.NewEncoder(w).Encode("User Not Found!")
 		return
 	}
