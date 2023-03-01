@@ -1,0 +1,239 @@
+{
+	"id": "d5fb4b83-9696-48e0-ba53-35b3759b10de",
+	"name": "Requests",
+	"timestamp": "2023-03-01T03:34:07.034Z",
+	"collection_id": "25562236-98367786-0a26-49eb-a8e8-f0f3cd960260",
+	"folder_id": 0,
+	"environment_id": "0",
+	"totalPass": 7,
+	"delay": 0,
+	"persist": true,
+	"status": "finished",
+	"startedAt": "2023-03-01T03:34:06.072Z",
+	"totalFail": 0,
+	"results": [
+		{
+			"id": "5e18d519-8470-451e-bbc0-9bf1a6cc94cc",
+			"name": "http://localhost:5000/api/users Copy",
+			"url": "http://localhost:5000/api/users",
+			"time": 45,
+			"responseCode": {
+				"code": 200,
+				"name": "OK"
+			},
+			"tests": {
+				"response must be valid and have a body": true
+			},
+			"testPassFailCounts": {
+				"response must be valid and have a body": {
+					"pass": 1,
+					"fail": 0
+				}
+			},
+			"times": [
+				45
+			],
+			"allTests": [
+				{
+					"response must be valid and have a body": true
+				}
+			]
+		},
+		{
+			"id": "8fce6986-9da7-45ef-8c40-2529f54e535e",
+			"name": "http://localhost:5000/api/signin Copy",
+			"url": "http://localhost:5000/api/signin",
+			"time": 6,
+			"responseCode": {
+				"code": 200,
+				"name": "OK"
+			},
+			"tests": {
+				"response must be valid and have a body": true
+			},
+			"testPassFailCounts": {
+				"response must be valid and have a body": {
+					"pass": 1,
+					"fail": 0
+				}
+			},
+			"times": [
+				6
+			],
+			"allTests": [
+				{
+					"response must be valid and have a body": true
+				}
+			]
+		},
+		{
+			"id": "40f4ee8f-e335-4fe2-a5fd-965ba99473c9",
+			"name": "http://localhost:5000/api/signin",
+			"url": "http://localhost:5000/api/signin",
+			"time": 5,
+			"responseCode": {
+				"code": 200,
+				"name": "OK"
+			},
+			"tests": {
+				"response must be valid and have a body": true
+			},
+			"testPassFailCounts": {
+				"response must be valid and have a body": {
+					"pass": 1,
+					"fail": 0
+				}
+			},
+			"times": [
+				5
+			],
+			"allTests": [
+				{
+					"response must be valid and have a body": true
+				}
+			]
+		},
+		{
+			"id": "aed51848-c8dd-4ea1-b9db-961c0ed948f5",
+			"name": "http://localhost:5000/api/users",
+			"url": "http://localhost:5000/api/users",
+			"time": 4,
+			"responseCode": {
+				"code": 200,
+				"name": "OK"
+			},
+			"tests": {
+				"response must be valid and have a body": true
+			},
+			"testPassFailCounts": {
+				"response must be valid and have a body": {
+					"pass": 1,
+					"fail": 0
+				}
+			},
+			"times": [
+				4
+			],
+			"allTests": [
+				{
+					"response must be valid and have a body": true
+				}
+			]
+		},
+		{
+			"id": "fdaa56c9-7dde-4fd3-b78f-ad177ee72505",
+			"name": "http://localhost:5000/api/users/1",
+			"url": "http://localhost:5000/api/users/1",
+			"time": 4,
+			"responseCode": {
+				"code": 200,
+				"name": "OK"
+			},
+			"tests": {
+				"response must be valid and have a body": true
+			},
+			"testPassFailCounts": {
+				"response must be valid and have a body": {
+					"pass": 1,
+					"fail": 0
+				}
+			},
+			"times": [
+				4
+			],
+			"allTests": [
+				{
+					"response must be valid and have a body": true
+				}
+			]
+		},
+		{
+			"id": "1c4bbd14-2ac7-49f5-ad43-ad987739f9b6",
+			"name": "http://localhost:5000/api/users/1",
+			"url": "http://localhost:5000/api/users/1",
+			"time": 6,
+			"responseCode": {
+				"code": 200,
+				"name": "OK"
+			},
+			"tests": {
+				"response must be valid and have a body": true
+			},
+			"testPassFailCounts": {
+				"response must be valid and have a body": {
+					"pass": 1,
+					"fail": 0
+				}
+			},
+			"times": [
+				6
+			],
+			"allTests": [
+				{
+					"response must be valid and have a body": true
+				}
+			]
+		},
+		{
+			"id": "2d473dd5-530d-45e5-ae4a-af555721eb55",
+			"name": "http://localhost:5000/api/users",
+			"url": "http://localhost:5000/api/users/7",
+			"time": 6,
+			"responseCode": {
+				"code": 200,
+				"name": "OK"
+			},
+			"tests": {
+				"response must be valid and have a body": true
+			},
+			"testPassFailCounts": {
+				"response must be valid and have a body": {
+					"pass": 1,
+					"fail": 0
+				}
+			},
+			"times": [
+				6
+			],
+			"allTests": [
+				{
+					"response must be valid and have a body": true
+				}
+			]
+		}
+	],
+	"count": 1,
+	"totalTime": 76,
+	"collection": {
+		"requests": [
+			{
+				"id": "5e18d519-8470-451e-bbc0-9bf1a6cc94cc",
+				"method": "POST"
+			},
+			{
+				"id": "8fce6986-9da7-45ef-8c40-2529f54e535e",
+				"method": "POST"
+			},
+			{
+				"id": "40f4ee8f-e335-4fe2-a5fd-965ba99473c9",
+				"method": "POST"
+			},
+			{
+				"id": "aed51848-c8dd-4ea1-b9db-961c0ed948f5",
+				"method": "GET"
+			},
+			{
+				"id": "fdaa56c9-7dde-4fd3-b78f-ad177ee72505",
+				"method": "GET"
+			},
+			{
+				"id": "1c4bbd14-2ac7-49f5-ad43-ad987739f9b6",
+				"method": "PUT"
+			},
+			{
+				"id": "2d473dd5-530d-45e5-ae4a-af555721eb55",
+				"method": "DELETE"
+			}
+		]
+	}
+}
