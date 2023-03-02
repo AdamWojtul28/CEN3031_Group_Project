@@ -17,10 +17,14 @@ func CreateUser(w http.ResponseWriter, r *http.Request) {
 	json.NewDecoder(r.Body).Decode(&user)
 	userName := user.Username
 	if CheckIfUserNameExists(userName) {
+		w.WriteHeader(409)
+		// 'Conflict' HTTP response status code
 		json.NewEncoder(w).Encode("Username is Taken!")
 		return
 	}
 	database.Instance.Create(&user)
+	w.WriteHeader(202)
+	// Code for 'Accepted'
 	json.NewEncoder(w).Encode(user)
 }
 
