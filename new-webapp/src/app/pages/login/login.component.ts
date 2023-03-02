@@ -1,5 +1,6 @@
 import { Component, ViewChild } from '@angular/core';
 import { NgForm }  from '@angular/forms';
+import { Router } from '@angular/router';
 
 import { User } from 'src/app/models/user.model';
 import { UsersHttpService } from 'src/app/services/users-http.service';
@@ -11,19 +12,19 @@ import { UsersHttpService } from 'src/app/services/users-http.service';
 })
 export class LoginComponent {
   @ViewChild('f') loginForm!: NgForm;
-
-  type: string = "password";
-  isText: boolean = false;
-  eyeIcon: string = "fa-eye-slash";
-
   userInfo: User = {
     username: '',
     password: '',
     email: '',
     bio: ''
   }
+  errorMessage: string = '';
 
-  constructor(private userHttp: UsersHttpService){}
+  type: string = "password";
+  isText: boolean = false;
+  eyeIcon: string = "fa-eye-slash";
+
+  constructor(private userHttp: UsersHttpService, private router: Router){}
   
   hideShowPass(){
     this.isText = !this.isText;
@@ -31,10 +32,22 @@ export class LoginComponent {
     this.isText ? this.type = "text" : this.type = "password";
   }
 
+  resetError(){
+    this.errorMessage = "";
+  }
+
   onSubmitLogin(){
-    console.log(this.loginForm);
-    this.userInfo.username = this.loginForm.value.username;
-    this.userInfo.password = this.loginForm.value.password;
-    this.userHttp.loginUser(this.userInfo.username, this.userInfo.password).subscribe();
+    this.userHttp.loginUser(this.loginForm.value.username, this.loginForm.value.password)
+      .subscribe({
+        next: (res) => {
+          console.log(res);
+          if (res === "Proceed to page!"){
+            this.router.navigate(['users', this.loginForm.value.username]);
+          }
+        },
+        error: (err) => {
+          this.errorMessage = err.error;
+        }
+      });
   }
 }

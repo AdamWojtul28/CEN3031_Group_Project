@@ -11,12 +11,13 @@
                             <div class="form group pt-3">
                                 <div class="input-field">
                                     <span class="fa fa-user p-2"></span>
-                                    <input 
+                                    <input
                                         ngModel
                                         required
                                         type="text"
                                         placeholder="Username"
-                                        name="username">
+                                        name="username"
+                                        data-cy="username">
                                 </div>
                             </div>
                             <div class="form group pt-3">
@@ -27,14 +28,18 @@
                                         required
                                         [type]="type"
                                         placeholder="Password"
-                                        name="password">
+                                        name="password"
+                                        data-cy="password">
                                     <span (click)="hideShowPass()" class="fa fa-eye-slash"></span>
                                 </div>
                             </div>
+                            <span style="color: red" role="alert" *ngIf="errorMessage.length > 0">
+                                {{ errorMessage }} <u style="cursor: pointer" (click)="resetError()">OK</u>
+                            </span>
                             <div class="form-inline fr mt-4">
                                 <a id="forget" class="font-weight-bold">Forget Password?</a>
                             </div>
-                            <button type="submit" class="btn btn-primary btn-block mt-4 w-100" [disabled]="!f.valid">Login</button>
+                            <button type="submit" class="btn btn-primary btn-block mt-4 w-100" [disabled]="!f.valid" data-cy="login-btn">Login</button>
                             <div class="text-center pt-4 text-muted">Don't have an account? <a id="forget" routerLink="/signup">Sign Up</a></div>
                         </form>
                     </div>

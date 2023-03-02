@@ -1,4 +1,4 @@
 {
-    "connection_string": "root:SomePassword@tcp(127.0.0.1:3306)/worldlier",
+    "connection_string": "root:OROborus#01@tcp(127.0.0.1:3306)/worldlier",
     "port": 5000
 }

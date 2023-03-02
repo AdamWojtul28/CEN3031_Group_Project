@@ -17,7 +17,7 @@ export class UsersHttpService {
 
   loginUser(username: string, password: string) {
     const user: User = {username: username, password: password, email: '', bio: ''};
-    return this.http.post('http://localhost:5000/api/users', user);
+    return this.http.post('http://localhost:5000/api/signin', user);
   }
 
   deleteUser(userId: number) {
