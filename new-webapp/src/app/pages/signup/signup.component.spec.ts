@@ -1,5 +1,6 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { FormsModule } from '@angular/forms';
+import { HttpClientModule } from '@angular/common/http';
 import { SignupComponent } from './signup.component';
 
 describe('SignupComponent', () => {
@@ -10,7 +11,8 @@ describe('SignupComponent', () => {
     await TestBed.configureTestingModule({
       declarations: [ SignupComponent ],
       imports: [
-        FormsModule
+        FormsModule,
+        HttpClientModule
       ]
     })
     .compileComponents();
