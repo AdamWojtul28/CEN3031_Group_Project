@@ -26,21 +26,28 @@ NEED TO FILM
 
 ## List unit tests and Cypress tests for frontend
 
-UNIT TESTS
-  AppComponent
+UNIT TESTS  
+AppComponent
   ```
-     it('should create the app', () => {
+  it('should create the app', () => {
     const fixture = TestBed.createComponent(AppComponent);
     const app = fixture.componentInstance;
     expect(app).toBeTruthy();
   });
   ```
-
+```
   it(`should have as title 'worldlier-webapp'`, () => {
     const fixture = TestBed.createComponent(AppComponent);
     const app = fixture.componentInstance;
     expect(app.title).toEqual('worldlier-webapp');
   });
+  ```
+  HomeComponent/AboutComponent/BookingComponent/LoginComponent/SignupComponent/ProfileComponent/FooterComponent/NavbarComponent (One test for each)
+  ```
+  it('should create', () => {
+    expect(component).toBeTruthy();
+  });
+```
 
 ## List unit tests for backend
 
