@@ -11,7 +11,7 @@
                             <div class="form group pt-3">
                                 <div class="input-field">
                                     <span class="fa fa-user p-2"></span>
-                                    <input 
+                                    <input
                                         ngModel
                                         required
                                         type="text"
@@ -31,6 +31,9 @@
                                     <span (click)="hideShowPass()" class="fa fa-eye-slash"></span>
                                 </div>
                             </div>
+                            <span style="color: red" role="alert" *ngIf="errorMessage.length > 0">
+                                {{ errorMessage }} <u style="cursor: pointer" (click)="resetError()">OK</u>
+                            </span>
                             <div class="form-inline fr mt-4">
                                 <a id="forget" class="font-weight-bold">Forget Password?</a>
                             </div>

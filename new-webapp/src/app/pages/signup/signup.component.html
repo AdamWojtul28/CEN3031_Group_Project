@@ -7,7 +7,7 @@
                         <h3 class="pt-3 font-weight-bold">Sign Up</h3>
                     </div>
                     <div class="panel-body p-3">
-                        <form>
+                        <form (ngSubmit)="onSubmitCreateUser()" #f="ngForm">
                             <div class="form group pt-3">
                                 <div class="input-field">
                                     <span class="fa fa-envelope p-2"></span>
@@ -44,7 +44,10 @@
                                     <span (click)="hideShowPass()" class="fa fa-eye-slash"></span>
                                 </div>
                             </div>
-                            <button type="submit" class="btn btn-primary btn-block mt-4 w-100">Sign Up</button>
+                            <span style="color: red" role="alert" *ngIf="errorMessage.length > 0">
+                                {{ errorMessage }} <u style="cursor: pointer" (click)="resetError()">OK</u>
+                            </span>
+                            <button type="submit" class="btn btn-primary btn-block mt-4 w-100" [disabled]="!f.valid">Sign Up</button>
                             <div class="text-center pt-4 text-muted">Already have an account? <a id="forget" routerLink="/login">Login</a></div>
                         </form>
                     </div>
