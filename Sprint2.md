@@ -7,13 +7,14 @@
 -
 - Frontend was able to create a login page that checks username and password contents before sending to backend
 - Backend was able to incorporate functionality for both the signin and login pages
-  - For the signin page, when a new user is made, out group checks to ensure no idenitcal username exists
+  - For the signin page, when a new user is made, our group checks to ensure no idenitcal username exists
   - For the login page, our group was able to implement behavior based on submitted username+password and send response back to frontend
     - Correct username, password returns 202 response
     - Correct username, wrong password yields 401 response
     - No instance of username yields 404 response
   - PUT AND DELETE instances also have behavior for whether user exists or not
 - Backend wrote 11 test cases for Postman to ensure the aforementioned behavior yields the appropriate response
+- Expanded the user table in the MySQL database. The user table now has more information other than the basic username and password, which will be used in sprint 2 to update user profile data
 
 ## Videos
 
@@ -66,7 +67,7 @@ GET http://{{host}}/api/users/{id}
 
 GET http://{{host}}/api/users
 
--
+- This function takes in no parameters and calls the GetUsers function. The GetUsers function takes all instances of users and encodes it into a json file and sends this json file to the front end.
 
 #### Update User Variation 1:
 
@@ -78,7 +79,7 @@ PUT http://{{host}}/api/users/{id}
 
 PUT http://{{host}}/api/users/{id}
 
--
+- This API call behaves the same as the first update user variation, the only difference being that this updates detailed user information. Such as addresses, country, and other details.
 
 #### Remove Single User:
 
