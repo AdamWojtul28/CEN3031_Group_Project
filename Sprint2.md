@@ -4,7 +4,7 @@
 
 - Successfully connected frontend and backend using a combination of the professor's described technique and what our group came up with in Sprint 1
 - Created several wireframes for designs of the webpage
--
+- Unit testing for front end components
 - Frontend was able to create a login page that checks username and password contents before sending to backend
 - Backend was able to incorporate functionality for both the signin and login pages
   - For the signin page, when a new user is made, our group checks to ensure no idenitcal username exists
