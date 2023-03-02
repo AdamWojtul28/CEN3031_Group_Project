@@ -18,7 +18,8 @@
                                         required
                                         type="text"
                                         placeholder="Email"
-                                        name="email">
+                                        name="email"
+                                        data-cy="email">
                                 </div>
                             </div>
                             <div class="form group pt-3">
@@ -29,7 +30,8 @@
                                         required
                                         type="text"
                                         placeholder="Username"
-                                        name="username">
+                                        name="username"
+                                        data-cy="username">
                                 </div>
                             </div>
                             <div class="form group pt-3">
@@ -40,14 +42,15 @@
                                         required
                                         [type]="type"
                                         placeholder="Password"
-                                        name="password">
+                                        name="password"
+                                        data-cy="password">
                                     <span (click)="hideShowPass()" class="fa fa-eye-slash"></span>
                                 </div>
                             </div>
-                            <span style="color: red" role="alert" *ngIf="errorMessage.length > 0">
+                            <span style="color: red" role="alert" *ngIf="errorMessage.length > 0" data-cy="err-msg">
                                 {{ errorMessage }} <u style="cursor: pointer" (click)="resetError()">OK</u>
                             </span>
-                            <button type="submit" class="btn btn-primary btn-block mt-4 w-100" [disabled]="!f.valid">Sign Up</button>
+                            <button type="submit" class="btn btn-primary btn-block mt-4 w-100" [disabled]="!f.valid" data-cy="signup-btn">Sign Up</button>
                             <div class="text-center pt-4 text-muted">Already have an account? <a id="forget" routerLink="/login">Login</a></div>
                         </form>
                     </div>
