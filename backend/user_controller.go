@@ -18,13 +18,13 @@ func CreateUser(w http.ResponseWriter, r *http.Request) {
 	userName := user.Username
 	if CheckIfUserNameExists(userName) {
 		w.WriteHeader(409)
-		// 'Conflict' HTTP response status code
+		// 'Conflict' HTTP response status code for duplicate username
 		json.NewEncoder(w).Encode("Username is Taken!")
 		return
 	}
 	database.Instance.Create(&user)
 	w.WriteHeader(202)
-	// Code for 'Accepted'
+	// Code for 'Accepted' when unique username
 	json.NewEncoder(w).Encode(user)
 }
 
