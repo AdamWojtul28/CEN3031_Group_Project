@@ -39,16 +39,11 @@ export class SignupComponent {
   onSubmitCreateUser(){
     this.userHttp.createNewUser(this.loginForm.value.username, this.loginForm.value.password, this.loginForm.value.email)
       .subscribe({
-        next: (res) => {
-          console.log(res);
-          if (res === "Username is Taken!"){
-            this.errorMessage = "Username is Taken!";
-          } else {
-            this.router.navigate(['users', this.loginForm.value.username]);
-          }
+        next: () => {
+          this.router.navigate(['users', this.loginForm.value.username]);
         },
         error: (err) => {
-          console.log(err);
+          this.errorMessage = err.error;
         }
       });
   }
