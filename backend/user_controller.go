@@ -8,6 +8,7 @@ import (
 	"net/http"
 
 	"github.com/gorilla/mux"
+	"golang.org/x/crypto/bcrypt"
 )
 
 // ** CREATE USER ** //
@@ -16,12 +17,18 @@ func CreateUser(w http.ResponseWriter, r *http.Request) {
 	var user entities.User
 	json.NewDecoder(r.Body).Decode(&user)
 	userName := user.Username
+	hashedPassword, err := bcrypt.GenerateFromPassword([]byte(user.Password), 8)
 	if CheckIfUserNameExists(userName) {
 		w.WriteHeader(409)
 		// 'Conflict' HTTP response status code for duplicate username
 		json.NewEncoder(w).Encode("Username is Taken!")
 		return
 	}
+	if err != nil {
+		w.WriteHeader(http.StatusInternalServerError)
+		return
+	}
+	user.Password = string(hashedPassword)
 	database.Instance.Create(&user)
 	w.WriteHeader(202)
 	// Code for 'Accepted' when unique username

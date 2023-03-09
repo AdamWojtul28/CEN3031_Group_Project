@@ -5,9 +5,8 @@ POST http://{{host}}/api/users HTTP/1.1
 content-type: application/json
     
 {
-    "username": "MATTY4",
-    "password": "password123",
-    "biography": "I love UF so muuch, this place rules."
+    "username": "JimmyBoah",
+    "password": "password123"
 }
 
 ###
