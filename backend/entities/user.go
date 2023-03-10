@@ -1,9 +1,13 @@
 package entities
 
+import "time"
+
 type User struct {
 	ID                             uint   `json:"id"`
 	Username                       string `json:"username"`
 	Password                       string `json:"password"`
+	Expiry                         time.Time
+	Session_Token                  string `json:"session_token"`
 	Biography                      string `json:"biography"`
 	Birthday                       string `json:"birthday"`
 	Email                          string `json:"email"`

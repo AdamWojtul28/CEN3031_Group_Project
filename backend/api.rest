@@ -5,8 +5,8 @@ POST http://{{host}}/api/users HTTP/1.1
 content-type: application/json
     
 {
-    "username": "JimmyBoah",
-    "password": "password123"
+    "username": "gawdDam",
+    "password": "boop"
 }
 
 ###
@@ -26,9 +26,8 @@ POST http://{{host}}/api/signin HTTP/1.1
 content-type: application/json
     
 {
-    "username": "TomSawyer",
-    "password": "whoknows",
-    "biography": "I love UF so muuch, this place rules."
+    "username": "gawdDam",
+    "password": "boop"
 }
 
 ###
