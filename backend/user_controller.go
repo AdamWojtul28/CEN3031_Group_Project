@@ -77,7 +77,6 @@ func CompareHashes(user entities.User) bool {
 	var dbUser entities.User
 	result := database.Instance.Where("username = ?", userName).First(&dbUser)
 	err := result.Scan(&dbUser)
-	fmt.Println(dbUser.Password)
 	if err != nil {
 		if err := bcrypt.CompareHashAndPassword([]byte(dbUser.Password), []byte(password)); err != nil {
 			// If the two passwords don't match, return a 401 status
@@ -105,8 +104,7 @@ func UserLoginAttempt(w http.ResponseWriter, r *http.Request) {
 	var user entities.User
 	json.NewDecoder(r.Body).Decode(&user)
 	userName := user.Username
-	password := user.Password
-	fmt.Println(password)
+	//password := user.Password
 	if !(CheckIfUserNameExists(userName)) {
 		w.WriteHeader(http.StatusNotFound)
 		json.NewEncoder(w).Encode("No such username exists!")
@@ -122,7 +120,7 @@ func UserLoginAttempt(w http.ResponseWriter, r *http.Request) {
 	// create new random session token
 	sessionToken := uuid.New().String()
 	expiresAt := time.Now().Add(120 * time.Second)
-	user.Expiry = expiresAt
+	//user.Expiry = expiresAt
 	user.Session_Token = sessionToken
 
 	// set client cookie
@@ -131,6 +129,12 @@ func UserLoginAttempt(w http.ResponseWriter, r *http.Request) {
 		Value:   sessionToken,
 		Expires: expiresAt,
 	})
+
+	// update user to db
+	database.Instance.Save(&user)
+	w.Header().Set("Content-Type", "application/json")
+	json.NewEncoder(w).Encode(user)
+
 	w.WriteHeader(202)
 	// Code for 'Accepted'
 	json.NewEncoder(w).Encode("Proceed to page!")
@@ -148,6 +152,7 @@ func Welcome(w http.ResponseWriter, r *http.Request) {
 		if err == http.ErrNoCookie {
 			// If the cookie is not set, return an unauthorized status
 			w.WriteHeader(http.StatusUnauthorized)
+			json.NewEncoder(w).Encode("cookie not set")
 			return
 		}
 		// For any other type of error, return a bad request status
@@ -158,8 +163,13 @@ func Welcome(w http.ResponseWriter, r *http.Request) {
 
 	// check if this session token exists in database
 	exists, dbUser := ValidToken(sessionToken)
+	fmt.Printf("Username: %s!", user.Username)
+	fmt.Printf("Password: %s!", user.Password)
+	fmt.Printf("Token: %s!", user.Session_Token)
+
 	if !exists {
 		w.WriteHeader(http.StatusUnauthorized)
+		json.NewEncoder(w).Encode("cookie does not exist")
 		return
 	}
 
@@ -168,79 +178,82 @@ func Welcome(w http.ResponseWriter, r *http.Request) {
 		// delete session
 		dbUser.Session_Token = ""
 		w.WriteHeader(http.StatusUnauthorized)
+		json.NewEncoder(w).Encode("session expired")
 		return
 	}
 	// if session is valid
 	w.Write([]byte(fmt.Sprintf("Welcome %s!", user.Username)))
 }
 
-func Refresh(w http.ResponseWriter, r *http.Request) {
-	w.Header().Set("Content-Type", "application/json")
-	var user entities.User
-	json.NewDecoder(r.Body).Decode(&user)
+// func Refresh(w http.ResponseWriter, r *http.Request) {
+// 	w.Header().Set("Content-Type", "application/json")
+// 	var user entities.User
+// 	json.NewDecoder(r.Body).Decode(&user)
 
-	// get sesssion cookie
-	c, err := r.Cookie("session_token")
-	if err != nil {
-		if err == http.ErrNoCookie {
-			// If the cookie is not set, return an unauthorized status
-			w.WriteHeader(http.StatusUnauthorized)
-			return
-		}
-		// For any other type of error, return a bad request status
-		w.WriteHeader(http.StatusBadRequest)
-		return
-	}
-	sessionToken := c.Value
+// 	// get sesssion cookie
+// 	c, err := r.Cookie("session_token")
+// 	if err != nil {
+// 		if err == http.ErrNoCookie {
+// 			// If the cookie is not set, return an unauthorized status
+// 			w.WriteHeader(http.StatusUnauthorized)
+// 			return
+// 		}
+// 		// For any other type of error, return a bad request status
+// 		w.WriteHeader(http.StatusBadRequest)
+// 		return
+// 	}
+// 	sessionToken := c.Value
 
-	// check if this session token exists in database
-	exists, dbUser := ValidToken(sessionToken)
-	if !exists {
-		w.WriteHeader(http.StatusUnauthorized)
-		return
-	}
+// 	// check if this session token exists in database
+// 	exists, dbUser := ValidToken(sessionToken)
+// 	if !exists {
+// 		w.WriteHeader(http.StatusUnauthorized)
+// 		return
+// 	}
 
-	// check if session is expired
-	if dbUser.Expiry.Before(time.Now()) {
-		// delete session
-		w.WriteHeader(http.StatusUnauthorized)
-		return
-	}
+// 	// check if session is expired
+// 	if dbUser.Expiry.Before(time.Now()) {
+// 		// delete session
+// 		user.Session_Token = ""
 
-	// session is valid, create new token
-	newSessionToken := uuid.New().String()
-	expiresAt := time.Now().Add(120 * time.Second)
+// 		w.WriteHeader(http.StatusUnauthorized)
+// 		return
+// 	}
 
-	user.Expiry = expiresAt
-	user.Session_Token = newSessionToken
+// 	// session is valid, create new token
+// 	newSessionToken := uuid.New().String()
+// 	expiresAt := time.Now().Add(120 * time.Second)
 
-	// set client cookie
-	http.SetCookie(w, &http.Cookie{
-		Name:    "session_token",
-		Value:   newSessionToken,
-		Expires: expiresAt,
-	})
-}
+// 	user.Expiry = expiresAt
+// 	user.Session_Token = newSessionToken
 
-func Logout(w http.ResponseWriter, r *http.Request) {
-	w.Header().Set("Content-Type", "application/json")
-	var user entities.User
-	json.NewDecoder(r.Body).Decode(&user)
+// 	// set client cookie
+// 	http.SetCookie(w, &http.Cookie{
+// 		Name:    "session_token",
+// 		Value:   newSessionToken,
+// 		Expires: expiresAt,
+// 	})
+// }
 
-	// get sesssion cookie
-	c, err := r.Cookie("session_token")
-	if err != nil {
-		if err == http.ErrNoCookie {
-			// If the cookie is not set, return an unauthorized status
-			w.WriteHeader(http.StatusUnauthorized)
-			return
-		}
-		// For any other type of error, return a bad request status
-		w.WriteHeader(http.StatusBadRequest)
-		return
-	}
-	sessionToken := c.Value
-}
+// func Logout(w http.ResponseWriter, r *http.Request) {
+// 	w.Header().Set("Content-Type", "application/json")
+// 	var user entities.User
+// 	json.NewDecoder(r.Body).Decode(&user)
+
+// 	// get sesssion cookie
+// 	c, err := r.Cookie("session_token")
+// 	if err != nil {
+// 		if err == http.ErrNoCookie {
+// 			// If the cookie is not set, return an unauthorized status
+// 			w.WriteHeader(http.StatusUnauthorized)
+// 			return
+// 		}
+// 		// For any other type of error, return a bad request status
+// 		w.WriteHeader(http.StatusBadRequest)
+// 		return
+// 	}
+// 	sessionToken := c.Value
+// }
 
 // ** GET FUNCTIONS ** //
 func GetUserByName(w http.ResponseWriter, r *http.Request) {
