@@ -30,6 +30,20 @@ func CreateUser(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(http.StatusInternalServerError)
 		return
 	}
+
+	// create new random session token
+	sessionToken := uuid.New().String()
+	expiresAt := time.Now().Add(120 * time.Second)
+	user.Expiry = expiresAt
+	user.Session_Token = sessionToken
+
+	// set client cookie
+	http.SetCookie(w, &http.Cookie{
+		Name:    "session_token",
+		Value:   sessionToken,
+		Expires: expiresAt,
+	})
+
 	user.Password = string(hashedPassword)
 	database.Instance.Create(&user)
 	w.WriteHeader(202)
@@ -91,11 +105,9 @@ func ValidToken(token string) (bool, entities.User) {
 	result := database.Instance.Where("session_token = ?", token).First(&user)
 	err := result.Scan(&user)
 	if err != nil {
-		if user.Session_Token == token {
-			return true, user
-		}
+		return false, user
 	}
-	return false, user
+	return true, user
 }
 
 // ** AUTHENTICATION/QUERY FUNCTIONS ** //
@@ -120,7 +132,7 @@ func UserLoginAttempt(w http.ResponseWriter, r *http.Request) {
 	// create new random session token
 	sessionToken := uuid.New().String()
 	expiresAt := time.Now().Add(120 * time.Second)
-	//user.Expiry = expiresAt
+	user.Expiry = expiresAt
 	user.Session_Token = sessionToken
 
 	// set client cookie
@@ -131,6 +143,7 @@ func UserLoginAttempt(w http.ResponseWriter, r *http.Request) {
 	})
 
 	// update user to db
+	// ADAM PLS FIX TO FIND USERNAME AND ONLY UPDATE USER NOT CREATE NEW ONE
 	database.Instance.Save(&user)
 	w.Header().Set("Content-Type", "application/json")
 	json.NewEncoder(w).Encode(user)
@@ -160,12 +173,12 @@ func Welcome(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	sessionToken := c.Value
-
+	fmt.Printf("Token1: %s!", sessionToken)
 	// check if this session token exists in database
 	exists, dbUser := ValidToken(sessionToken)
-	fmt.Printf("Username: %s!", user.Username)
-	fmt.Printf("Password: %s!", user.Password)
-	fmt.Printf("Token: %s!", user.Session_Token)
+	fmt.Printf("Username: %s!", dbUser.Username)
+	fmt.Printf("Password: %s!", dbUser.Password)
+	fmt.Printf("Token: %s!", dbUser.Session_Token)
 
 	if !exists {
 		w.WriteHeader(http.StatusUnauthorized)
