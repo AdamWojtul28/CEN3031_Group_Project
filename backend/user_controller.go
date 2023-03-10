@@ -69,6 +69,22 @@ func CheckIfExactUserExists(userName string, password string) bool {
 	return false
 }
 
+func CompareHashes(user entities.User) bool {
+	userName := user.Username
+	password := user.Password
+	var dbUser entities.User
+	result := database.Instance.Where("username = ?", userName).First(&dbUser)
+	err := result.Scan(&dbUser)
+	fmt.Println(dbUser.Password)
+	if err != nil {
+		if err := bcrypt.CompareHashAndPassword([]byte(dbUser.Password), []byte(password)); err != nil {
+			// If the two passwords don't match, return a 401 status
+			return false
+		}
+	}
+	return true
+}
+
 // ** AUTHENTICATION/QUERY FUNCTIONS ** //
 func UserLoginAttempt(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
@@ -76,13 +92,14 @@ func UserLoginAttempt(w http.ResponseWriter, r *http.Request) {
 	json.NewDecoder(r.Body).Decode(&user)
 	userName := user.Username
 	password := user.Password
+	fmt.Println(password)
 	if !(CheckIfUserNameExists(userName)) {
 		w.WriteHeader(http.StatusNotFound)
 		json.NewEncoder(w).Encode("No such username exists!")
 		return
 		// Checks if username does not exist
 	}
-	if !(CheckIfExactUserExists(userName, password)) {
+	if !(CompareHashes(user)) {
 		w.WriteHeader(401)
 		json.NewEncoder(w).Encode("Incorrect password!")
 		return
