@@ -34,7 +34,8 @@ func httpHandler() http.Handler {
 	// ** Normal Routes ** //
 	router.HandleFunc("/api/welcome", Welcome)
 	router.HandleFunc("/api/signin", UserLoginAttempt)
-	//router.HandleFunc("/refresh", Refresh)
+	router.HandleFunc("/api/refresh", Refresh)
+	router.HandleFunc("/api/logout", Logout)
 	// Add your routes here.
 
 	// WARNING: this route must be the last route defined.

@@ -5,8 +5,8 @@ POST http://{{host}}/api/users HTTP/1.1
 content-type: application/json
     
 {
-    "username": "gawdDam",
-    "password": "boop"
+    "username": "John3",
+    "password": "waffles"
 }
 
 ###
@@ -22,8 +22,8 @@ POST http://{{host}}/api/signin HTTP/1.1
 content-type: application/json
     
 {
-    "username": "gawdDam",
-    "password": "boop"
+    "username": "John3",
+    "password": "waffles"
 }
 
 ###
@@ -33,8 +33,30 @@ POST http://{{host}}/api/welcome HTTP/1.1
 content-type: application/json
 
 {
-    "username": "gawdDam",
-    "password": "boop"
+    "username": "John3",
+    "password": "waffles"
+}
+
+###
+
+// Refresh the page for logged in user
+http://{{host}}/api/refresh HTTP/1.1
+content-type: application/json
+
+{
+    "username": "John3",
+    "password": "waffles"
+}
+
+###
+
+// Logout user
+POST http://{{host}}/api/logout HTTP/1.1
+content-type: application/json
+    
+{
+    "username": "John3",
+    "password": "waffles"
 }
 
 ###
@@ -79,5 +101,5 @@ content-type: application/json
 ###
 
 // Delete User
-DELETE http://{{host}}/api/users/6 HTTP/1.1
+DELETE http://{{host}}/api/users/34 HTTP/1.1
 content-type: application/json
