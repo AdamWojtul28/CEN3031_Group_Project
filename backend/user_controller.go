@@ -131,23 +131,27 @@ func ValidToken(token string) (bool, entities.User) {
 
 // ** AUTHENTICATION/QUERY FUNCTIONS ** //
 func UserLoginAttempt(w http.ResponseWriter, r *http.Request) {
-	w.Header().Set("Content-Type", "application/json")
-	var user entities.User
-	json.NewDecoder(r.Body).Decode(&user)
-	userName := user.Username
-	//password := user.Password
+	var temporaryUser entities.User
+	json.NewDecoder(r.Body).Decode(&temporaryUser)
+	userName := temporaryUser.Username
 	if !(CheckIfUserNameExists(userName)) {
 		w.WriteHeader(http.StatusNotFound)
 		json.NewEncoder(w).Encode("No such username exists!")
 		return
 		// Checks if username does not exist
 	}
-	if !(CompareHashes(user)) {
+	if !(CompareHashes(temporaryUser)) {
 		w.WriteHeader(401)
 		json.NewEncoder(w).Encode("Incorrect password!")
 		return
 		// Checks if username exists, but password is incorrect
 	}
+
+	// update user to db
+	var user entities.User
+	database.Instance.Where("username = ?", temporaryUser.Username).First(&user)
+	json.NewDecoder(r.Body).Decode(&user)
+
 	// create new random session token
 	sessionToken := uuid.New().String()
 	expiresAt := time.Now().Add(120 * time.Second)
@@ -162,8 +166,6 @@ func UserLoginAttempt(w http.ResponseWriter, r *http.Request) {
 		Expires: expiresAt,
 	})
 
-	// update user to db
-	// ADAM PLS FIX TO FIND USERNAME AND ONLY UPDATE USER NOT CREATE NEW ONE
 	database.Instance.Save(&user)
 	w.Header().Set("Content-Type", "application/json")
 	json.NewEncoder(w).Encode(user)
