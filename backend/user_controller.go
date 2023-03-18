@@ -322,6 +322,16 @@ func Logout(w http.ResponseWriter, r *http.Request) {
 	json.NewEncoder(w).Encode("User Logged Out!")
 }
 
+// ** MATCHMAKING FUNCTIONS ** //
+func Search(w http.ResponseWriter, r *http.Request) {
+	// DARRION: Currently, this is just a duplicate of the GET ALL Endpoint, but I will be working on it
+	var users []entities.User
+	database.Instance.Find(&users)
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(http.StatusOK)
+	json.NewEncoder(w).Encode(users)
+}
+
 // ** GET FUNCTIONS ** //
 func GetUserByName(w http.ResponseWriter, r *http.Request) {
 	userName := mux.Vars(r)["username"]
