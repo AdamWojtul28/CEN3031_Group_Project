@@ -324,9 +324,12 @@ func Logout(w http.ResponseWriter, r *http.Request) {
 
 // ** MATCHMAKING FUNCTIONS ** //
 func Search(w http.ResponseWriter, r *http.Request) {
+	var userSearchCondition entities.User
+	json.NewDecoder(r.Body).Decode(&userSearchCondition)
+	//address_1 := userSearchCondition.Address_1
 	// DARRION: Currently, this is just a duplicate of the GET ALL Endpoint, but I will be working on it
 	var users []entities.User
-	database.Instance.Find(&users)
+	database.Instance.Where("address_1 IS NOT NULL AND address_1 != ?", "").Find(&users)
 	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(http.StatusOK)
 	json.NewEncoder(w).Encode(users)
