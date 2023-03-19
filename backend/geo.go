@@ -1,8 +1,6 @@
 package main
 
 import (
-	"fmt"
-
 	"github.com/codingsince1985/geo-golang"
 	"github.com/codingsince1985/geo-golang/openstreetmap"
 
@@ -45,6 +43,6 @@ func CalculateDistanceBetween(city1 string, city2 string) (float64, float64) {
 	locationTwo := haversine.Coord{Lat: lat2, Lon: long2}
 	mi, km := haversine.Distance(locationOne, locationTwo)
 	// The above lines take the two latitude/longitude pairs and use the Haversine formula on them to determine the distance between them
-	fmt.Println("Miles:", mi, "Kilometers:", km)
+	//fmt.Println("Miles:", mi, "Kilometers:", km)
 	return mi, km
 }

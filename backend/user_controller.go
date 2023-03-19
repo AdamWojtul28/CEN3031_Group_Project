@@ -6,6 +6,7 @@ import (
 	"golang_angular/database"
 	"golang_angular/entities"
 	"net/http"
+	"sort"
 	"time"
 
 	"github.com/google/uuid"
@@ -326,13 +327,38 @@ func Logout(w http.ResponseWriter, r *http.Request) {
 func Search(w http.ResponseWriter, r *http.Request) {
 	var userSearchCondition entities.User
 	json.NewDecoder(r.Body).Decode(&userSearchCondition)
-	//address_1 := userSearchCondition.Address_1
+	address_1 := userSearchCondition.Address_1
 	// DARRION: Currently, this is just a duplicate of the GET ALL Endpoint, but I will be working on it
 	var users []entities.User
+	var userSearchInfo []entities.UserForSearches
+	var blankSearchUser entities.UserForSearches
 	database.Instance.Where("address_1 IS NOT NULL AND address_1 != ?", "").Find(&users)
+	for i := 0; i < len(users); i++ {
+		userSearchInfo = append(userSearchInfo, blankSearchUser)
+		userSearchInfo[i].Username = users[i].Username
+		userSearchInfo[i].Biography = users[i].Biography
+		userSearchInfo[i].Birthday = users[i].Birthday
+		userSearchInfo[i].Email = users[i].Email
+		userSearchInfo[i].Phone = users[i].Phone
+		userSearchInfo[i].Gender = users[i].Gender
+		userSearchInfo[i].Address_1 = users[i].Address_1
+		userSearchInfo[i].Country = users[i].Country
+		userSearchInfo[i].Distance_from_target_miles, userSearchInfo[i].Distance_from_target_km = CalculateDistanceBetween(address_1, users[i].Address_1)
+	}
+	// Copies the user data into a struct that only contains relevant information (excludes password and other personal data)
+	// Above also computes the distance of each user to target destination and stores that information in new struct
+
+	sort.SliceStable(userSearchInfo, func(i, j int) bool {
+		return userSearchInfo[i].Distance_from_target_miles < userSearchInfo[j].Distance_from_target_miles
+	})
+	// Sorts the users in the slice by how close they are to the target distination, with closest first and furthest last
+
+	//for i := 0; i < len(users); i++ {
+	//	fmt.Println(i, users[i].Address_1)
+	//}
 	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(http.StatusOK)
-	json.NewEncoder(w).Encode(users)
+	json.NewEncoder(w).Encode(userSearchInfo)
 }
 
 // ** GET FUNCTIONS ** //
