@@ -101,5 +101,5 @@ content-type: application/json
 ###
 
 // Delete User
-DELETE http://{{host}}/api/users/34 HTTP/1.1
+DELETE http://{{host}}/api/users/57 HTTP/1.1
 content-type: application/json

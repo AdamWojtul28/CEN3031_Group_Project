@@ -224,9 +224,8 @@ func Welcome(w http.ResponseWriter, r *http.Request) {
 }
 
 func Refresh(w http.ResponseWriter, r *http.Request) {
-	w.Header().Set("Content-Type", "application/json")
-	var user entities.User
-	json.NewDecoder(r.Body).Decode(&user)
+	var temporaryUser entities.User
+	json.NewDecoder(r.Body).Decode(&temporaryUser)
 
 	// get sesssion cookie
 	c, err := r.Cookie("session_token")
@@ -258,6 +257,11 @@ func Refresh(w http.ResponseWriter, r *http.Request) {
 		panic(err)
 	}
 
+	// update user to db
+	var user entities.User
+	database.Instance.Where("username = ?", temporaryUser.Username).First(&user)
+	json.NewDecoder(r.Body).Decode(&user)
+
 	if userTime.Before(CurrentTimeFormatted()) {
 		// delete session if session is expired
 		dbUser.Session_Token = ""
@@ -281,7 +285,10 @@ func Refresh(w http.ResponseWriter, r *http.Request) {
 		Expires: expiresAt,
 	})
 
-	// ADAM: should we return a status here? or is refreshing the page not something that needs a status, imo it doesnt need one
+	database.Instance.Save(&user)
+	w.Header().Set("Content-Type", "application/json")
+	json.NewEncoder(w).Encode(user)
+	w.WriteHeader(202)
 }
 
 func Logout(w http.ResponseWriter, r *http.Request) {
