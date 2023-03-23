@@ -86,6 +86,19 @@ func CreateUser(w http.ResponseWriter, r *http.Request) {
 	json.NewEncoder(w).Encode(user)
 }
 
+// ** CREATE RESERVATION ** //
+func CreateReservation(w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("Content-Type", "application/json")
+	var reservation entities.Reservation
+	json.NewDecoder(r.Body).Decode(&reservation)
+
+	// send information to the database (success)
+	database.Instance.Create(&reservation)
+	w.WriteHeader(202)
+	// Code for 'Accepted' when unique username
+	json.NewEncoder(w).Encode(reservation)
+}
+
 // ** CHECK FUNCTIONS ** //
 func CheckIfUserIdExists(userId string) bool {
 	var user entities.User
