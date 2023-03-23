@@ -21,7 +21,7 @@ type User struct {
 }
 
 type Reservation struct {
-	ReservationID uint   `json:"rid"`
+	ID            uint   `json:"id"`
 	StartDate     string `json:"start_date"`
 	EndDate       string `json:"end_date"`
 	GuestName     string `json:"guest_name"`
@@ -32,6 +32,7 @@ type Reservation struct {
 	HostEmail     string `json:"host_email"`
 	HostAddress   string `json:"host_address"`
 	HostCountry   string `json:"host_country"`
+	Status        string `json:"status"`
 }
 
 type UserForSearches struct {

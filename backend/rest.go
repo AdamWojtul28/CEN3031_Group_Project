@@ -24,6 +24,7 @@ func httpHandler() http.Handler {
 
 	// ** Post Routes ** //
 	router.HandleFunc("/api/users", CreateUser).Methods("POST")
+	router.HandleFunc("/api/reservations", CreateReservation).Methods("POST")
 
 	// ** Put Routes ** //
 	router.HandleFunc("/api/users/{id}", UpdateUser).Methods("PUT")
