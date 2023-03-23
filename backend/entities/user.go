@@ -20,6 +20,19 @@ type User struct {
 	Emergency_contact_address      string `json:"emergency_contact_address"`
 }
 
+type Listing struct {
+	ID           uint   `json:"id"`
+	StartDate    string `json:"start_date"`
+	EndDate      string `json:"end_date"`
+	HostName     string `json:"host_name"`
+	HostUsername string `json:"host_username"`
+	HostEmail    string `json:"host_email"`
+	HostAddress  string `json:"host_address"`
+	HostCountry  string `json:"host_country"`
+	Capacity     uint   `json:"capacity"`
+	Status       string `json:"status"`
+}
+
 type Reservation struct {
 	ID            uint   `json:"id"`
 	StartDate     string `json:"start_date"`
