@@ -5,9 +5,8 @@ POST http://{{host}}/api/users HTTP/1.1
 content-type: application/json
     
 {
-    "username": "MATTY4",
-    "password": "password123",
-    "biography": "I love UF so muuch, this place rules."
+    "username": "John3",
+    "password": "waffles"
 }
 
 ###
@@ -19,17 +18,45 @@ content-type: application/json
 ###
 
 // Login to profile
-// For Adam: I think we were close here the other day. One problem i found at least the way I was doing it is that we need 
-// the URL for the request to be different or it will call the get user by ID function which is why we were getting all the users
-// when we had a ? because that was like saying any ID number. There is still something I am missing though, but this also might not be necessary if the front 
-// can just send the whole user they need as an object and we can use the user ID
 POST http://{{host}}/api/signin HTTP/1.1
 content-type: application/json
     
 {
-    "username": "TomSawyer",
-    "password": "whoknows",
-    "biography": "I love UF so muuch, this place rules."
+    "username": "John3",
+    "password": "waffles"
+}
+
+###
+
+// Welcome logged in user
+POST http://{{host}}/api/welcome HTTP/1.1
+content-type: application/json
+
+{
+    "username": "John3",
+    "password": "waffles"
+}
+
+###
+
+// Refresh the page for logged in user
+http://{{host}}/api/refresh HTTP/1.1
+content-type: application/json
+
+{
+    "username": "John3",
+    "password": "waffles"
+}
+
+###
+
+// Logout user
+POST http://{{host}}/api/logout HTTP/1.1
+content-type: application/json
+    
+{
+    "username": "John3",
+    "password": "waffles"
 }
 
 ###
@@ -74,5 +101,5 @@ content-type: application/json
 ###
 
 // Delete User
-DELETE http://{{host}}/api/users/6 HTTP/1.1
+DELETE http://{{host}}/api/users/57 HTTP/1.1
 content-type: application/json

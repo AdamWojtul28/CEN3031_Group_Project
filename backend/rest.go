@@ -16,14 +16,28 @@ func httpHandler() http.Handler {
 	// each request defines what function will be called for the respective url.
 	// each URL can only have one of each get, post, etc .. or it will use the first
 
+	// ** Get Routes ** //
 	router.HandleFunc("/api/users", GetUsers).Methods("GET")
-	router.HandleFunc("/api/signin", UserLoginAttempt)
 	router.HandleFunc("/api/users", GetUsers).Methods("GET")
 	router.HandleFunc("/api/users/{id}", GetUserById).Methods("GET")
 	router.HandleFunc("/api/users/username/{username}", GetUserByName).Methods("GET")
+
+	// ** Post Routes ** //
 	router.HandleFunc("/api/users", CreateUser).Methods("POST")
+	router.HandleFunc("/api/reservations", CreateReservation).Methods("POST")
+
+	// ** Put Routes ** //
 	router.HandleFunc("/api/users/{id}", UpdateUser).Methods("PUT")
+
+	// ** Delete Routes ** //
 	router.HandleFunc("/api/users/{id}", DeleteUser).Methods("DELETE")
+
+	// ** Normal Routes ** //
+	router.HandleFunc("/api/welcome", Welcome)
+	router.HandleFunc("/api/signin", UserLoginAttempt)
+	router.HandleFunc("/api/refresh", Refresh)
+	router.HandleFunc("/api/logout", Logout)
+	router.HandleFunc("/api/search", Search)
 	// Add your routes here.
 
 	// WARNING: this route must be the last route defined.

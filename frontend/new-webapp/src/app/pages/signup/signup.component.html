@@ -1,0 +1,61 @@
+<div class="outer">
+    <div class="container">
+        <div class="row">
+            <div class="offset-md-2 col-lg-5 col-md-7 offset-lg-4 offset-md-3">
+                <div class="panel border">
+                    <div class="panel-heading">
+                        <h3 class="pt-3 font-weight-bold">Sign Up</h3>
+                    </div>
+                    <div class="panel-body p-3">
+                        <form (ngSubmit)="onSubmitCreateUser()" #f="ngForm">
+                            <div class="form group pt-3">
+                                <div class="input-field">
+                                    <span class="fa fa-envelope p-2" style = "font-size:11px;"></span>
+                                    <input
+                                        ngModel
+                                        email
+                                        #email="ngModel"
+                                        required
+                                        type="text"
+                                        placeholder="Email"
+                                        name="email"
+                                        data-cy="email">
+                                </div>
+                            </div>
+                            <div class="form group pt-3">
+                                <div class="input-field">
+                                    <span class="fa fa-user p-2"></span>
+                                    <input 
+                                        ngModel
+                                        required
+                                        type="text"
+                                        placeholder="Username"
+                                        name="username"
+                                        data-cy="username">
+                                </div>
+                            </div>
+                            <div class="form group pt-3">
+                                <div class="input-field">
+                                    <span class="fa fa-lock p-2"></span>
+                                    <input
+                                        ngModel
+                                        required
+                                        [type]="type"
+                                        placeholder="Password"
+                                        name="password"
+                                        data-cy="password">
+                                    <span (click)="hideShowPass()" class="fa fa-eye-slash"></span>
+                                </div>
+                            </div>
+                            <span style="color: red" role="alert" *ngIf="errorMessage.length > 0" data-cy="err-msg">
+                                {{ errorMessage }} <u style="cursor: pointer" (click)="resetError()">OK</u>
+                            </span>
+                            <button type="submit" class="btn btn-primary btn-block mt-4 w-100" [disabled]="!f.valid" data-cy="signup-btn">Sign Up</button>
+                            <div class="text-center pt-4 text-muted">Already have an account? <a id="forget" routerLink="/login">Login</a></div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
