@@ -20,6 +20,20 @@ type User struct {
 	Emergency_contact_address      string `json:"emergency_contact_address"`
 }
 
+type Reservation struct {
+	ReservationID uint   `json:"rid"`
+	StartDate     string `json:"start_date"`
+	EndDate       string `json:"end_date"`
+	GuestName     string `json:"guest_name"`
+	GuestUsername string `json:"guest_username"`
+	GuestEmail    string `json:"guest_email"`
+	HostName      string `json:"host_name"`
+	HostUsername  string `json:"host_username"`
+	HostEmail     string `json:"host_email"`
+	HostAddress   string `json:"host_address"`
+	HostCountry   string `json:"host_country"`
+}
+
 type UserForSearches struct {
 	Username                   string  `json:"username"`
 	Biography                  string  `json:"biography"`
