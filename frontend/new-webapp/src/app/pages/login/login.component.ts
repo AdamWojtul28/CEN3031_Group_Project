@@ -16,7 +16,8 @@ export class LoginComponent {
     username: '',
     password: '',
     email: '',
-    bio: ''
+    bio: '',
+    id: ''
   }
   errorMessage: string = '';
 
@@ -41,9 +42,6 @@ export class LoginComponent {
       .subscribe({
         next: (res) => {
           console.log(res);
-          if (res === "Proceed to page!"){
-            this.router.navigate(['users', this.loginForm.value.username]);
-          }
         },
         error: (err) => {
           console.log(err);

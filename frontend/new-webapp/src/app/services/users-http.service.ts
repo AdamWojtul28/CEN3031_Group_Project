@@ -11,16 +11,16 @@ export class UsersHttpService {
   constructor(private http: HttpClient) {}
 
   createNewUser(username: string, password: string, email: string) {
-    const user: User = {username: username, password: password, email: email, bio: ''};
+    const user: User = {username: username, password: password, email: email, bio: '', id: ''};
     return this.http.post('http://localhost:5000/api/users', user);
   }
 
   loginUser(username: string, password: string) {
-    const user: User = {username: username, password: password, email: '', bio: ''};
+    const user: User = {username: username, password: password, email: '', bio: '', id: ''};
     return this.http.post('http://localhost:5000/api/signin', user);
   }
 
-  deleteUser(userId: number) {
+  deleteUser(userId: string) {
     return this.http.delete('http://localhost:5000/api/users/' + userId);
   }
 

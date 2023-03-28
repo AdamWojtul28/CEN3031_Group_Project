@@ -16,7 +16,8 @@ export class SignupComponent {
     username: '',
     password: '',
     email: '',
-    bio: ''
+    bio: '',
+    id: '',
   }
   errorMessage="";
 
@@ -41,12 +42,12 @@ export class SignupComponent {
       .subscribe({
         next: (res) => {
           // -------------------------
-          console.log(res)
+          console.log(res);
           this.router.navigate(['users', this.loginForm.value.username]);
         },
         error: (err) => {
           // -------------------------
-          console.log(err)
+          console.log(err);
           this.errorMessage = err.error;
         }
       });

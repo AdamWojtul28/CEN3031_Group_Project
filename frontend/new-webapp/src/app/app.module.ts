@@ -3,7 +3,6 @@ import { BrowserModule } from '@angular/platform-browser';
 import { FormsModule } from '@angular/forms'
 import { HttpClientModule } from '@angular/common/http';
 import { RouterModule } from '@angular/router';
-import { ActivatedRoute } from '@angular/router';
 
 import { AppRoutingModule } from './app-routing.module';
 
@@ -16,6 +15,7 @@ import { AboutComponent } from './pages/about/about.component';
 import { LoginComponent } from './pages/login/login.component';
 import { SignupComponent } from './pages/signup/signup.component';
 import { ProfileComponent } from './pages/profile/profile.component';
+import { AdminComponent } from './pages/admin/admin.component';
 
 @NgModule({
   declarations: [
@@ -27,7 +27,8 @@ import { ProfileComponent } from './pages/profile/profile.component';
     AboutComponent,
     LoginComponent,
     SignupComponent,
-    ProfileComponent
+    ProfileComponent,
+    AdminComponent
   ],
   imports: [
     BrowserModule,
@@ -35,7 +36,6 @@ import { ProfileComponent } from './pages/profile/profile.component';
     FormsModule,
     HttpClientModule,
     RouterModule,
-    ActivatedRoute
   ],
   providers: [],
   bootstrap: [AppComponent]
