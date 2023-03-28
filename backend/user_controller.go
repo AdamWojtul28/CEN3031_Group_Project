@@ -120,18 +120,51 @@ func CreateUser(w http.ResponseWriter, r *http.Request) {
 	json.NewEncoder(w).Encode(user)
 }
 
+// ** CREATE LISTING ** //
+func CreateListing(w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("Content-Type", "application/json")
+	var listing entities.Listing
+	json.NewDecoder(r.Body).Decode(&listing)
+
+	// send information to the database (success)
+	database.Instance.Create(&listing)
+	w.WriteHeader(202)
+	// Code for 'Accepted' when unique username
+	json.NewEncoder(w).Encode(listing)
+}
+
 // ** CREATE RESERVATION ** //
 func CreateReservation(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
 	var reservation entities.Reservation
+	var overLappingReservations []entities.Reservation
 	json.NewDecoder(r.Body).Decode(&reservation)
-
-	// send information to the database (success)
-	database.Instance.Create(&reservation)
-	w.WriteHeader(202)
-	// Code for 'Accepted' when unique username
-	json.NewEncoder(w).Encode(reservation)
+	database.Instance.Where("host_username = ? AND ((start_date BETWEEN ? AND ?) OR (end_date BETWEEN ? AND ?))", reservation.HostUsername, reservation.StartDate, reservation.EndDate, reservation.StartDate, reservation.EndDate).Find(&overLappingReservations)
+	if len(overLappingReservations) > 0 {
+		w.WriteHeader(400)
+		json.NewEncoder(w).Encode("Conflict with another reservation!")
+	} else {
+		// send information to the database (success)
+		database.Instance.Create(&reservation)
+		w.WriteHeader(202)
+		// Code for 'Accepted' when unique username
+		json.NewEncoder(w).Encode(reservation)
+	}
 }
+
+/*
+select dr1.* from date_ranges dr1
+inner join date_ranges dr2
+on dr2.start > dr1.start -- start after dr1 is started
+  and dr2.start < dr1.end -- start before dr1 is finished
+
+
+select name
+from professors
+where not exists (select *
+				  from lectures
+				  where pers-id = held_by);
+*/
 
 // ** CHECK FUNCTIONS ** //
 func CheckIfUserIdExists(userId string) bool {
