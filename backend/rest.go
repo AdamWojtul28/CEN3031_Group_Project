@@ -38,7 +38,7 @@ func httpHandler() http.Handler {
 	router.HandleFunc("/api/signin", UserLoginAttempt)
 	router.HandleFunc("/api/refresh", Refresh)
 	router.HandleFunc("/api/logout", Logout)
-	router.HandleFunc("/api/search", Search)
+	router.HandleFunc("/api/search", FindUsersWithSearch)
 	// Add your routes here.
 
 	// WARNING: this route must be the last route defined.
