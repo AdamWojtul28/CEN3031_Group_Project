@@ -46,6 +46,40 @@ func QueryHandler(w http.ResponseWriter, r *http.Request) {
 	fmt.Fprintf(w, "Got parameter password:%s!", queryParams["password"][0])
 }
 
+func CheckSession(w http.ResponseWriter, r *http.Request) (time.Time, entities.User) {
+	var emptyUser entities.User
+	// get sesssion cookie
+	c, err := r.Cookie("session_token")
+	if err != nil {
+		if err == http.ErrNoCookie {
+			// If the cookie is not set, return an unauthorized status
+			w.WriteHeader(http.StatusUnauthorized)
+			json.NewEncoder(w).Encode("cookie not set")
+			// Go's "zero date" which is 0001-01-01 00:00:00 +0000 UTC
+			return time.Time{}, emptyUser
+		}
+		// For any other type of error, return a bad request status
+		w.WriteHeader(http.StatusBadRequest)
+		return time.Time{}, emptyUser
+	}
+	sessionToken := c.Value
+	// check if this session token exists in database
+	exists, dbUser := ValidToken(sessionToken)
+	if !exists {
+		w.WriteHeader(http.StatusUnauthorized)
+		json.NewEncoder(w).Encode("token does not exist")
+		return time.Time{}, emptyUser
+	}
+
+	// check if session is expired
+	// convert db expiry entry (string) to a time.Time variable for comparison
+	userTime, err := time.Parse("2006-01-02 15:04:05.0000", dbUser.Expiry)
+	if err != nil {
+		panic(err)
+	}
+	return userTime, dbUser
+}
+
 // ** CREATE USER ** //
 func CreateUser(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
@@ -195,113 +229,63 @@ func Welcome(w http.ResponseWriter, r *http.Request) {
 	var user entities.User
 	json.NewDecoder(r.Body).Decode(&user)
 
-	// get sesssion cookie
-	c, err := r.Cookie("session_token")
-	if err != nil {
-		if err == http.ErrNoCookie {
-			// If the cookie is not set, return an unauthorized status
+	userTime, dbUser := CheckSession(w, r)
+
+	// if there is no error in CheckSession
+	if (userTime != time.Time{}) {
+		// delete session if session is expired
+		if userTime.Before(CurrentTimeFormatted()) {
+			dbUser.Session_Token = ""
 			w.WriteHeader(http.StatusUnauthorized)
-			json.NewEncoder(w).Encode("cookie not set")
+			json.NewEncoder(w).Encode("session expired")
 			return
 		}
-		// For any other type of error, return a bad request status
-		w.WriteHeader(http.StatusBadRequest)
-		return
-	}
-	sessionToken := c.Value
-	// check if this session token exists in database
-	exists, dbUser := ValidToken(sessionToken)
-	if !exists {
-		w.WriteHeader(http.StatusUnauthorized)
-		json.NewEncoder(w).Encode("token does not exist")
-		return
-	}
 
-	// check if session is expired
-	// convert db expiry entry (string) to a time.Time variable for comparison
-	userTime, err := time.Parse("2006-01-02 15:04:05.0000", dbUser.Expiry)
-	if err != nil {
-		panic(err)
+		// if session is valid
+		w.Write([]byte(fmt.Sprintf("Welcome %s!", user.Username)))
 	}
-
-	if userTime.Before(CurrentTimeFormatted()) {
-		// delete session if session is expired
-		dbUser.Session_Token = ""
-		w.WriteHeader(http.StatusUnauthorized)
-		json.NewEncoder(w).Encode("session expired")
-		return
-	}
-
-	// if session is valid
-	w.Write([]byte(fmt.Sprintf("Welcome %s!", user.Username)))
 }
 
 func Refresh(w http.ResponseWriter, r *http.Request) {
 	var temporaryUser entities.User
 	json.NewDecoder(r.Body).Decode(&temporaryUser)
 
-	// get sesssion cookie
-	c, err := r.Cookie("session_token")
-	if err != nil {
-		if err == http.ErrNoCookie {
-			// If the cookie is not set, return an unauthorized status
+	userTime, dbUser := CheckSession(w, r)
+
+	if (userTime != time.Time{}) {
+		// update user to db
+		var user entities.User
+		database.Instance.Where("username = ?", temporaryUser.Username).First(&user)
+		json.NewDecoder(r.Body).Decode(&user)
+
+		// delete session if session is expired
+		if userTime.Before(CurrentTimeFormatted()) {
+			dbUser.Session_Token = ""
 			w.WriteHeader(http.StatusUnauthorized)
-			json.NewEncoder(w).Encode("cookie not set")
+			json.NewEncoder(w).Encode("session expired")
 			return
 		}
-		// For any other type of error, return a bad request status
-		w.WriteHeader(http.StatusBadRequest)
-		return
+
+		// session is valid, create new token
+		newSessionToken := uuid.New().String()
+		expiresAt := time.Now().Add(120 * time.Second)
+
+		// convert expiry to string so it can be scanned in db
+		user.Expiry = expiresAt.Format("2006-01-02 15:04:05.0000")
+		user.Session_Token = newSessionToken
+
+		// set client cookie
+		http.SetCookie(w, &http.Cookie{
+			Name:    "session_token",
+			Value:   newSessionToken,
+			Expires: expiresAt,
+		})
+
+		database.Instance.Save(&user)
+		w.Header().Set("Content-Type", "application/json")
+		json.NewEncoder(w).Encode(user)
+		w.WriteHeader(202)
 	}
-	sessionToken := c.Value
-
-	// check if this session token exists in database
-	exists, dbUser := ValidToken(sessionToken)
-	if !exists {
-		w.WriteHeader(http.StatusUnauthorized)
-		json.NewEncoder(w).Encode("token does not exist")
-		return
-	}
-
-	// check if session is expired
-	// convert db expiry entry (string) to a time.Time variable for comparison
-	userTime, err := time.Parse("2006-01-02 15:04:05.0000", dbUser.Expiry)
-	if err != nil {
-		panic(err)
-	}
-
-	// update user to db
-	var user entities.User
-	database.Instance.Where("username = ?", temporaryUser.Username).First(&user)
-	json.NewDecoder(r.Body).Decode(&user)
-
-	if userTime.Before(CurrentTimeFormatted()) {
-		// delete session if session is expired
-		dbUser.Session_Token = ""
-		w.WriteHeader(http.StatusUnauthorized)
-		json.NewEncoder(w).Encode("session expired")
-		return
-	}
-
-	// session is valid, create new token
-	newSessionToken := uuid.New().String()
-	expiresAt := time.Now().Add(120 * time.Second)
-
-	// convert expiry to string so it can be scanned in db
-	user.Expiry = expiresAt.Format("2006-01-02 15:04:05.0000")
-	user.Session_Token = newSessionToken
-
-	// set client cookie
-	http.SetCookie(w, &http.Cookie{
-		Name:    "session_token",
-		Value:   newSessionToken,
-		Expires: expiresAt,
-	})
-
-	database.Instance.Save(&user)
-	w.Header().Set("Content-Type", "application/json")
-	json.NewEncoder(w).Encode(user)
-	w.WriteHeader(202)
 }
 
 func Logout(w http.ResponseWriter, r *http.Request) {
@@ -309,38 +293,22 @@ func Logout(w http.ResponseWriter, r *http.Request) {
 	var user entities.User
 	json.NewDecoder(r.Body).Decode(&user)
 
-	// get sesssion cookie
-	c, err := r.Cookie("session_token")
-	if err != nil {
-		if err == http.ErrNoCookie {
-			// If the cookie is not set, return an unauthorized status
-			w.WriteHeader(http.StatusUnauthorized)
-			json.NewEncoder(w).Encode("cookie not set")
-			return
-		}
-		// For any other type of error, return a bad request status
-		w.WriteHeader(http.StatusBadRequest)
-		return
-	}
-	sessionToken := c.Value
-	// check token validity and return dbUser
-	exists, dbUser := ValidToken(sessionToken)
-	if !exists {
-		w.WriteHeader(http.StatusUnauthorized)
-		json.NewEncoder(w).Encode("invalid token")
-		return
-	}
-	// logout
-	dbUser.Session_Token = ""
-	// set client cookie
-	http.SetCookie(w, &http.Cookie{
-		Name:    "session_token",
-		Value:   "",
-		Expires: time.Now(),
-	})
+	userTime, dbUser := CheckSession(w, r)
 
-	w.WriteHeader(202)
-	json.NewEncoder(w).Encode("User Logged Out!")
+	// if there is no error in CheckSession
+	if (userTime != time.Time{}) {
+		// logout
+		dbUser.Session_Token = ""
+		// set client cookie
+		http.SetCookie(w, &http.Cookie{
+			Name:    "session_token",
+			Value:   "",
+			Expires: time.Now(),
+		})
+
+		w.WriteHeader(202)
+		json.NewEncoder(w).Encode("User Logged Out!")
+	}
 }
 
 // ** MATCHMAKING FUNCTIONS ** //
