@@ -1,5 +1,7 @@
 @host = localhost:5000
 
+// Reordering them so it kind follows a natural flow
+
 // Create User
 POST http://{{host}}/api/users HTTP/1.1
 content-type: application/json
@@ -9,12 +11,6 @@ content-type: application/json
     "password": "waffles",
     "name": "John"
 }
-
-###
-
-// Get User By ID
-GET http://{{host}}/api/users/3 HTTP/1.1
-content-type: application/json
 
 ###
 
@@ -54,16 +50,58 @@ content-type: application/json
 // Logout user
 POST http://{{host}}/api/logout HTTP/1.1
 content-type: application/json
-    
+
+###
+
+// Add a reservation
+POST http://localhost:5000/api/reservations HTTP/1.1
+content-type: application/json
+
 {
-    "username": "John3",
-    "password": "waffles"
+    "start_date": "2006-11-15",
+    "end_date": "2006-11-25",
+    "guest_name": "Adam Wujtulewski",
+    "guest_username": "Adam Wujtulewski",
+    "guest_email": "adamwuj@gmail.com",
+    "host_name": "John Doe",
+    "host_username": "JohnDoe",
+    "host_email": "johndoe@gmail.com",
+    "host_address": "London, UK",
+    "host_country": "United Kingdom",
+    "status": "pending"
 }
+
+###
+// Add a listing
+POST http://localhost:5000/api/listings HTTP/1.1
+content-type: application/json
+{
+    "start_date": "2006-01-01",
+    "end_date": "2006-01-03",
+    "host_name": "Jake Doe",
+    "host_username": "JakeDoe",
+    "host_email": "jakedoe@gmail.com",
+    "host_address": "London, UK",
+    "host_country": "United Kingdom",
+    "capacity": 4,
+    "status": "pending"
+}
+
+###
+
+// Get User By ID
+GET http://{{host}}/api/users/3 HTTP/1.1
+content-type: application/json
 
 ###
 
 // Get All User
 GET http://{{host}}/api/users/ HTTP/1.1
+content-type: application/json
+
+###
+// Get users living close to a desired location
+GET http://{{host}}/api/search?location=Oxford%2C+England&maxDistance=1000&unit=mi HTTP/1.1
 content-type: application/json
 
 ###
