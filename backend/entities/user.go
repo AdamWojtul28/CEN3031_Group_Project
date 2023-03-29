@@ -3,6 +3,7 @@ package entities
 type User struct {
 	ID                             uint   `json:"id"`
 	Username                       string `json:"username"`
+	Name                           string `json:"name"`
 	Password                       string `json:"password"`
 	Expiry                         string `json:"expiry"`
 	Session_Token                  string `json:"session_token"`
@@ -52,10 +53,9 @@ type UserForSearches struct {
 	Distance_from_target_km    float64 `json:"distance_from_target_km"`
 }
 
-type UserConnection struct {
-	ID     uint   `json:"id"`
-	User1  string `json:"user1"`
-	User2  string `json:"user2"`
-	Status string `json:"status"`
-	Sender string `json:"sender"`
+type Connection struct {
+	ID       uint   `json:"id"`
+	Reciever string `json:"reciever"`
+	Status   string `json:"status"`
+	Sender   string `json:"sender"`
 }

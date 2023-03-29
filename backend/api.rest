@@ -7,9 +7,9 @@ POST http://{{host}}/api/users HTTP/1.1
 content-type: application/json
     
 {
-    "username": "John3",
-    "password": "waffles",
-    "name": "John"
+    "username": "Bob",
+    "password": "dangWaffles",
+    "name": "BOBBY"
 }
 
 ###
@@ -36,6 +36,38 @@ content-type: application/json
 
 ###
 
+// Send Friend Request
+POST http://{{host}}/api/sendFriendRequest HTTP/1.1
+content-type: application/json
+
+{
+    "sender": "G",
+    "reciever": "YEEE"
+}
+
+###
+
+// Accept Friend Request
+POST http://{{host}}/api/acceptFriendRequest HTTP/1.1
+content-type: application/json
+
+{
+    "sender": "GOD",
+    "reciever": "MALE"
+}
+
+###
+
+// Remove Friend 
+POST http://{{host}}/api/removeFriend HTTP/1.1
+content-type: application/json
+
+{
+    "sender": "ALPHA",
+    "reciever": "MALE"
+}
+
+###
 // Refresh the page for logged in user
 http://{{host}}/api/refresh HTTP/1.1
 content-type: application/json
@@ -90,12 +122,12 @@ content-type: application/json
 ###
 
 // Get User By ID
-GET http://{{host}}/api/users/3 HTTP/1.1
+GET http://{{host}}/api/users/5 HTTP/1.1
 content-type: application/json
 
 ###
 
-// Get All User
+// Get All User OR search for a user (?username= exampleName)
 GET http://{{host}}/api/users/ HTTP/1.1
 content-type: application/json
 
