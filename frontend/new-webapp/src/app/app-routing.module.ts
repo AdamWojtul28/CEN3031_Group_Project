@@ -9,10 +9,10 @@ import { ProfileComponent } from './pages/profile/profile.component';
 import { SignupComponent } from './pages/signup/signup.component';
 
 const routes: Routes = [
-  {path: '', component:HomeComponent},
-  {path:'booking',component:BookingComponent},
-  {path:'about',component:AboutComponent},
-  {path:'login',component:LoginComponent},
+  {path:'', component:HomeComponent},
+  {path:'booking', component:BookingComponent},
+  {path:'about', component:AboutComponent},
+  {path:'login', component:LoginComponent},
   {path:'signup', component:SignupComponent},
   {path:'users/:username', component:ProfileComponent},
   {path:'admin', component: AdminComponent}

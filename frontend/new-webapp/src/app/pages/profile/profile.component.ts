@@ -1,6 +1,5 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-import { Subject, Subscription } from 'rxjs';
 import { User } from 'src/app/models/user.model';
 import { UsersHttpService } from 'src/app/services/users-http.service';
 
@@ -20,6 +19,10 @@ export class ProfileComponent implements OnInit{
     })
 
     this.userLoggedIn = this.usersService.userSnapshot;
+  }
+
+  onLogout() {
+    this.usersService.logoutUser();
   }
 
 }
