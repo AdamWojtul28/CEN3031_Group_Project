@@ -121,17 +121,17 @@ func CreateUser(w http.ResponseWriter, r *http.Request) {
 }
 
 // ** CREATE LISTING ** //
-func CreateListing(w http.ResponseWriter, r *http.Request) {
-	w.Header().Set("Content-Type", "application/json")
-	var listing entities.Listing
-	json.NewDecoder(r.Body).Decode(&listing)
+// func CreateListing(w http.ResponseWriter, r *http.Request) {
+// 	w.Header().Set("Content-Type", "application/json")
+// 	var listing entities.Listing
+// 	json.NewDecoder(r.Body).Decode(&listing)
 
-	// send information to the database (success)
-	database.Instance.Create(&listing)
-	w.WriteHeader(202)
-	// Code for 'Accepted' when unique username
-	json.NewEncoder(w).Encode(listing)
-}
+// 	// send information to the database (success)
+// 	database.Instance.Create(&listing)
+// 	w.WriteHeader(202)
+// 	// Code for 'Accepted' when unique username
+// 	json.NewEncoder(w).Encode(listing)
+// }
 
 // ** CREATE RESERVATION ** //
 func CreateReservation(w http.ResponseWriter, r *http.Request) {
@@ -165,6 +165,18 @@ where not exists (select *
 				  from lectures
 				  where pers-id = held_by);
 */
+
+func SendFriendRequest(w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("Content-Type", "application/json")
+	var sender entities.User
+	var connection entities.UserConnection
+	json.NewDecoder(r.Body).Decode(&sender)
+	senderName := sender.Username
+	connection.Sender = senderName
+	connection.Status = "Pending"
+	// need to get recievers username here...
+
+}
 
 // ** CHECK FUNCTIONS ** //
 func CheckIfUserIdExists(userId string) bool {

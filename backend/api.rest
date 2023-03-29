@@ -13,7 +13,7 @@ content-type: application/json
 ###
 
 // Get User By ID
-GET http://{{host}}/api/users/3 HTTP/1.1
+GET http://{{host}}/api/users/58 HTTP/1.1
 content-type: application/json
 
 ###
