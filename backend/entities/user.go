@@ -29,24 +29,15 @@ type Listing struct {
 	HostUsername string `json:"host_username"`
 	HostEmail    string `json:"host_email"`
 	HostAddress  string `json:"host_address"`
-	HostCountry  string `json:"host_country"`
-	Capacity     uint   `json:"capacity"`
-	Status       string `json:"status"`
-}
-
-type Reservation struct {
-	ID            uint   `json:"id"`
-	StartDate     string `json:"start_date"`
-	EndDate       string `json:"end_date"`
-	GuestName     string `json:"guest_name"`
-	GuestUsername string `json:"guest_username"`
-	GuestEmail    string `json:"guest_email"`
-	HostName      string `json:"host_name"`
-	HostUsername  string `json:"host_username"`
-	HostEmail     string `json:"host_email"`
-	HostAddress   string `json:"host_address"`
-	HostCountry   string `json:"host_country"`
-	Status        string `json:"status"`
+	// I included all of the user data because I feel like that would be super inefficient to not have them
+	// readily available for front end to access; they wanted all listings, so let's just provide them to frontend
+	GuestUsername1 string `json:"guest_username_1"`
+	GuestUsername2 string `json:"guest_username_2"`
+	GuestUsername3 string `json:"guest_username_3"`
+	GuestUsername4 string `json:"guest_username_4"`
+	// user info can be accessed later
+	Capacity uint   `json:"capacity"`
+	Status   string `json:"status"`
 }
 
 type UserForSearches struct {

@@ -16,7 +16,8 @@ export class SignupComponent {
     username: '',
     password: '',
     email: '',
-    bio: ''
+    bio: '',
+    id: '',
   }
   errorMessage="";
 
@@ -39,10 +40,14 @@ export class SignupComponent {
   onSubmitCreateUser(){
     this.userHttp.createNewUser(this.loginForm.value.username, this.loginForm.value.password, this.loginForm.value.email)
       .subscribe({
-        next: () => {
+        next: (res) => {
+          // -------------------------
+          console.log(res);
           this.router.navigate(['users', this.loginForm.value.username]);
         },
         error: (err) => {
+          // -------------------------
+          console.log(err);
           this.errorMessage = err.error;
         }
       });
