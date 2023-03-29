@@ -2,7 +2,6 @@ import { Component, ViewChild } from '@angular/core';
 import { NgForm }  from '@angular/forms';
 import { Router } from '@angular/router';
 
-import { User } from 'src/app/models/user.model';
 import { UsersHttpService } from 'src/app/services/users-http.service';
 
 @Component({
@@ -12,13 +11,6 @@ import { UsersHttpService } from 'src/app/services/users-http.service';
 })
 export class SignupComponent {
   @ViewChild('f') loginForm!: NgForm;
-  userInfo: User = {
-    username: '',
-    password: '',
-    email: '',
-    bio: '',
-    id: '',
-  }
   errorMessage="";
 
   type: string = "password";

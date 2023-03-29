@@ -256,7 +256,7 @@ func UserLoginAttempt(w http.ResponseWriter, r *http.Request) {
 
 	w.WriteHeader(202)
 	// Code for 'Accepted'
-	json.NewEncoder(w).Encode("Proceed to page!")
+	//json.NewEncoder(w).Encode("Proceed to page")
 	// Checks if username and password check out, from here, proceed to profile page
 }
 
