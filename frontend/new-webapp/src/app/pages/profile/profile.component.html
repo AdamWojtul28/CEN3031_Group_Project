@@ -1,7 +1,11 @@
-<div class="row justify-content-xs-center">
-  <div class="col-xs-8">
-    <h2>User Profile</h2>
-    <p data-cy="username">Username: {{ username }}</p>
-    <p>Password: </p>
+<div class="container">
+  <div class="row">
+    <div class="col-sm-8 mx-auto">
+      <h2>User Profile</h2>
+      <p data-cy="username">Username: {{ userLoggedIn.username }}</p>
+      <p>Password: {{ userLoggedIn.password }} </p>
+      <p>Email: {{ userLoggedIn.email }} </p>
+      <p>Biography: {{ userLoggedIn.bio }} </p>
+    </div>
   </div>
 </div>
