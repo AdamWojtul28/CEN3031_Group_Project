@@ -122,37 +122,14 @@ func CreateUser(w http.ResponseWriter, r *http.Request) {
 }
 
 // ** CREATE LISTING ** //
-<<<<<<< HEAD
-// func CreateListing(w http.ResponseWriter, r *http.Request) {
-// 	w.Header().Set("Content-Type", "application/json")
-// 	var listing entities.Listing
-// 	json.NewDecoder(r.Body).Decode(&listing)
-
-// 	// send information to the database (success)
-// 	database.Instance.Create(&listing)
-// 	w.WriteHeader(202)
-// 	// Code for 'Accepted' when unique username
-// 	json.NewEncoder(w).Encode(listing)
-// }
-
-// ** CREATE RESERVATION ** //
-func CreateReservation(w http.ResponseWriter, r *http.Request) {
-	w.Header().Set("Content-Type", "application/json")
-	var reservation entities.Reservation
-	var overLappingReservations []entities.Reservation
-	json.NewDecoder(r.Body).Decode(&reservation)
-	database.Instance.Where("host_username = ? AND ((start_date BETWEEN ? AND ?) OR (end_date BETWEEN ? AND ?))", reservation.HostUsername, reservation.StartDate, reservation.EndDate, reservation.StartDate, reservation.EndDate).Find(&overLappingReservations)
-	if len(overLappingReservations) > 0 {
-=======
 func CreateListing(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
 	var listing entities.Listing
 	var overlappingListing []entities.Listing
 	json.NewDecoder(r.Body).Decode(&listing)
-	database.Instance.Where("host_username = ? AND ((start_date BETWEEN ? AND ?) OR (end_date BETWEEN ? AND ?))", listing.HostUsername, listing.StartDate, listing.EndDate, listing.StartDate, listing.EndDate).Find(&overlappingListing)
+	database.Instance.Where("host_username = ? AND ((start_date BETWEEN ? AND ?) OR (end_date BETWEE N ? AND ?))", listing.HostUsername, listing.StartDate, listing.EndDate, listing.StartDate, listing.EndDate).Find(&overlappingListing)
 	// ensures that a host does not create a listing for a time frame where they already have a listing posted
 	if len(overlappingListing) > 0 {
->>>>>>> 6af577fa0a3ed6586961fa43e18403145a0b593d
 		w.WriteHeader(400)
 		json.NewEncoder(w).Encode("Conflict with another reservation!")
 	} else {
@@ -164,7 +141,6 @@ func CreateListing(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
-<<<<<<< HEAD
 /*
 select dr1.* from date_ranges dr1
 inner join date_ranges dr2
@@ -180,19 +156,19 @@ where not exists (select *
 */
 
 func SendFriendRequest(w http.ResponseWriter, r *http.Request) {
+	var connection entities.Connection
+	sender := r.URL.Query().Get("sender")
+	reciever := r.URL.Query().Get("reciever")
 	w.Header().Set("Content-Type", "application/json")
-	var sender entities.User
-	var connection entities.UserConnection
-	json.NewDecoder(r.Body).Decode(&sender)
-	senderName := sender.Username
-	connection.Sender = senderName
+	connection.Sender = sender
+	connection.Reciever = reciever
 	connection.Status = "Pending"
-	// need to get recievers username here...
 
+	database.Instance.Create(&connection)
+	w.WriteHeader(202)
+	json.NewEncoder(w).Encode(connection)
 }
 
-=======
->>>>>>> 6af577fa0a3ed6586961fa43e18403145a0b593d
 // ** CHECK FUNCTIONS ** //
 func CheckIfUserIdExists(userId string) bool {
 	var user entities.User
@@ -511,11 +487,21 @@ func GetUserById(w http.ResponseWriter, r *http.Request) {
 }
 
 func GetUsers(w http.ResponseWriter, r *http.Request) {
-	var users []entities.User
-	database.Instance.Find(&users)
-	w.Header().Set("Content-Type", "application/json")
-	w.WriteHeader(http.StatusOK)
-	json.NewEncoder(w).Encode(users)
+	username := r.URL.Query().Get("username")
+	//fmt.Println("username:", username)
+	if username != "" {
+		var user entities.User
+		database.Instance.Where("username = ?", username).Find(&user)
+		w.Header().Set("Content-Type", "application/json")
+		w.WriteHeader(http.StatusOK)
+		json.NewEncoder(w).Encode(user)
+	} else {
+		var users []entities.User
+		database.Instance.Find(&users)
+		w.Header().Set("Content-Type", "application/json")
+		w.WriteHeader(http.StatusOK)
+		json.NewEncoder(w).Encode(users)
+	}
 }
 
 // ** UPDATE FUNCTION ** //

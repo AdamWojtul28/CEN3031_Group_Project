@@ -53,7 +53,7 @@ type UserForSearches struct {
 	Distance_from_target_km    float64 `json:"distance_from_target_km"`
 }
 
-type UserConnection struct {
+type Connection struct {
 	ID       uint   `json:"id"`
 	Reciever string `json:"reciever"`
 	Status   string `json:"status"`

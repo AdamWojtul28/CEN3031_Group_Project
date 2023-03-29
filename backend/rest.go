@@ -18,18 +18,12 @@ func httpHandler() http.Handler {
 
 	// ** Get Routes ** //
 	router.HandleFunc("/api/users", GetUsers).Methods("GET")
-	router.HandleFunc("/api/users", GetUsers).Methods("GET")
 	router.HandleFunc("/api/users/{id}", GetUserById).Methods("GET")
-	router.HandleFunc("/api/users/username/{username}", GetUserByName).Methods("GET")
+	router.HandleFunc("/api/findUserByUsername", FindUserByUsername).Methods("GET")
 
 	// ** Post Routes ** //
 	router.HandleFunc("/api/users", CreateUser).Methods("POST")
-<<<<<<< HEAD
-	//router.HandleFunc("/api/listings", CreateListing).Methods("POST")
-	router.HandleFunc("/api/reservations", CreateReservation).Methods("POST")
-=======
 	router.HandleFunc("/api/listings", CreateListing).Methods("POST")
->>>>>>> 6af577fa0a3ed6586961fa43e18403145a0b593d
 
 	// ** Put Routes ** //
 	router.HandleFunc("/api/users/{id}", UpdateUser).Methods("PUT")
@@ -43,6 +37,7 @@ func httpHandler() http.Handler {
 	router.HandleFunc("/api/refresh", Refresh)
 	router.HandleFunc("/api/logout", Logout)
 	router.HandleFunc("/api/search", FindUsersWithSearch)
+	router.HandleFunc("/api/sendFriendRequest", SendFriendRequest)
 	// Add your routes here.
 
 	// WARNING: this route must be the last route defined.

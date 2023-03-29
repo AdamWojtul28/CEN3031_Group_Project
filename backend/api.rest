@@ -7,16 +7,10 @@ POST http://{{host}}/api/users HTTP/1.1
 content-type: application/json
     
 {
-    "username": "John3",
-    "password": "waffles",
-    "name": "John"
+    "username": "Bob",
+    "password": "dangWaffles",
+    "name": "BOBBY"
 }
-
-###
-
-// Get User By ID
-GET http://{{host}}/api/users/58 HTTP/1.1
-content-type: application/json
 
 ###
 
@@ -39,6 +33,12 @@ content-type: application/json
     "username": "John3",
     "password": "waffles"
 }
+
+###
+
+// Send Friend Request
+POST http://{{host}}/api/sendFriendRequest?sender=John3&reciever=Bob HTTP/1.1
+content-type: application/json
 
 ###
 
@@ -96,8 +96,13 @@ content-type: application/json
 ###
 
 // Get User By ID
-GET http://{{host}}/api/users/3 HTTP/1.1
+GET http://{{host}}/api/users/5 HTTP/1.1
 content-type: application/json
+
+###
+
+// Find User By Username
+GET http://{{host}}/api/users/findUserByUsername?username=John3 HTTP/1.1
 
 ###
 
