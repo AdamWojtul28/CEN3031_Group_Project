@@ -213,6 +213,21 @@ pm.test("delete user by ID failed, user does not exist", function () {
   The above API call requires the input of a user's username and password for the purposes of logging into the page; this route relies on the UserLoginAttempt(w http.ResponseWriter, r \*http.Request) function to achieve this purpose. The way that the UserLoginAttempt function operates is that it first establishes the content type of the input as a json and creates a User structure, which is stored in the entities/user.go file. Once the following two operations are completed, the body of the http request is decoded and stored in the newly created user struct. Once this is completed, the CheckIfExactUserExists(userName string) function is called, a variation of the CheckIfUserNameExists which checks if a username and password combination exists in the database, using the GORM .Where function with 2 parameters. If the username does not exist in the database, a 404 (Not found) HTTP response status code is sent, along with a message "No such username exists!". If the username does exists in the database, but the provided password does not match up with the value stored in the DB, a 401 (Unauthorized) HTTP response status code is sent, along with a message "Incorrect password!". If the username password combination is correct, a 202 (Accepted) HTTP response status code is sent and the message "Proceed to page!" is sent.
   -Sprint 3: The user sign in now also creates a user cookie and database token using UUID, this is used to verify and authenticate user sessions. This user is now also assigned an expiry date for the token (currently 2 minutes). If the token is expired the user cannot use it to log in. These tokens will be changed and expiry renewed after every page refresh or moving to a new page. 
 
+#### User Welcome Page:
+
+- POST http://localhost:5000/api/welcome
+  This API call will be used to bring the user to the welcome/homepage of the website. The user must be logged in to access this site. As long as the user has a valid token that matches the database token, a code 200 is sent and a welcome message to the user.
+
+#### Refresh Page:
+
+- POST http://localhost:5000/api/refresh
+  This API call will be used to bring the user to refresh the user's cookie and the database token (making a new one entirely and distributing it) while also restarting the two minute expiry timer. This route should be called whenever the token should be renewed.
+ 
+#### Logout Route:
+
+- POST http://localhost:5000/api/logout
+  This API call will be used to bring the user to logout the user from their current session. This means that the users cookie and the token in the database will be removed and the expiry time will be changed to the current time.
+  
 #### Get Single User:
 
 GET http://localhost:5000/api/users/{id}
