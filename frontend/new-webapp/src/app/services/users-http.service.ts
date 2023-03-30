@@ -73,4 +73,14 @@ export class UsersHttpService {
           })
         )
   }
+
+  fetchUserByUsername(username : string) {
+    let searchURL = 'http://localhost:5000/api/users'
+    searchURL += '?username=' + encodeURIComponent(username);
+    return this.http.get<User>(searchURL);
+  }
+
+  updateUserInfo() {
+    
+  }
 }

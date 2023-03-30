@@ -1,7 +1,7 @@
 <div class="outer">
   <div class="container">
     <div class="row">
-      <div class="offset-md-2 col-lg-5 col-md-7 offset-lg-4 offset-md-3">
+      <div class="col-lg-7 col-md-9 mx-auto">
         <div class="panel border">
           <div class="panel-heading">
             <h3 class="pt-3 font-weight-bold">User Profile</h3>
@@ -15,10 +15,9 @@
                     ngModel
                     required
                     type="text"
-                    placeholder="Username"
                     name="username"
-                    [(ngModel)]="user.username"
-                    data-cy="username">
+                    data-cy="username"
+                    [placeholder]="userViewed.username">
                 </div>
               </div>
               <div class="form group pt-3">
@@ -28,23 +27,22 @@
                     ngModel
                     required
                     [type]="type"
-                    placeholder="Password"
+                    placeholder="******"
                     name="password"
-                    [(ngModel)]="user.password"
                     data-cy="password">
                   <span (click)="hideShowPass()" class="fa" [ngClass]="eyeIcon"></span>
                 </div>
               </div>
               <div class="form group pt-3">
                 <div class="input-field">
-                  <span class="fa fa-envelope p-2"></span>
+                  <span class="fa fa-envelope py-2 px-1"></span>
                   <input
                     ngModel
                     required
-                    type="email"
-                    placeholder="Email"
+                    type="text"
+                    email
+                    [placeholder]="userViewed.email"
                     name="email"
-                    [(ngModel)]="user.email"
                     data-cy="email">
                 </div>
               </div>
@@ -55,13 +53,12 @@
                     ngModel
                     required
                     type="text"
-                    placeholder="Biography"
+                    [placeholder]="userViewed.bio ? userViewed.bio : ''"
                     name="biography"
-                    [(ngModel)]="user.biography"
                     data-cy="biography">
                 </div>
               </div>
-              <button type="submit" class="btn btn-primary btn-block mt-4 w-100" [disabled]="!f.valid" data-cy="save-btn">Save Changes</button>
+              <button type="submit" class="btn btn-primary btn-block mt-4 w-100" [disabled]="!f.dirty" data-cy="save-btn">Save Changes</button>
             </form>
           </div>
         </div>
