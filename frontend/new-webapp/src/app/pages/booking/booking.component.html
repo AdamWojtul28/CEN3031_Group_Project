@@ -6,6 +6,7 @@
           <div class="form-group mb-2">
             <label for="city">City, Country</label>
             <input
+              data-cy="location-input"
               type="text"
               id="city"
               name="city"
@@ -16,6 +17,7 @@
           <div class="form-group mb-2">
             <label for="distance">Max Distance</label>
             <input
+              data-cy="distance-input"
               type="number"
               id="distance"
               name="distance"
@@ -26,6 +28,7 @@
           <div class="form-group mb-2">
             <label for="unit">Unit</label>
             <select
+              data-cy="unit-input"
               id="unit"
               name="unit"
               class="form-control"
@@ -35,7 +38,7 @@
               <option value="km">Kilometers</option>
             </select>
           </div>
-          <button class="btn btn-primary mt-2" type="submit" [disabled]="!f.valid">Search</button>
+          <button data-cy="search-btn" class="btn btn-primary mt-2" type="submit" [disabled]="!f.valid">Search</button>
         </form>
       </div>
     </div>
