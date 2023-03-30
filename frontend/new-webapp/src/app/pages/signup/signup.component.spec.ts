@@ -57,4 +57,9 @@ describe('SignupComponent', () => {
   
     expect(button.disabled).toBeTruthy();
   });
+
+  it('should have an email input field', () => {
+    const emailInput = fixture.debugElement.query(By.css('[data-cy=email]'));
+    expect(emailInput).toBeTruthy();
+  });
 });
