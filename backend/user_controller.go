@@ -156,17 +156,57 @@ where not exists (select *
 */
 
 func SendFriendRequest(w http.ResponseWriter, r *http.Request) {
-	var connection entities.Connection
-	sender := r.URL.Query().Get("sender")
-	reciever := r.URL.Query().Get("reciever")
 	w.Header().Set("Content-Type", "application/json")
-	connection.Sender = sender
-	connection.Reciever = reciever
+	var connection entities.Connection
+	json.NewDecoder(r.Body).Decode(&connection)
+	// check if either combination of connection exists
+	res1, _ := CheckIfConnectionExists(connection.Sender, connection.Reciever)
+	res2, _ := CheckIfConnectionExists(connection.Reciever, connection.Sender)
+	if res1 || res2 {
+		w.WriteHeader(409)
+		json.NewEncoder(w).Encode("Connection already exists")
+		return
+	}
 	connection.Status = "Pending"
-
 	database.Instance.Create(&connection)
 	w.WriteHeader(202)
 	json.NewEncoder(w).Encode(connection)
+}
+
+func AcceptFriendRequest(w http.ResponseWriter, r *http.Request) {
+	var tmpConnection entities.Connection
+	json.NewDecoder(r.Body).Decode(&tmpConnection)
+	result, dbConnection := CheckIfConnectionExists(tmpConnection.Sender, tmpConnection.Reciever)
+	if !(result) {
+		w.WriteHeader(http.StatusNotFound)
+		json.NewEncoder(w).Encode("Connection not found")
+		return
+	} else {
+		dbConnection.Status = "Accepted"
+		database.Instance.Save(&dbConnection)
+		w.Header().Set("Content-Type", "application/json")
+		w.WriteHeader(202)
+		json.NewEncoder(w).Encode(dbConnection)
+	}
+}
+
+func RemoveFriend(w http.ResponseWriter, r *http.Request) {
+	var tmpConnection entities.Connection
+	var dbConnection entities.Connection
+	json.NewDecoder(r.Body).Decode(&tmpConnection)
+	res1, dbConnection1 := CheckIfConnectionExists(tmpConnection.Sender, tmpConnection.Reciever)
+	res2, dbConnection2 := CheckIfConnectionExists(tmpConnection.Reciever, tmpConnection.Sender)
+	if !(res1 || res2) {
+		w.WriteHeader(http.StatusNotFound)
+		json.NewEncoder(w).Encode("Connection not found")
+		return
+	} else if res1 {
+		dbConnection = dbConnection1
+	} else if res2 {
+		dbConnection = dbConnection2
+	}
+	database.Instance.Delete(&dbConnection)
+	json.NewEncoder(w).Encode("Connection deleted successfully")
 }
 
 // ** CHECK FUNCTIONS ** //
@@ -211,6 +251,18 @@ func ValidToken(token string) (bool, entities.User) {
 		return true, user
 	}
 	return false, user
+}
+
+func CheckIfConnectionExists(sender string, reciever string) (bool, entities.Connection) {
+	var connection entities.Connection
+	result := database.Instance.Where("sender = ? AND reciever = ?", sender, reciever).First(&connection)
+	err := result.Scan(&connection)
+	if err != nil {
+		if connection.Sender == sender && connection.Reciever == reciever {
+			return true, connection
+		}
+	}
+	return false, connection
 }
 
 // ** AUTHENTICATION/QUERY FUNCTIONS ** //
@@ -460,19 +512,6 @@ func TestEscapeURLValues(w http.ResponseWriter, r *http.Request) {
 }
 
 // ** GET FUNCTIONS ** //
-func GetUserByName(w http.ResponseWriter, r *http.Request) {
-	userName := mux.Vars(r)["username"]
-	if !CheckIfUserNameExists(userName) {
-		w.WriteHeader(http.StatusNotFound)
-		json.NewEncoder(w).Encode("User Not Found! (NAME)")
-		return
-	}
-	var user entities.User
-	database.Instance.First(&user, userName)
-	w.Header().Set("Content-Type", "application/json")
-	json.NewEncoder(w).Encode(user)
-}
-
 func GetUserById(w http.ResponseWriter, r *http.Request) {
 	userId := mux.Vars(r)["id"]
 	if !CheckIfUserIdExists(userId) {
@@ -486,6 +525,7 @@ func GetUserById(w http.ResponseWriter, r *http.Request) {
 	json.NewEncoder(w).Encode(user)
 }
 
+// either get all users, or search for a username (using ?username=example username)
 func GetUsers(w http.ResponseWriter, r *http.Request) {
 	username := r.URL.Query().Get("username")
 	//fmt.Println("username:", username)

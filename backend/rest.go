@@ -31,13 +31,19 @@ func httpHandler() http.Handler {
 	router.HandleFunc("/api/users/{id}", DeleteUser).Methods("DELETE")
 
 	// ** Normal Routes ** //
+	// Pages/Authentication
 	router.HandleFunc("/api/welcome", Welcome)
 	router.HandleFunc("/api/signin", UserLoginAttempt)
 	router.HandleFunc("/api/refresh", Refresh)
 	router.HandleFunc("/api/logout", Logout)
+
+	//Searches
 	router.HandleFunc("/api/search", FindUsersWithSearch)
+
+	// Friend Request routes
 	router.HandleFunc("/api/sendFriendRequest", SendFriendRequest)
-	// Add your routes here.
+	router.HandleFunc("/api/acceptFriendRequest", AcceptFriendRequest)
+	router.HandleFunc("/api/removeFriend", RemoveFriend)
 
 	// WARNING: this route must be the last route defined.
 	router.PathPrefix("/").Handler(AngularHandler).Methods("GET")
