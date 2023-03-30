@@ -52,8 +52,9 @@ export class UsersHttpService {
   }
 
   logoutUser() {
+    console.log('logigin out')
     this.user.next(null);
-    this.router.navigate(['/home']);
+    this.router.navigate(['']);
   }
 
   deleteUser(userId: string) {
@@ -81,6 +82,6 @@ export class UsersHttpService {
   }
 
   updateUserInfo() {
-    
+
   }
 }

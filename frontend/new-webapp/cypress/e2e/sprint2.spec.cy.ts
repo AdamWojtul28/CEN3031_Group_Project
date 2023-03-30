@@ -21,8 +21,8 @@ describe('Create User / Login Test', () => {
     cy.get("[data-cy='password']").type('pass123')
     cy.get("[data-cy='login-btn']").click()
     cy.url().should('include', '/users/user123')
-    cy.get("[data-cy='username']").should(($p) => {
-      expect($p).to.have.text('Username: user123')
+    cy.get("[data-cy='username-h3']").should(($h3) => {
+      expect($h3).to.have.text('user123\'s Profile')
     })
   })
 })
