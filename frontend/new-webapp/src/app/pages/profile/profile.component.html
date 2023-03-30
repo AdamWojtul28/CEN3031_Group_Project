@@ -1,11 +1,71 @@
-<div class="container">
-  <div class="row">
-    <div class="col-sm-8 mx-auto">
-      <h2>User Profile</h2>
-      <p data-cy="username">Username: {{ userLoggedIn.username }}</p>
-      <p>Password: {{ userLoggedIn.password }} </p>
-      <p>Email: {{ userLoggedIn.email }} </p>
-      <p>Biography: {{ userLoggedIn.bio }} </p>
+<div class="outer">
+  <div class="container">
+    <div class="row">
+      <div class="offset-md-2 col-lg-5 col-md-7 offset-lg-4 offset-md-3">
+        <div class="panel border">
+          <div class="panel-heading">
+            <h3 class="pt-3 font-weight-bold">User Profile</h3>
+          </div>
+          <div class="panel-body p-3">
+            <form (ngSubmit)="onSaveChanges()" #f="ngForm">
+              <div class="form group pt-3">
+                <div class="input-field">
+                  <span class="fa fa-user p-2"></span>
+                  <input
+                    ngModel
+                    required
+                    type="text"
+                    placeholder="Username"
+                    name="username"
+                    [(ngModel)]="user.username"
+                    data-cy="username">
+                </div>
+              </div>
+              <div class="form group pt-3">
+                <div class="input-field">
+                  <span class="fa fa-lock p-2"></span>
+                  <input
+                    ngModel
+                    required
+                    [type]="type"
+                    placeholder="Password"
+                    name="password"
+                    [(ngModel)]="user.password"
+                    data-cy="password">
+                  <span (click)="hideShowPass()" class="fa" [ngClass]="eyeIcon"></span>
+                </div>
+              </div>
+              <div class="form group pt-3">
+                <div class="input-field">
+                  <span class="fa fa-envelope p-2"></span>
+                  <input
+                    ngModel
+                    required
+                    type="email"
+                    placeholder="Email"
+                    name="email"
+                    [(ngModel)]="user.email"
+                    data-cy="email">
+                </div>
+              </div>
+              <div class="form group pt-3">
+                <div class="input-field">
+                  <span class="fa fa-info p-2"></span>
+                  <input
+                    ngModel
+                    required
+                    type="text"
+                    placeholder="Biography"
+                    name="biography"
+                    [(ngModel)]="user.biography"
+                    data-cy="biography">
+                </div>
+              </div>
+              <button type="submit" class="btn btn-primary btn-block mt-4 w-100" [disabled]="!f.valid" data-cy="save-btn">Save Changes</button>
+            </form>
+          </div>
+        </div>
+      </div>
     </div>
   </div>
 </div>

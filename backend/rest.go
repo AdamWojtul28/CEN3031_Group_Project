@@ -19,7 +19,6 @@ func httpHandler() http.Handler {
 	// ** Get Routes ** //
 	router.HandleFunc("/api/users", GetUsers).Methods("GET")
 	router.HandleFunc("/api/users/{id}", GetUserById).Methods("GET")
-	router.HandleFunc("/api/findUserByUsername", FindUserByUsername).Methods("GET")
 
 	// ** Post Routes ** //
 	router.HandleFunc("/api/users", CreateUser).Methods("POST")
