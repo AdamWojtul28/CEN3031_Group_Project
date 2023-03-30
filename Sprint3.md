@@ -202,6 +202,174 @@ pm.test("delete user by ID failed, user does not exist", function () {
 });
 ```
 
+### Sprint 3 Tests
+
+ - GET - Get User By Username (Query)
+ - Endpoint: http://localhost:5000/api/users?username=FredSmith
+ - Test ensures that the incoming response returns a 200 response when a valid username is searched for in the database
+```
+pm.test("successfully retreive user by username", function () {
+     pm.response.to.be.ok;
+});
+```
+
+- GET - Fail Get User By Username (Query)
+ - Endpoint: http://localhost:5000/api/users?username=PeytonManning
+ - Test ensures that the incoming response returns a 204 (No Content), when username is not in the database
+```
+pm.test("retreive user by username failed, user does not exist", function () {
+     pm.response.to.have.status(204);
+});
+```
+
+- POST - Send Friend Request - Successful
+ - Endpoint: http://localhost:5000/api/sendFriendRequest
+ - Test ensures that the incoming response returns a 202 (Accepted), when no existing friendship exists and no prior friend request was sent
+```
+pm.test("must have body and send 202 (Accepted) Response when unique username", function () {
+     pm.response.to.be.withBody;
+     pm.response.to.have.status(202);
+});
+```
+
+- POST - Send Friend Request - Successful
+ - Endpoint: http://localhost:5000/api/sendFriendRequest
+ - Test ensures that the incoming response returns a 409 (Conflict response)
+```
+pm.test("must send 'Connection already exists' and code 409", function () {
+     pm.response.to.have.status(409);
+});
+```
+
+- POST - Accept Friend Request - Successful
+ - Endpoint: http://localhost:5000/api/acceptFriendRequest
+ - Test ensures that the incoming response returns a 202 (Accepted) response when status turns from pending to accepted (for valid connection)
+```
+pm.test("must have body and send 202 (Accepted) Response when unique username", function () {
+     pm.response.to.be.withBody;
+     pm.response.to.have.status(202);
+});
+```
+
+- POST - Accept Friend Request - Unsuccessful
+ - Endpoint: http://localhost:5000/api/acceptFriendRequest
+ - Test ensures that the incoming response returns a 404 for an invalid connection
+```
+pm.test("must send code 404", function () {
+     pm.response.to.have.status(404);
+});
+```
+
+- POST - Remove Friend - Successful
+ - Endpoint: http://localhost:5000/api/removeFriend
+ - Test ensures that the incoming response returns a 200 response for when a user exists and is removed
+```
+pm.test("must send code 200", function () {
+     pm.response.to.have.status(200);
+});
+```
+
+- POST - Remove Friend - Unsuccessful
+ - Endpoint: http://localhost:5000/api/removeFriend
+ - Test ensures that the incoming response returns a 404 response for when a user does not exist
+```
+pm.test("must send code 404", function () {
+     pm.response.to.have.status(404);
+});
+```
+
+- GET - Search - Users Near Oxford, England
+ - Endpoint: http://localhost:5000/api/search?location=Oxford%2C%20England&maxDistance=1000&unit=mi
+ - Test ensures that the incoming response returns a 200 response for when users exist near desired location, testUser1 comes first then Jack Daniels
+```
+pm.test("users near desired destination exist", function () {
+     pm.response.to.be.ok;
+});
+```
+
+- GET - Search - Users Near Krakow, Poland
+ - Endpoint: http://localhost:5000/api/search?location=Krakow%2C%20Poland&maxDistance=1500&unit=mi
+ - Test ensures that the incoming response returns a 200 response for when users exist near desired location; here Jack Daneils comes first then testUser1
+```
+pm.test("users near desired destination exist", function () {
+     pm.response.to.be.ok;
+});
+```
+
+- GET - Search - Users Near Krakow, Poland
+ - Endpoint: http://localhost:5000/api/search?location=Krakow%2C%20Poland&maxDistance=1500&unit=mi
+ - Test ensures that the incoming response returns a 200 response for when users exist near desired location; here Jack Daneils comes first then testUser1
+```
+pm.test("users near desired destination exist", function () {
+     pm.response.to.be.ok;
+});
+```
+
+
+- GET - Search - No Users Near Auckland, New Zealand
+ - Endpoint: http://localhost:5000/api/search?location=Auckland%2C%20New%20Zealand&maxDistance=300&unit=km
+ - Test ensures that the incoming response returns a 204 response for when no users exist near desired location, yet valid URL
+```
+pm.test("no users near desired destination exist", function () {
+     pm.response.to.have.status(204);
+});
+```
+
+- POST - Welcome page - Successful
+ - Endpoint: http://localhost:5000/api/welcome
+ - 
+```
+pm.test("must have body and send 200", function () {
+     pm.response.to.be.withBody;
+     pm.response.to.have.status(200);
+});
+```
+
+- POST - Welcome page - Unsuccessful
+ - Endpoint: http://localhost:5000/api/welcome
+ - 
+```
+pm.test("must send unauthorized response", function () {
+     pm.response.to.have.status(401);
+});
+```
+
+- POST - Refresh Page - Successful
+ - Endpoint: http://localhost:5000/api/refresh
+ - 
+```
+pm.test("must have body and send 200 Response", function () {
+     pm.response.to.be.withBody;
+     pm.response.to.have.status(200);
+});
+```
+
+- POST - Refresh Page - Unsuccessful
+ - Endpoint: http://localhost:5000/api/refresh
+ - 
+```
+pm.test("must send unauthorized response", function () {
+     pm.response.to.have.status(401);
+});
+```
+
+- POST - Logout Page - Successful
+ - Endpoint: http://localhost:5000/api/logout
+ - 
+```
+pm.test("must have body and send 202 (Accepted) Response when unique username", function () {
+     pm.response.to.have.status(202);
+});
+```
+
+- POST - Logout Page - Unsuccessful
+ - Endpoint: http://localhost:5000/api/logout
+ - 
+```
+pm.test("must send unauthorized response", function () {
+     pm.response.to.have.status(401);
+});
+```
 
 ## Add documentation for Backend API
 
