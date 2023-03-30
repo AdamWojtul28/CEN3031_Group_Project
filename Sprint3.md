@@ -317,7 +317,7 @@ pm.test("no users near desired destination exist", function () {
 
 - POST - Welcome page - Successful
  - Endpoint: http://localhost:5000/api/welcome
- - 
+ - Tests that an authorized user can access the welcome page
 ```
 pm.test("must have body and send 200", function () {
      pm.response.to.be.withBody;
@@ -327,7 +327,7 @@ pm.test("must have body and send 200", function () {
 
 - POST - Welcome page - Unsuccessful
  - Endpoint: http://localhost:5000/api/welcome
- - 
+ - tests that an unauthorized user cannot access the webpage
 ```
 pm.test("must send unauthorized response", function () {
      pm.response.to.have.status(401);
@@ -336,7 +336,7 @@ pm.test("must send unauthorized response", function () {
 
 - POST - Refresh Page - Successful
  - Endpoint: http://localhost:5000/api/refresh
- - 
+ - Tests to make sure that a users token is refreshed
 ```
 pm.test("must have body and send 200 Response", function () {
      pm.response.to.be.withBody;
@@ -346,7 +346,7 @@ pm.test("must have body and send 200 Response", function () {
 
 - POST - Refresh Page - Unsuccessful
  - Endpoint: http://localhost:5000/api/refresh
- - 
+ - Tests to ensure unauthorized users cannot refresh their token
 ```
 pm.test("must send unauthorized response", function () {
      pm.response.to.have.status(401);
@@ -355,7 +355,7 @@ pm.test("must send unauthorized response", function () {
 
 - POST - Logout Page - Successful
  - Endpoint: http://localhost:5000/api/logout
- - 
+ - Tests that logged in users that exist can log out successfully
 ```
 pm.test("must have body and send 202 (Accepted) Response when unique username", function () {
      pm.response.to.have.status(202);
@@ -364,7 +364,7 @@ pm.test("must have body and send 202 (Accepted) Response when unique username", 
 
 - POST - Logout Page - Unsuccessful
  - Endpoint: http://localhost:5000/api/logout
- - 
+ - Tests that unauthorized users cannot log out
 ```
 pm.test("must send unauthorized response", function () {
      pm.response.to.have.status(401);
