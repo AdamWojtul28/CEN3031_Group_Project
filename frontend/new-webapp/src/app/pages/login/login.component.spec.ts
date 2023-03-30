@@ -28,4 +28,31 @@ describe('LoginComponent', () => {
   it('should create', () => {
     expect(component).toBeTruthy();
   });
+
+  it('should have form invalid when both fields are empty', () => {
+    expect(component.loginForm.valid).toBeFalsy();
+  });
+
+  it('should have form invalid when username is empty', () => {
+    component.loginForm.controls['password'].setValue('12345');
+    expect(component.loginForm.valid).toBeFalsy();
+  });
+
+  it('should have form invalid when password is empty', () => {
+    component.loginForm.controls['username'].setValue('testuser');
+    expect(component.loginForm.valid).toBeFalsy();
+  });
+
+  it('should have form valid when both fields are filled in', () => {
+    component.loginForm.controls['username'].setValue('testuser');
+    component.loginForm.controls['password'].setValue('12345');
+    expect(component.loginForm.valid).toBeTruthy();
+  });
+
+  it('should call onSubmitLogin() method on form submission', () => {
+    spyOn(component, 'onSubmitLogin');
+    const button = fixture.debugElement.nativeElement.querySelector('button');
+    button.click();
+    expect(component.onSubmitLogin).toHaveBeenCalled();
+  });
 });
