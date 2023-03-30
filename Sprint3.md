@@ -237,6 +237,21 @@ GET http://localhost:5000/api/users/{id}
 GET http://localhost:5000/api/users?username=exampleUserName
 - This route will return a user struct that matches the entered username if one exists (search for user via username).
 
+#### Send Friend Request:
+
+- POST http://localhost:5000/api/sendFriendRequest
+  This creates a new user connection in the connections table. This table is simply the username of the sender of the friend request, the username of the reciever, and the status of the request. The status will always be pending when sending a request. The frontend can use the sender/reciever information to display the proper information to each user.
+
+#### Accept Friend Request:
+
+- POST http://localhost:5000/api/acceptFriendRequest
+  Simply updates the entry in the connections table that corresponds to the user clicking accept, by changing the status of the connection to accepted. This checks first if there is a valid connection to modify.
+  
+#### Remove Friend:
+
+- POST http://localhost:5000/api/removeFriend
+  Deletes a valid entry in the connectinons table. Checks for either combination of sender/reciever since either can cancel the friendship.
+
 #### Get All Users:
 
 GET http://localhost:5000/api/users
