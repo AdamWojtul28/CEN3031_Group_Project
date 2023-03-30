@@ -52,8 +52,9 @@ export class UsersHttpService {
   }
 
   logoutUser() {
+    console.log('logigin out')
     this.user.next(null);
-    this.router.navigate(['/home']);
+    this.router.navigate(['']);
   }
 
   deleteUser(userId: string) {
@@ -72,5 +73,15 @@ export class UsersHttpService {
             return usersArray;
           })
         )
+  }
+
+  fetchUserByUsername(username : string) {
+    let searchURL = 'http://localhost:5000/api/users'
+    searchURL += '?username=' + encodeURIComponent(username);
+    return this.http.get<User>(searchURL);
+  }
+
+  updateUserInfo() {
+
   }
 }

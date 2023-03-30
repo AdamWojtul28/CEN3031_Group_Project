@@ -10,6 +10,7 @@ import { ListingsHttpService } from 'src/app/services/listings-http.service';
 })
 export class BookingComponent {
   searchData: SearchData = {location: '', max_distance: 0, unit: ''};
+  isSent: boolean = false;
 
   constructor(private listingsHttpService: ListingsHttpService) {}
 
@@ -23,6 +24,7 @@ export class BookingComponent {
       .subscribe({
         next: (res) => {
           console.log(res);
+          this.isSent = true;
         },
         error: (err) => {
           console.log(err);
