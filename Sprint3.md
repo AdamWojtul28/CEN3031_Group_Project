@@ -63,33 +63,34 @@ it('should create', () => {
 
 CYPRESS TESTS
 
+Sprint 3 only cypress tests listed:
 ```
-describe('Create User / Login Test', () => {
-  it('Does not allow sign up with existing username', () => {
-    cy.visit('http://localhost:5000/')
-    cy.contains('Login').click()
-    cy.url().should('include', '/login')
-    cy.contains('Sign Up').click()
-    cy.url().should('include', '/signup')
-
+describe ('Test Admin / Logout / Listing Search', () => {
+  it('Signs up and logs out', () => {
+    cy.visit('http://localhost:5000/signup')
     cy.get("[data-cy='email']").type('example@email.com')
-    cy.get("[data-cy='username']").type('user123')
+    cy.get("[data-cy='username']").type('testuser')
     cy.get("[data-cy='password']").type('pass123')
     cy.get("[data-cy='signup-btn']").click()
-    cy.get("[data-cy='err-msg']").should(($span) => {
-      expect($span).to.have.text(' Username is Taken! OK')
-    })
+    cy.url().should('include', '/users/testuser')
+    cy.get("[data-cy='logout-btn']").click()
+    cy.url().should('eq', 'http://localhost:5000/')
   })
 
-  it('Navigates to profile page after logging in', () => {
-    cy.visit('http://localhost:5000/login')
-    cy.get("[data-cy='username']").type('user123')
-    cy.get("[data-cy='password']").type('pass123')
-    cy.get("[data-cy='login-btn']").click()
-    cy.url().should('include', '/users/user123')
-    cy.get("[data-cy='username']").should(($p) => {
-      expect($p).to.have.text('Username: user123')
-    })
+  it('Deletes new user on admin page', () => {
+    cy.visit('http://localhost:5000/admin')
+    cy.contains('testuser').should('exist')
+    cy.contains('testuser').click().parent().parent().children('.col-6').children('.btn').click()
+    cy.contains('testuser').should('not.exist')
+  })
+
+  it('Sends a listing search get request', ()=> {
+    cy.visit('http://localhost:5000/booking')
+    cy.get("[data-cy='location-input']").type('Oxford, England')
+    cy.get("[data-cy='distance-input']").type('1000')
+    cy.get("[data-cy='unit-input']").select('mi')
+    cy.get("[data-cy='search-btn']").click()
+    cy.get("[data-cy='http-sent']").should('contain', "Search was sent!")
   })
 })
 ```
