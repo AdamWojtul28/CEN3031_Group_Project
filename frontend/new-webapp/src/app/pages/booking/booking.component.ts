@@ -12,7 +12,7 @@ export class BookingComponent {
   searchData: SearchData = {location: '', max_distance: 0, unit: ''};
   isSent: boolean = false;
 
-  constructor(private listingsHttpService: ListingsHttpService) {}
+  constructor(public listingsHttpService: ListingsHttpService) {}
 
   onSubmit(form: NgForm){
     this.searchData.location = form.value.city;

@@ -62,4 +62,34 @@ describe('SignupComponent', () => {
     const emailInput = fixture.debugElement.query(By.css('[data-cy=email]'));
     expect(emailInput).toBeTruthy();
   });
+  it('should have a username input field', () => {
+    const usernameInput = fixture.debugElement.query(By.css('[data-cy=username]'));
+    expect(usernameInput).toBeTruthy();
+  });
+  it('should have a password input field', () => {
+    const passwordInput = fixture.debugElement.query(By.css('[data-cy=password]'));
+    expect(passwordInput).toBeTruthy();
+  });
+  it('should submit the form when the submit button is clicked', () => {
+    spyOn(component, 'onSubmitCreateUser');
+  
+    const emailInput = fixture.debugElement.query(By.css('[data-cy=email]')).nativeElement;
+    const usernameInput = fixture.debugElement.query(By.css('[data-cy=username]')).nativeElement;
+    const passwordInput = fixture.debugElement.query(By.css('[data-cy=password]')).nativeElement;
+    const submitButton = fixture.debugElement.query(By.css('[data-cy=signup-btn]')).nativeElement;
+  
+    emailInput.value = 'test@example.com';
+    emailInput.dispatchEvent(new Event('input'));
+    usernameInput.value = 'testuser';
+    usernameInput.dispatchEvent(new Event('input'));
+    passwordInput.value = 'testpassword';
+    passwordInput.dispatchEvent(new Event('input'));
+  
+    fixture.detectChanges();
+  
+    submitButton.click();
+  
+    expect(component.onSubmitCreateUser).toHaveBeenCalled();
+  });
+  
 });

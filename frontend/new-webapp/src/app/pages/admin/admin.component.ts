@@ -10,7 +10,7 @@ import { UsersHttpService } from 'src/app/services/users-http.service';
 export class AdminComponent implements OnInit{
   users: User[] = [];
 
-  constructor(private userHttp: UsersHttpService) {}
+  constructor(public userHttp: UsersHttpService) {}
 
   ngOnInit() {
     this.onFetchUsers();
