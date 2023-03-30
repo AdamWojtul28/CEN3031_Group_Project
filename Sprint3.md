@@ -4,9 +4,22 @@
 
 The primary work that was completed by our group during this sprint dealt with making user sessions much more secure and to provide funtionality related to the interaction between users on our app. For the former, we implemented cookies and sessions in our application, which are currently set to 2 minutes. For the latter, what we mean by this is functionality related to the searching of different properties/people (search functionality) as well beginning to add functionality for users of different roles, like user and administrator (authorization).
 
-Work Completed by Frontend During this Sprint
+#### Work Completed by Frontend During this Sprint
 
-Work Completed by Backend During this Sprint
+- Admin Page:
+  - An admin can view all users on the website and has the ability to delete a user (ex. for misbehavior)
+  - Need to implement authentication for admin page
+- Session token:
+  - Backend sends session token and expiry, user remains logged in while session has not expired
+- Profile page functionality:
+  - Previously, users were only able to view their own profile. Now they can view the profile of any user by going to /users/username
+  - Users can edit their profile information
+  - User can now logout through their profile page
+- Search Listings
+  - Users can search listings within a chosen radius of a city
+  - Does not yet show results of listings, only sends request to backend
+
+#### Work Completed by Backend During this Sprint
 
 - Sessions and Cookies
   - Now, our program supports functionality where once a user logs in, they are given a cookie that is active for 2 minutes; this cookie refreshes whenever the user changes pages or interacts with the page.
