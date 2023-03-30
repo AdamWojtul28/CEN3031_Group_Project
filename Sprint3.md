@@ -203,30 +203,35 @@ pm.test("delete user by ID failed, user does not exist", function () {
 
 #### User Sign Up:
 
-- POST http://localhost:5000/api/users
-  The above API call requires the input of a user's email, username, and password, relying on the CreateUser(w http.ResponseWriter, r \*http.Request) to achieve this purpose. The way that the CreateUser function operates is that it first establishes the content type of the input as a json and creates a User structure, which is stored in the entities/user.go file. Once the following two operations are completed, the body of the http request is decoded and stored in the newly created user struct. Before it is encoded as part of the database, the CheckIfUserNameExists(userName string) function is called, which performs a query using the GORM. Where function to ensure that the newly created username is not a duplicate. If the username is a duplicate, a 409 (Conflict) HTTP response status code is sent, along with a message "Username is Taken!" to indicate to the user that a change in usrename is necessary to submit create a profile. If the username is unique, a 202 (Accepted) HTTP response status code is sent and a new user is created.
+POST http://localhost:5000/api/users
+
+- The above API call requires the input of a user's email, username, and password, relying on the CreateUser(w http.ResponseWriter, r \*http.Request) to achieve this purpose. The way that the CreateUser function operates is that it first establishes the content type of the input as a json and creates a User structure, which is stored in the entities/user.go file. Once the following two operations are completed, the body of the http request is decoded and stored in the newly created user struct. Before it is encoded as part of the database, the CheckIfUserNameExists(userName string) function is called, which performs a query using the GORM. Where function to ensure that the newly created username is not a duplicate. If the username is a duplicate, a 409 (Conflict) HTTP response status code is sent, along with a message "Username is Taken!" to indicate to the user that a change in usrename is necessary to submit create a profile. If the username is unique, a 202 (Accepted) HTTP response status code is sent and a new user is created.
   - Sprint 3: The passwords are now hashed and stored in the database using bycrpt. Creating a new user will also log them in with a token for two minutes as described in login route.
 
 #### User Sign In:
 
-- POST http://localhost:5000/api/signin
-  The above API call requires the input of a user's username and password for the purposes of logging into the page; this route relies on the UserLoginAttempt(w http.ResponseWriter, r \*http.Request) function to achieve this purpose. The way that the UserLoginAttempt function operates is that it first establishes the content type of the input as a json and creates a User structure, which is stored in the entities/user.go file. Once the following two operations are completed, the body of the http request is decoded and stored in the newly created user struct. Once this is completed, the CheckIfExactUserExists(userName string) function is called, a variation of the CheckIfUserNameExists which checks if a username and password combination exists in the database, using the GORM .Where function with 2 parameters. If the username does not exist in the database, a 404 (Not found) HTTP response status code is sent, along with a message "No such username exists!". If the username does exists in the database, but the provided password does not match up with the value stored in the DB, a 401 (Unauthorized) HTTP response status code is sent, along with a message "Incorrect password!". If the username password combination is correct, a 202 (Accepted) HTTP response status code is sent and the message "Proceed to page!" is sent.
+POST http://localhost:5000/api/signin
+
+- The above API call requires the input of a user's username and password for the purposes of logging into the page; this route relies on the UserLoginAttempt(w http.ResponseWriter, r \*http.Request) function to achieve this purpose. The way that the UserLoginAttempt function operates is that it first establishes the content type of the input as a json and creates a User structure, which is stored in the entities/user.go file. Once the following two operations are completed, the body of the http request is decoded and stored in the newly created user struct. Once this is completed, the CheckIfExactUserExists(userName string) function is called, a variation of the CheckIfUserNameExists which checks if a username and password combination exists in the database, using the GORM .Where function with 2 parameters. If the username does not exist in the database, a 404 (Not found) HTTP response status code is sent, along with a message "No such username exists!". If the username does exists in the database, but the provided password does not match up with the value stored in the DB, a 401 (Unauthorized) HTTP response status code is sent, along with a message "Incorrect password!". If the username password combination is correct, a 202 (Accepted) HTTP response status code is sent and the message "Proceed to page!" is sent.
   -Sprint 3: The user sign in now also creates a user cookie and database token using UUID, this is used to verify and authenticate user sessions. This user is now also assigned an expiry date for the token (currently 2 minutes). If the token is expired the user cannot use it to log in. These tokens will be changed and expiry renewed after every page refresh or moving to a new page. 
 
 #### User Welcome Page:
 
-- POST http://localhost:5000/api/welcome
-  This API call will be used to bring the user to the welcome/homepage of the website. The user must be logged in to access this site. As long as the user has a valid token that matches the database token, a code 200 is sent and a welcome message to the user.
+POST http://localhost:5000/api/welcome
+
+- This API call will be used to bring the user to the welcome/homepage of the website. The user must be logged in to access this site. As long as the user has a valid token that matches the database token, a code 200 is sent and a welcome message to the user.
 
 #### Refresh Page:
 
-- POST http://localhost:5000/api/refresh
-  This API call will be used to bring the user to refresh the user's cookie and the database token (making a new one entirely and distributing it) while also restarting the two minute expiry timer. This route should be called whenever the token should be renewed.
+POST http://localhost:5000/api/refresh
+
+- This API call will be used to bring the user to refresh the user's cookie and the database token (making a new one entirely and distributing it) while also restarting the two minute expiry timer. This route should be called whenever the token should be renewed.
  
 #### Logout Route:
 
-- POST http://localhost:5000/api/logout
-  This API call will be used to bring the user to logout the user from their current session. This means that the users cookie and the token in the database will be removed and the expiry time will be changed to the current time.
+POST http://localhost:5000/api/logout
+
+- This API call will be used to bring the user to logout the user from their current session. This means that the users cookie and the token in the database will be removed and the expiry time will be changed to the current time.
   
 #### Get Single User:
 
@@ -235,22 +240,26 @@ GET http://localhost:5000/api/users/{id}
 - The above API call takes the id parameter in the URL and uses it to find a user with the corresponding id, which is the primary key used in the application; this call uses the GetUserById(w http.ResponseWriter, r \*http.Request) function to achieve this purpose. Firstly, the parameter in the URL is taken and stored in a mux variable. Then, before retreiving this user and encoding information to send back to user, the CheckIfUserIdExists function is employed, which takes the recently created ID of the user and queries for this id in the database. If the ID turns out to be zero (which is not possible since the first value in the database will be 1), this indicates that the user does not exist in the database, returning a false boolean. Otherwise, the instance of that user is stored and this user's information is encoded as a json and sent back to the frontend.
 
 GET http://localhost:5000/api/users?username=exampleUserName
+
 - This route will return a user struct that matches the entered username if one exists (search for user via username).
 
 #### Send Friend Request:
 
-- POST http://localhost:5000/api/sendFriendRequest
-  This creates a new user connection in the connections table. This table is simply the username of the sender of the friend request, the username of the reciever, and the status of the request. The status will always be pending when sending a request. The frontend can use the sender/reciever information to display the proper information to each user.
+POST http://localhost:5000/api/sendFriendRequest
+
+- This creates a new user connection in the connections table. This table is simply the username of the sender of the friend request, the username of the reciever, and the status of the request. The status will always be pending when sending a request. The frontend can use the sender/reciever information to display the proper information to each user.
 
 #### Accept Friend Request:
 
-- POST http://localhost:5000/api/acceptFriendRequest
-  Simply updates the entry in the connections table that corresponds to the user clicking accept, by changing the status of the connection to accepted. This checks first if there is a valid connection to modify.
+POST http://localhost:5000/api/acceptFriendRequest
+
+- Simply updates the entry in the connections table that corresponds to the user clicking accept, by changing the status of the connection to accepted. This checks first if there is a valid connection to modify.
   
 #### Remove Friend:
 
-- POST http://localhost:5000/api/removeFriend
-  Deletes a valid entry in the connectinons table. Checks for either combination of sender/reciever since either can cancel the friendship.
+POST http://localhost:5000/api/removeFriend
+
+- Deletes a valid entry in the connectinons table. Checks for either combination of sender/reciever since either can cancel the friendship.
 
 #### Get All Users:
 
