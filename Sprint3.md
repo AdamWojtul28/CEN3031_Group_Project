@@ -10,7 +10,7 @@ The primary work that was completed by our group during this sprint dealt with m
   - An admin can view all users on the website and has the ability to delete a user (ex. for misbehavior)
   - Need to implement authentication for admin page
 - Session token:
-  -Backend sends session token and expiry, user remains logged in while session has not expired
+  - Backend sends session token and expiry, user remains logged in while session has not expired
 - Profile page functionality:
   - Previously, users were only able to view their own profile. Now they can view the profile of any user by going to /users/username
   - Users can edit their profile information
