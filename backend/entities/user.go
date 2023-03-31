@@ -59,3 +59,13 @@ type Connection struct {
 	Status   string `json:"status"`
 	Sender   string `json:"sender"`
 }
+
+type RawTag struct {
+	RawTag string `json:"raw_tag"`
+}
+
+type Tag struct {
+	ID       uint   `json:"id"`
+	Username string `json:"username"`
+	TagName  string `json:"tag_name"`
+}

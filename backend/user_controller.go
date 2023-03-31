@@ -8,6 +8,7 @@ import (
 	"net/http"
 	"sort"
 	"strconv"
+	"strings"
 	"time"
 
 	"github.com/google/uuid"
@@ -138,6 +139,45 @@ func CreateListing(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(202)
 		// Code for 'Accepted' when unique username
 		json.NewEncoder(w).Encode(listing)
+	}
+}
+
+// ** CREATE LISTING ** //
+func AddTags(w http.ResponseWriter, r *http.Request) {
+	username := r.URL.Query().Get("username")
+	var rawTag entities.RawTag
+	json.NewDecoder(r.Body).Decode(&rawTag)
+	//fmt.Println(rawTag)
+
+	var tagsToAdd []entities.Tag
+	var queryResults []entities.Tag
+	var tagToAdd entities.Tag
+	tagsToAddStrings := strings.Split(rawTag.RawTag, ",")
+	//fmt.Println(tagsToAddStrings)
+
+	for i := 0; i < len(tagsToAddStrings); i++ {
+		if tagsToAddStrings[i] == "" {
+			continue
+		}
+		database.Instance.Where("username = ? AND tag_name = ?", username, tagsToAddStrings[i]).Find(&queryResults)
+		if len(queryResults) == 0 {
+			tagToAdd.Username = username
+			tagToAdd.TagName = tagsToAddStrings[i]
+			tagsToAdd = append(tagsToAdd, tagToAdd)
+		}
+		queryResults = nil
+	}
+	// ensures that a host does not create a listing for a time frame where they already have a listing posted
+	w.Header().Set("Content-Type", "application/json")
+	if len(tagsToAdd) == 0 {
+		w.WriteHeader(400)
+		json.NewEncoder(w).Encode("No tags added")
+	} else {
+		// send information to the database (success)
+		database.Instance.Create(&tagsToAdd)
+		w.WriteHeader(202)
+		// Code for 'Accepted' when unique username
+		json.NewEncoder(w).Encode(tagsToAdd)
 	}
 }
 
