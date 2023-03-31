@@ -1,0 +1,29 @@
+<section style="background-color: #507464; height: 100%">
+  <div class="container">
+    <div class="row" style="padding-top: 100px">
+
+      <div class="col-lg-3">
+        <div class="card">
+          <ul class="list-group" style="cursor: pointer">
+            <li
+              class="list-group-item py-4"
+              routerLink="details"
+              (click)="onChooseSection('details')"
+              [ngClass]="{ 'select' : section === 'details' }">Personal Info
+            </li>
+            <li
+              class="list-group-item py-4"
+              routerLink="interests"
+              (click)="onChooseSection('interests')"
+              [ngClass]="{ 'select' : section === 'interests' }">Interests
+            </li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="col-lg-9">
+        <router-outlet></router-outlet>
+      </div>
+    </div>
+  </div>
+</section>
