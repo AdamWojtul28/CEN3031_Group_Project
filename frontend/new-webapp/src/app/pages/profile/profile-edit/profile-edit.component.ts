@@ -8,6 +8,7 @@ import { UsersHttpService } from 'src/app/services/users-http.service';
   templateUrl: './profile-edit.component.html',
   styleUrls: ['./profile-edit.component.css']
 })
+
 export class ProfileEditComponent implements OnInit{
   user: User;
   section: string = 'details'
@@ -20,5 +21,6 @@ export class ProfileEditComponent implements OnInit{
 
   onChooseSection(section: string) {
     this.section = section;
+
   }
 }

@@ -1,1 +1,111 @@
-<p>details works!</p>
+<div class="card mb-4">
+  <div class="card-header">
+    <div class="row">
+      <div class="col">Personal Info</div>
+      <div class="col">
+        <button
+          type="button"
+          class="btn btn-outline-secondary pull-right py-0 my-0"
+          (click)="onClickEditInfo()">
+          {{ isEditingInfo? 'Stop Editing' : 'Edit' }}
+        </button>
+      </div>
+    </div>
+    
+  </div>
+  <div class="card-body">
+    <div class="row my-3">
+      <div class="col-12 col-md-4 mb-4 mb-md-0 mx-auto text-center" style="max-width: 250px">
+        <img src="https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_960_720.png" alt=""
+          class="rounded-circle img-fluid mb-3" style="max-width: 200px">
+        <button type="button" class="btn btn-outline-secondary py-0 my-0">Change Picture</button>
+      </div>
+      <div class="col-xs-12 col-md-8">
+        <form (ngSubmit)="onSubmitChangesInfo()" #f="ngForm">
+          <ul class="list-group list-group-flush">
+
+            <!-- Input For Username -->
+            <li class="list-group-item mb-3 pb-4">
+              <div class="row">
+                <div class="col-4 pb-1">
+                  Username
+                </div>
+                <div class="col-8">
+                  <label *ngIf="!isEditingInfo" class="py-0">Username</label>
+                  <input
+                    autocomplete="off"
+                    *ngIf="isEditingInfo"
+                    ngModel
+                    [(ngModel)]="inputValuesInfo.newUsername"
+                    type="text"
+                    id="new-username"
+                    name="new-username"
+                    class="form-control py-0">
+                </div>
+              </div>
+            </li>
+
+            <!-- Input For Email -->
+            <li class="list-group-item mb-3 pb-4">
+              <div class="row">
+                <div class="col-4 pb-1">
+                  Email
+                </div>
+                <div class="col-8">
+                  <label *ngIf="!isEditingInfo" class="py-0">Email</label>
+                  <input
+                    autocomplete="off"
+                    *ngIf="isEditingInfo"
+                    ngModel
+                    [(ngModel)]="inputValuesInfo.newEmail"
+                    type="email"
+                    id="new-email"
+                    name="new-email"
+                    class="form-control py-0">
+                </div>
+              </div>
+            </li>
+
+            <!-- Input For Password -->
+            <li class="list-group-item mb-3 pb-4">
+              <div class="row">
+                <div class="col-4 pb-1">
+                  Password
+                </div>
+                <div class="col-8">
+                  <label *ngIf="!isEditingInfo" class="py-0">Password</label>
+                  <input
+                    autocomplete="off"
+                    *ngIf="isEditingInfo"
+                    ngModel
+                    [(ngModel)]="inputValuesInfo.newPassword"
+                    type="text"
+                    id="new-password"
+                    name="new-password"
+                    class="form-control py-0">
+                </div>
+              </div>
+            </li>
+            <li *ngIf="!isEditingInfo" class="list-group-item"></li>
+            <button *ngIf="isEditingInfo" type="submit" class="btn btn-primary my-1 py-1 mx-auto">Save Changes</button>
+          </ul>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="card mb-4">
+  <div class="card-header">
+    <div class="row">
+      <div class="col">Details</div>
+      <div class="col">
+        <button type="button" class="btn btn-outline-secondary pull-right py-0 my-0">Edit</button>
+      </div>
+    </div>
+    
+  </div>
+  <div class="card-body">
+
+  </div>
+</div>
