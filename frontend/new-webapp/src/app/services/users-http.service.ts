@@ -6,6 +6,7 @@ import { LoginUserInfo } from "../models/user.model";
 import { map } from 'rxjs/operators';
 import { Subject } from "rxjs";
 import { tap } from "rxjs/operators";
+import { Router } from "@angular/router";
 
 //https://worldier-testing-default-rtdb.firebaseio.com/users.
 
@@ -14,7 +15,7 @@ export class UsersHttpService {
   userSnapshot: User;
   user = new Subject<User>();
 
-  constructor(private http: HttpClient) {}
+  constructor(private http: HttpClient, private router: Router) {}
 
   createNewUser(username: string, password: string, email: string) {
     const user: LoginUserInfo = {username: username, password: password, email: email};
@@ -50,6 +51,12 @@ export class UsersHttpService {
       }));
   }
 
+  logoutUser() {
+    console.log('logigin out')
+    this.user.next(null);
+    this.router.navigate(['']);
+  }
+
   deleteUser(userId: string) {
     return this.http.delete('http://localhost:5000/api/users/' + userId);
   }
@@ -66,5 +73,15 @@ export class UsersHttpService {
             return usersArray;
           })
         )
+  }
+
+  fetchUserByUsername(username : string) {
+    let searchURL = 'http://localhost:5000/api/users'
+    searchURL += '?username=' + encodeURIComponent(username);
+    return this.http.get<User>(searchURL);
+  }
+
+  updateUserInfo() {
+
   }
 }

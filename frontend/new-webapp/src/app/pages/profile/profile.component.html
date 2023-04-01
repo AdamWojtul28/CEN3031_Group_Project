@@ -1,11 +1,69 @@
-<div class="container">
-  <div class="row">
-    <div class="col-sm-8 mx-auto">
-      <h2>User Profile</h2>
-      <p data-cy="username">Username: {{ userLoggedIn.username }}</p>
-      <p>Password: {{ userLoggedIn.password }} </p>
-      <p>Email: {{ userLoggedIn.email }} </p>
-      <p>Biography: {{ userLoggedIn.bio }} </p>
+<div class="outer">
+  <div class="container">
+    <div class="row">
+      <div class="col-lg-7 col-md-9 mx-auto">
+        <div class="panel border">
+          <div class="panel-heading">
+            <h3 data-cy="username-h3" class="pt-3 mb-0 font-weight-bold">{{ userViewed.username }}'s Profile</h3>
+          </div>
+          <div class="panel-body p-3">
+            <form (ngSubmit)="onSaveChanges()" #f="ngForm">
+              <div class="form group pt-3">
+                <div class="input-field">
+                  <span class="fa fa-user p-2"></span>
+                  <input
+                    ngModel
+                    required
+                    type="text"
+                    name="username"
+                    data-cy="username"
+                    [placeholder]="userViewed.username">
+                </div>
+              </div>
+              <div class="form group pt-3">
+                <div class="input-field">
+                  <span class="fa fa-lock p-2"></span>
+                  <input
+                    ngModel
+                    required
+                    [type]="type"
+                    placeholder="******"
+                    name="password"
+                    data-cy="password">
+                  <span (click)="hideShowPass()" class="fa" [ngClass]="eyeIcon"></span>
+                </div>
+              </div>
+              <div class="form group pt-3">
+                <div class="input-field">
+                  <span class="fa fa-envelope py-2 px-1"></span>
+                  <input
+                    ngModel
+                    required
+                    type="text"
+                    email
+                    [placeholder]="userViewed.email"
+                    name="email"
+                    data-cy="email">
+                </div>
+              </div>
+              <div class="form group pt-3">
+                <div class="input-field">
+                  <span class="fa fa-info p-2"></span>
+                  <input
+                    ngModel
+                    required
+                    type="text"
+                    [placeholder]="userViewed.bio ? userViewed.bio : ''"
+                    name="biography"
+                    data-cy="biography">
+                </div>
+              </div>
+              <button type="submit" class="btn btn-primary btn-block mt-4 w-100" [disabled]="!f.dirty" data-cy="save-btn">Save Changes</button>
+            </form>
+            <button data-cy="logout-btn" type="button" class="btn btn-danger w-100" (click)="onLogout()">Logout</button>
+          </div>
+        </div>
+      </div>
     </div>
   </div>
 </div>

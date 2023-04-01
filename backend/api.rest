@@ -144,7 +144,7 @@ content-type: application/json
 
 ###
 // Get users living close to a desired location
-GET http://{{host}}/api/search?location=Oxford%2C+England&maxDistance=1000&unit=mi HTTP/1.1
+GET http://{{host}}/api/search?location=Oxford%2C%20England&maxDistance=1000&unit=mi HTTP/1.1
 content-type: application/json
 
 ###

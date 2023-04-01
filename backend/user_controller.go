@@ -8,6 +8,7 @@ import (
 	"net/http"
 	"sort"
 	"strconv"
+	"strings"
 	"time"
 
 	"github.com/google/uuid"
@@ -138,6 +139,45 @@ func CreateListing(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(202)
 		// Code for 'Accepted' when unique username
 		json.NewEncoder(w).Encode(listing)
+	}
+}
+
+// ** CREATE LISTING ** //
+func AddTags(w http.ResponseWriter, r *http.Request) {
+	username := r.URL.Query().Get("username")
+	var rawTag entities.RawTag
+	json.NewDecoder(r.Body).Decode(&rawTag)
+	//fmt.Println(rawTag)
+
+	var tagsToAdd []entities.Tag
+	var queryResults []entities.Tag
+	var tagToAdd entities.Tag
+	tagsToAddStrings := strings.Split(rawTag.RawTag, ",")
+	//fmt.Println(tagsToAddStrings)
+
+	for i := 0; i < len(tagsToAddStrings); i++ {
+		if tagsToAddStrings[i] == "" {
+			continue
+		}
+		database.Instance.Where("username = ? AND tag_name = ?", username, tagsToAddStrings[i]).Find(&queryResults)
+		if len(queryResults) == 0 {
+			tagToAdd.Username = username
+			tagToAdd.TagName = tagsToAddStrings[i]
+			tagsToAdd = append(tagsToAdd, tagToAdd)
+		}
+		queryResults = nil
+	}
+	// ensures that a host does not create a listing for a time frame where they already have a listing posted
+	w.Header().Set("Content-Type", "application/json")
+	if len(tagsToAdd) == 0 {
+		w.WriteHeader(400)
+		json.NewEncoder(w).Encode("No tags added")
+	} else {
+		// send information to the database (success)
+		database.Instance.Create(&tagsToAdd)
+		w.WriteHeader(202)
+		// Code for 'Accepted' when unique username
+		json.NewEncoder(w).Encode(tagsToAdd)
 	}
 }
 
@@ -476,10 +516,12 @@ func FindUsersWithSearch(w http.ResponseWriter, r *http.Request) {
 	var users []entities.User
 	var userSearchInfo []entities.UserForSearches
 	var blankSearchUser entities.UserForSearches
+	fmt.Println(len(userSearchInfo))
 	database.Instance.Where("address_1 IS NOT NULL AND address_1 != ?", "").Find(&users)
 	// Gets a list of all valid users
 	for i := 0; i < len(users); i++ {
 		distanceInMiles, distanceInKM := CalculateDistanceBetween(location, users[i].Address_1)
+		fmt.Println(distanceInMiles, distanceInKM)
 		if unit == "mi" {
 			if distanceInMiles > maxDistanceNumerical {
 				continue
@@ -501,6 +543,7 @@ func FindUsersWithSearch(w http.ResponseWriter, r *http.Request) {
 		userSearchInfo[i].Country = users[i].Country
 		userSearchInfo[i].Distance_from_target_miles, userSearchInfo[i].Distance_from_target_km = distanceInMiles, distanceInKM
 	}
+
 	sort.SliceStable(userSearchInfo, func(i, j int) bool {
 		return userSearchInfo[i].Distance_from_target_miles < userSearchInfo[j].Distance_from_target_miles
 	})
@@ -509,9 +552,17 @@ func FindUsersWithSearch(w http.ResponseWriter, r *http.Request) {
 	//for i := 0; i < len(users); i++ {
 	//	fmt.Println(i, users[i].Address_1)
 	//}
-	w.Header().Set("Content-Type", "application/json")
-	w.WriteHeader(http.StatusOK)
-	json.NewEncoder(w).Encode(userSearchInfo)
+
+	if len(userSearchInfo) > 0 {
+		w.Header().Set("Content-Type", "application/json")
+		w.WriteHeader(http.StatusOK)
+		// Returns a 200, OK, response, if the query goes through and users exist that match the query in the URL
+		json.NewEncoder(w).Encode(userSearchInfo)
+		// Provides a sorted list of users along with their distance away from the area provided in the URL
+	} else {
+		w.WriteHeader(204)
+		// Returns a 204, No Content, response, if the query goes through but no users exist that match the query
+	}
 }
 
 func TestSearch(w http.ResponseWriter, r *http.Request) {
@@ -557,9 +608,14 @@ func GetUsers(w http.ResponseWriter, r *http.Request) {
 	if username != "" {
 		var user entities.User
 		database.Instance.Where("username = ?", username).Find(&user)
-		w.Header().Set("Content-Type", "application/json")
-		w.WriteHeader(http.StatusOK)
-		json.NewEncoder(w).Encode(user)
+		if user.Username != "" {
+			w.Header().Set("Content-Type", "application/json")
+			w.WriteHeader(http.StatusOK)
+			json.NewEncoder(w).Encode(user)
+		} else {
+			w.WriteHeader(204)
+		}
+
 	} else {
 		var users []entities.User
 		database.Instance.Find(&users)
@@ -582,6 +638,7 @@ func UpdateUser(w http.ResponseWriter, r *http.Request) {
 	json.NewDecoder(r.Body).Decode(&user)
 	database.Instance.Save(&user)
 	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(http.StatusOK)
 	json.NewEncoder(w).Encode(user)
 }
 
@@ -596,5 +653,6 @@ func DeleteUser(w http.ResponseWriter, r *http.Request) {
 	}
 	var user entities.User
 	database.Instance.Delete(&user, userId)
+	w.WriteHeader(http.StatusOK)
 	json.NewEncoder(w).Encode("User Deleted Successfully!")
 }
