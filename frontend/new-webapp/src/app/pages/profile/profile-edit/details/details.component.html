@@ -5,7 +5,8 @@
       <div class="col">
         <button
           type="button"
-          class="btn btn-outline-secondary pull-right py-0 my-0"
+          class="btn pull-right py-0 my-0"
+          [class]="isEditingInfo? 'btn-outline-danger' : 'btn-outline-secondary'"
           (click)="onClickEditInfo()">
           {{ isEditingInfo? 'Stop Editing' : 'Edit' }}
         </button>
@@ -31,15 +32,16 @@
                   Username
                 </div>
                 <div class="col-8">
-                  <label *ngIf="!isEditingInfo" class="py-0">Username</label>
+                  <label *ngIf="!isEditingInfo" class="py-0">{{ activeUser.username }}</label>
                   <input
+                    required
                     autocomplete="off"
                     *ngIf="isEditingInfo"
                     ngModel
                     [(ngModel)]="inputValuesInfo.newUsername"
                     type="text"
-                    id="new-username"
-                    name="new-username"
+                    id="newusername"
+                    name="newusername"
                     class="form-control py-0">
                 </div>
               </div>
@@ -52,15 +54,17 @@
                   Email
                 </div>
                 <div class="col-8">
-                  <label *ngIf="!isEditingInfo" class="py-0">Email</label>
+                  <label *ngIf="!isEditingInfo" class="py-0">{{ activeUser.email }}</label>
                   <input
+                    email
+                    required
                     autocomplete="off"
                     *ngIf="isEditingInfo"
                     ngModel
                     [(ngModel)]="inputValuesInfo.newEmail"
                     type="email"
-                    id="new-email"
-                    name="new-email"
+                    id="newemail"
+                    name="newemail"
                     class="form-control py-0">
                 </div>
               </div>
@@ -73,21 +77,27 @@
                   Password
                 </div>
                 <div class="col-8">
-                  <label *ngIf="!isEditingInfo" class="py-0">Password</label>
+                  <label *ngIf="!isEditingInfo" class="py-0">********</label>
                   <input
                     autocomplete="off"
                     *ngIf="isEditingInfo"
                     ngModel
                     [(ngModel)]="inputValuesInfo.newPassword"
+                    placeholder="********"
                     type="text"
-                    id="new-password"
-                    name="new-password"
+                    id="newpassword"
+                    name="newpassword"
                     class="form-control py-0">
                 </div>
               </div>
             </li>
             <li *ngIf="!isEditingInfo" class="list-group-item"></li>
-            <button *ngIf="isEditingInfo" type="submit" class="btn btn-primary my-1 py-1 mx-auto">Save Changes</button>
+            <button
+              *ngIf="isEditingInfo && f.dirty"
+              [disabled]="!f.valid"
+              type="submit"
+              class="btn btn-primary my-1 py-1 mx-auto">Save Changes
+            </button>
           </ul>
         </form>
       </div>
