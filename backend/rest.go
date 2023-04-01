@@ -44,6 +44,7 @@ func httpHandler() http.Handler {
 	router.HandleFunc("/api/sendFriendRequest", SendFriendRequest)
 	router.HandleFunc("/api/acceptFriendRequest", AcceptFriendRequest)
 	router.HandleFunc("/api/removeFriend", RemoveFriend)
+	router.HandleFunc("/api/retrieveFriends", RetrieveFriends)
 
 	// WARNING: this route must be the last route defined.
 	router.PathPrefix("/").Handler(AngularHandler).Methods("GET")

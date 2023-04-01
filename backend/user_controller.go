@@ -209,6 +209,32 @@ func RemoveFriend(w http.ResponseWriter, r *http.Request) {
 	json.NewEncoder(w).Encode("Connection deleted successfully")
 }
 
+func RetrieveFriends(w http.ResponseWriter, r *http.Request) {
+	var user entities.User
+	json.NewDecoder(r.Body).Decode(&user)
+	var connections []entities.Connection
+	//var friends []string
+
+	// get a slice of connections where the user who is currently logged in is either the sender or the reciever
+	database.Instance.Where("reciever = ? OR sender = ?", user.Username, user.Username).Find(&connections)
+	// iterate through the slice of connections and add each username that is not the user logged in to the friends slice
+	// for i := 0; i < len(connections); i++ {
+	// 	if connections[i].Reciever != user.Username {
+	// 		friends = append(friends, connections[i].Reciever)
+	// 	}
+	// 	if connections[i].Sender != user.Username {
+	// 		friends = append(friends, connections[i].Sender)
+	// 	}
+	// }
+	if len(connections) == 0 {
+		w.WriteHeader(404)
+		json.NewEncoder(w).Encode("No friends found")
+		return
+	}
+	w.WriteHeader(200)
+	json.NewEncoder(w).Encode(connections)
+}
+
 // ** CHECK FUNCTIONS ** //
 func CheckIfUserIdExists(userId string) bool {
 	var user entities.User
@@ -508,7 +534,6 @@ func TestEscapeURLValues(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		fmt.Println(err)
 	}
-
 }
 
 // ** GET FUNCTIONS ** //
