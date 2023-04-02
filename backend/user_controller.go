@@ -181,6 +181,48 @@ func AddTags(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
+func DeleteTags(w http.ResponseWriter, r *http.Request) {
+	username := r.URL.Query().Get("username")
+	var rawTag entities.RawTag
+	json.NewDecoder(r.Body).Decode(&rawTag)
+	//fmt.Println(rawTag)
+
+	var tagsToRemove []entities.Tag
+	var queryResults []entities.Tag
+	var tagToDelete entities.Tag
+	tagsToRemoveStrings := strings.Split(rawTag.RawTag, ",")
+	//fmt.Println(tagsToAddStrings)
+
+	for i := 0; i < len(tagsToRemoveStrings); i++ {
+		if tagsToRemoveStrings[i] == "" {
+			continue
+		}
+		database.Instance.Where("username = ? AND tag_name = ?", username, tagsToRemoveStrings[i]).Find(&queryResults)
+		if len(queryResults) != 0 {
+			tagToDelete.Username = username
+			tagToDelete.TagName = tagsToRemoveStrings[i]
+			tagsToRemove = append(tagsToRemove, tagToDelete)
+		}
+		queryResults = nil
+	}
+	// ensures that a host does not create a listing for a time frame where they already have a listing posted
+	w.Header().Set("Content-Type", "application/json")
+	if len(tagsToRemove) == 0 {
+		w.WriteHeader(400)
+		json.NewEncoder(w).Encode("No tags removed")
+	} else {
+		// send information to the database (success)
+		var currentTag entities.Tag
+		for i := 0; i < len(tagsToRemove); i++ {
+			database.Instance.Where("username = ? AND tag_name = ?", tagsToRemove[i].Username, tagsToRemove[i].TagName).Delete(&currentTag)
+		}
+		// Deletes all tags with the desired attributes
+		w.WriteHeader(202)
+		// Code for 'Accepted' when unique username
+		json.NewEncoder(w).Encode("Tags deleted successfully")
+	}
+}
+
 /*
 select dr1.* from date_ranges dr1
 inner join date_ranges dr2

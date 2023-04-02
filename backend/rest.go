@@ -30,6 +30,7 @@ func httpHandler() http.Handler {
 
 	// ** Delete Routes ** //
 	router.HandleFunc("/api/users/{id}", DeleteUser).Methods("DELETE")
+	router.HandleFunc("/api/tags", DeleteTags).Methods("DELETE")
 
 	// ** Normal Routes ** //
 	// Pages/Authentication
