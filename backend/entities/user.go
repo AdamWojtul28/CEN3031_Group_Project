@@ -41,16 +41,18 @@ type Listing struct {
 }
 
 type UserForSearches struct {
-	Username                   string  `json:"username"`
-	Biography                  string  `json:"biography"`
-	Birthday                   string  `json:"birthday"`
-	Email                      string  `json:"email"`
-	Phone                      string  `json:"phone"`
-	Gender                     string  `json:"gender"`
-	Address_1                  string  `json:"address_1"`
-	Country                    string  `json:"country"`
-	Distance_from_target_miles float64 `json:"distance_from_target_miles"`
-	Distance_from_target_km    float64 `json:"distance_from_target_km"`
+	Username                   string      `json:"username"`
+	Biography                  string      `json:"biography"`
+	Birthday                   string      `json:"birthday"`
+	Email                      string      `json:"email"`
+	Phone                      string      `json:"phone"`
+	Gender                     string      `json:"gender"`
+	Address_1                  string      `json:"address_1"`
+	Country                    string      `json:"country"`
+	Distance_from_target_miles float64     `json:"distance_from_target_miles"`
+	Distance_from_target_km    float64     `json:"distance_from_target_km"`
+	NumberSharedTags           uint        `json:"count"`
+	SharedTags                 []SharedTag `json:"shared_tags"`
 }
 
 type Connection struct {
@@ -80,6 +82,8 @@ type CommonUsers struct {
 	Count      uint        `json:"count"`
 	SharedTags []SharedTag `json:"shared_tags"`
 }
+
+// only used in the test versions so I can demonstrate how it works; once we satisfied with how search works, will delete
 
 type SharedTag struct {
 	TagName string `json:"tag_name"`
