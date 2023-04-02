@@ -565,6 +565,66 @@ func FindUsersWithSearch(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
+func TestSameTags(w http.ResponseWriter, r *http.Request) {
+	username := r.URL.Query().Get("username")
+	//var users []entities.User
+	var similarUsers []entities.CommonUsers
+	var sharedTags []entities.SharedTag
+	database.Instance.Raw(`SELECT tag2.username, COUNT(tag2.tag_name) AS count
+						   FROM tags AS tag1, tags AS tag2
+						   WHERE tag1.username = ? 
+						   		 AND tag1.username != tag2.username 
+						   		 AND tag1.tag_name = tag2.tag_name
+						   GROUP BY tag2.username`, username).Scan(&similarUsers)
+	database.Instance.Raw(`SELECT tag2.username, tag2.tag_name
+						   FROM tags AS tag1, tags AS tag2
+						   WHERE tag1.username = ? 
+						         AND tag1.username != tag2.username 
+								 AND tag1.tag_name = tag2.tag_name`, username).Scan(&sharedTags)
+	w.Header().Set("Content-Type", "application/json")
+
+	w.WriteHeader(http.StatusOK)
+	json.NewEncoder(w).Encode(similarUsers)
+	json.NewEncoder(w).Encode(sharedTags)
+}
+
+func TestSameTagsOther(w http.ResponseWriter, r *http.Request) {
+	username := r.URL.Query().Get("username")
+	//var users []entities.User
+	var temporaryCommonUser entities.CommonUsers
+	var similarUsers []entities.CommonUsers
+	var similarUserInfo []entities.CommonUsersPart
+	var sharedTags []entities.SharedTag
+	var emptyTag entities.SharedTag
+	database.Instance.Raw(`SELECT tag2.username, COUNT(tag2.tag_name) AS count
+						   FROM tags AS tag1, tags AS tag2
+						   WHERE tag1.username = ? 
+						   		 AND tag1.username != tag2.username 
+						   		 AND tag1.tag_name = tag2.tag_name
+						   GROUP BY tag2.username`, username).Scan(&similarUserInfo)
+	for i := 0; i < len(similarUserInfo); i++ {
+		similarUsers = append(similarUsers, temporaryCommonUser)
+		database.Instance.Raw(`SELECT tag2.tag_name
+						   FROM tags AS tag1, tags AS tag2
+						   WHERE tag1.username = ? 
+						   		 AND tag2.username = ? 
+						         AND tag1.username != tag2.username 
+								 AND tag1.tag_name = tag2.tag_name`, username, similarUserInfo[0].Username).Scan(&sharedTags)
+		similarUsers[i].Username = similarUserInfo[i].Username
+		similarUsers[i].Count = similarUserInfo[i].Count
+		for j := 0; j < len(sharedTags); j++ {
+			similarUsers[i].SharedTags = append(similarUsers[i].SharedTags, emptyTag)
+			similarUsers[i].SharedTags[j].TagName = sharedTags[j].TagName
+		}
+
+	}
+
+	w.Header().Set("Content-Type", "application/json")
+
+	w.WriteHeader(http.StatusOK)
+	json.NewEncoder(w).Encode(similarUsers)
+}
+
 func TestSearch(w http.ResponseWriter, r *http.Request) {
 	username := r.URL.Query().Get("username")
 	password := r.URL.Query().Get("password")

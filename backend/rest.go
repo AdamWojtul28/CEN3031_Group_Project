@@ -40,6 +40,7 @@ func httpHandler() http.Handler {
 
 	//Searches
 	router.HandleFunc("/api/search", FindUsersWithSearch)
+	router.HandleFunc("/api/tagging", TestSameTagsOther)
 
 	// Friend Request routes
 	router.HandleFunc("/api/sendFriendRequest", SendFriendRequest)

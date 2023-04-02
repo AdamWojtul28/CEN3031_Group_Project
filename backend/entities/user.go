@@ -69,3 +69,18 @@ type Tag struct {
 	Username string `json:"username"`
 	TagName  string `json:"tag_name"`
 }
+
+type CommonUsersPart struct {
+	Username string `json:"username"`
+	Count    uint   `json:"count"`
+}
+
+type CommonUsers struct {
+	Username   string      `json:"username"`
+	Count      uint        `json:"count"`
+	SharedTags []SharedTag `json:"shared_tags"`
+}
+
+type SharedTag struct {
+	TagName string `json:"tag_name"`
+}
