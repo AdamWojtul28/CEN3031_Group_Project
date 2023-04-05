@@ -16,6 +16,9 @@ import { LoginComponent } from './pages/login/login.component';
 import { SignupComponent } from './pages/signup/signup.component';
 import { ProfileComponent } from './pages/profile/profile.component';
 import { AdminComponent } from './pages/admin/admin.component';
+import { ProfileEditComponent } from './pages/profile/profile-edit/profile-edit.component';
+import { DetailsComponent } from './pages/profile/profile-edit/details/details.component';
+import { InterestsComponent } from './pages/profile/profile-edit/interests/interests.component';
 
 @NgModule({
   declarations: [
@@ -28,7 +31,10 @@ import { AdminComponent } from './pages/admin/admin.component';
     LoginComponent,
     SignupComponent,
     ProfileComponent,
-    AdminComponent
+    AdminComponent,
+    ProfileEditComponent,
+    DetailsComponent,
+    InterestsComponent
   ],
   imports: [
     BrowserModule,
