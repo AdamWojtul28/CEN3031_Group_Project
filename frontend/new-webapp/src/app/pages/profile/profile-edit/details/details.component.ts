@@ -11,10 +11,13 @@ import { UsersHttpService } from 'src/app/services/users-http.service';
 })
 export class DetailsComponent implements OnInit{
   @ViewChild('f') infoForm!: NgForm;
+  @ViewChild('p') pfpForm!: NgForm;
 
   activeUser= new User('alexander', 'sojhfksdjasdfiluhjkdsf', '12', 'alex@gmail.com',
     'There once was a person. That person is me.', 'sdfsdf', new Date());
+
   isEditingInfo: boolean = false;
+  isEditingPfp: boolean = false;
 
   inputValuesInfo = {
     newUsername: "Username",
@@ -28,6 +31,14 @@ export class DetailsComponent implements OnInit{
 
   }
 
+  onClickEditPfp() {
+    if (this.isEditingPfp) {
+      this.pfpForm.reset();
+    }
+
+    this.isEditingPfp = !this.isEditingPfp;
+  }
+
   onClickEditInfo() {
     if (this.isEditingInfo) {
       this.infoForm.resetForm();
@@ -37,6 +48,27 @@ export class DetailsComponent implements OnInit{
     this.inputValuesInfo.newUsername = this.activeUser.username;
     this.inputValuesInfo.newEmail = this.activeUser.email;
     this.inputValuesInfo.newPassword = "";
+  }
+
+  onUploadPfp(event: Event) {
+    const target= event.target as HTMLInputElement;
+    const file: File = (target.files as FileList)[0];
+    console.log(file);
+
+    var myReader:FileReader = new FileReader();
+
+    myReader.onloadend = (e) => {
+      console.log(myReader.result);
+      this.userHttpService.updatePfp(myReader.result).subscribe({
+        next: (res) => {
+          console.log(res);
+        },
+        error: (err) => {
+          console.log(err);
+        }
+      });
+    }
+    myReader.readAsDataURL(file);
   }
 
   onSubmitChangesInfo() {
@@ -50,6 +82,7 @@ export class DetailsComponent implements OnInit{
     if(this.infoForm.value.newpassword) {
       changes.password = this.infoForm.value.newpassword
     }
-    console.log(changes);
+
+    // upload changes
   }
 }

@@ -14,12 +14,29 @@
     </div>
     
   </div>
-  <div class="card-body">
+  <div class="card-body pb-1">
     <div class="row my-3">
       <div class="col-12 col-md-4 mb-4 mb-md-0 mx-auto text-center" style="max-width: 250px">
         <img src="https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_960_720.png" alt=""
           class="rounded-circle img-fluid mb-3" style="max-width: 200px">
-        <button type="button" class="btn btn-outline-secondary py-0 my-0">Change Picture</button>
+        <form #p="ngForm">
+          <button
+            type="button"
+            class="btn py-0 mt-0 mb-2"
+            [class]="isEditingPfp? 'btn-outline-danger' : 'btn-outline-secondary'"
+            (click)="onClickEditPfp()">
+            {{ isEditingPfp? 'Cancel' : 'Change Picture' }}
+        </button>
+          <input
+            *ngIf="isEditingPfp"
+            type="file"
+            class="form-control form-control-sm"
+            ngModel
+            required
+            name="newpfp"
+            accept="image/png, image/jpeg"
+            (change)="onUploadPfp($event)">
+        </form>
       </div>
       <div class="col-xs-12 col-md-8">
         <form (ngSubmit)="onSubmitChangesInfo()" #f="ngForm">
@@ -91,7 +108,7 @@
                 </div>
               </div>
             </li>
-            <li *ngIf="!isEditingInfo" class="list-group-item"></li>
+            <li *ngIf="!isEditingInfo || !f.dirty" class="list-group-item"></li>
             <button
               *ngIf="isEditingInfo && f.dirty"
               [disabled]="!f.valid"
