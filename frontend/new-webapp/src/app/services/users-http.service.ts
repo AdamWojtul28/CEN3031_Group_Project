@@ -7,7 +7,7 @@ import { map } from 'rxjs/operators';
 import { Subject } from "rxjs";
 import { tap } from "rxjs/operators";
 import { Router } from "@angular/router";
-import { UpdatePfpModel } from "../models/http-formatting.model";
+import { UpdateProfileInfoModel } from "../models/http-formatting.model";
 
 //https://worldier-testing-default-rtdb.firebaseio.com/users.
 
@@ -28,6 +28,7 @@ export class UsersHttpService {
           res.id, 
           res.email, 
           res.biography, 
+          res.profile_image,
           res.session_token, 
           res.expiry);
         this.user.next(user);
@@ -45,6 +46,7 @@ export class UsersHttpService {
           res.id, 
           res.email, 
           res.biography, 
+          res.profile_image,
           res.session_token, 
           res.expiry);
         this.user.next(user);
@@ -82,12 +84,8 @@ export class UsersHttpService {
     return this.http.get<User>(searchURL);
   }
 
-  updateUserInfo() {
-
+  updateUserInfo(changes: UpdateProfileInfoModel) {
+    return this.http.put<ResponseData>('http://localhost:5000/api/users/' + this.userSnapshot.id, changes);
   }
 
-  updatePfp(image: string | ArrayBuffer) {
-    const data: UpdatePfpModel = {image: image}
-    return this.http.post<ResponseData>('http://localhost:5000/api/users', data);
-  }
 }

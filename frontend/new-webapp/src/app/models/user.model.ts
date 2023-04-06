@@ -5,6 +5,7 @@ export class User {
     public id: string,
     public email: string,
     public bio: string,
+    public profile_image: string,
 
     private _token: string,
     private _tokenExpiration: Date
@@ -42,5 +43,6 @@ export interface ResponseData {
   phone : string;
   session_token : string;
   username : string;
+  profile_image : string;
 
 }

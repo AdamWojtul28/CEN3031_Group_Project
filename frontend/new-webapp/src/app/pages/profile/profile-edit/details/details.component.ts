@@ -1,5 +1,6 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { NgForm } from '@angular/forms';
+import { DomSanitizer } from '@angular/platform-browser';
 import { UpdateProfileInfoModel } from 'src/app/models/http-formatting.model';
 import { User } from 'src/app/models/user.model';
 import { UsersHttpService } from 'src/app/services/users-http.service';
@@ -13,8 +14,8 @@ export class DetailsComponent implements OnInit{
   @ViewChild('f') infoForm!: NgForm;
   @ViewChild('p') pfpForm!: NgForm;
 
-  activeUser= new User('alexander', 'sojhfksdjasdfiluhjkdsf', '12', 'alex@gmail.com',
-    'There once was a person. That person is me.', 'sdfsdf', new Date());
+  //activeUser= new User('alexander', 'sojhfksdjasdfiluhjkdsf', '12', 'alex@gmail.com',
+  //  'There once was a person. That person is me.', 'sdfsdf', new Date());
 
   isEditingInfo: boolean = false;
   isEditingPfp: boolean = false;
@@ -25,10 +26,14 @@ export class DetailsComponent implements OnInit{
     newPassword: "********"
   }
 
-  constructor(private userHttpService: UsersHttpService) {}
+  activeUser: User;
+  imagePath: any;
+
+  constructor(private userHttpService: UsersHttpService, private sanitizer: DomSanitizer) {}
 
   ngOnInit() {
-
+    this.activeUser = this.userHttpService.userSnapshot
+    this.imagePath = this.sanitizer.bypassSecurityTrustResourceUrl(this.activeUser.profile_image)
   }
 
   onClickEditPfp() {
@@ -58,8 +63,9 @@ export class DetailsComponent implements OnInit{
     var myReader:FileReader = new FileReader();
 
     myReader.onloadend = (e) => {
+      const changes: UpdateProfileInfoModel = {profile_image: myReader.result}
       console.log(myReader.result);
-      this.userHttpService.updatePfp(myReader.result).subscribe({
+      this.userHttpService.updateUserInfo(changes).subscribe({
         next: (res) => {
           console.log(res);
         },
@@ -83,6 +89,13 @@ export class DetailsComponent implements OnInit{
       changes.password = this.infoForm.value.newpassword
     }
 
-    // upload changes
+    this.userHttpService.updateUserInfo(changes).subscribe({
+      next: (res) => {
+        console.log(res);
+      },
+      error: (err) => {
+        console.log(err);
+      }
+    })
   }
 }
