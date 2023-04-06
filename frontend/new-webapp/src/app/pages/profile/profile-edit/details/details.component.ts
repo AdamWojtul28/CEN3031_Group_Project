@@ -27,13 +27,16 @@ export class DetailsComponent implements OnInit{
   }
 
   activeUser: User;
-  imagePath: any;
+  imagePath: any = "https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_960_720.png";
 
   constructor(private userHttpService: UsersHttpService, private sanitizer: DomSanitizer) {}
 
   ngOnInit() {
-    this.activeUser = this.userHttpService.userSnapshot
-    this.imagePath = this.sanitizer.bypassSecurityTrustResourceUrl(this.activeUser.profile_image)
+    this.activeUser = this.userHttpService.userSnapshot;
+    if (this.activeUser.profile_image) {
+      this.imagePath = this.sanitizer.bypassSecurityTrustResourceUrl(this.activeUser.profile_image)
+      console.log(this.imagePath);
+    }
   }
 
   onClickEditPfp() {
