@@ -181,6 +181,48 @@ func AddTags(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
+func DeleteTags(w http.ResponseWriter, r *http.Request) {
+	username := r.URL.Query().Get("username")
+	var rawTag entities.RawTag
+	json.NewDecoder(r.Body).Decode(&rawTag)
+	//fmt.Println(rawTag)
+
+	var tagsToRemove []entities.Tag
+	var queryResults []entities.Tag
+	var tagToDelete entities.Tag
+	tagsToRemoveStrings := strings.Split(rawTag.RawTag, ",")
+	//fmt.Println(tagsToAddStrings)
+
+	for i := 0; i < len(tagsToRemoveStrings); i++ {
+		if tagsToRemoveStrings[i] == "" {
+			continue
+		}
+		database.Instance.Where("username = ? AND tag_name = ?", username, tagsToRemoveStrings[i]).Find(&queryResults)
+		if len(queryResults) != 0 {
+			tagToDelete.Username = username
+			tagToDelete.TagName = tagsToRemoveStrings[i]
+			tagsToRemove = append(tagsToRemove, tagToDelete)
+		}
+		queryResults = nil
+	}
+	// ensures that a host does not create a listing for a time frame where they already have a listing posted
+	w.Header().Set("Content-Type", "application/json")
+	if len(tagsToRemove) == 0 {
+		w.WriteHeader(400)
+		json.NewEncoder(w).Encode("No tags removed")
+	} else {
+		// send information to the database (success)
+		var currentTag entities.Tag
+		for i := 0; i < len(tagsToRemove); i++ {
+			database.Instance.Where("username = ? AND tag_name = ?", tagsToRemove[i].Username, tagsToRemove[i].TagName).Delete(&currentTag)
+		}
+		// Deletes all tags with the desired attributes
+		w.WriteHeader(202)
+		// Code for 'Accepted' when unique username
+		json.NewEncoder(w).Encode("Tags deleted successfully")
+	}
+}
+
 /*
 select dr1.* from date_ranges dr1
 inner join date_ranges dr2
@@ -537,6 +579,7 @@ func Search(w http.ResponseWriter, r *http.Request) {
 }
 
 func FindUsersWithSearch(w http.ResponseWriter, r *http.Request) {
+	username := r.URL.Query().Get("username")
 	location := r.URL.Query().Get("location")
 	maxDistance := r.URL.Query().Get("maxDistance")
 	unit := r.URL.Query().Get("unit")
@@ -550,8 +593,9 @@ func FindUsersWithSearch(w http.ResponseWriter, r *http.Request) {
 	var userSearchInfo []entities.UserForSearches
 	var blankSearchUser entities.UserForSearches
 	fmt.Println(len(userSearchInfo))
-	database.Instance.Where("address_1 IS NOT NULL AND address_1 != ?", "").Find(&users)
+	database.Instance.Where("username != ? AND address_1 IS NOT NULL AND address_1 != ?", username, "").Find(&users)
 	// Gets a list of all valid users
+
 	for i := 0; i < len(users); i++ {
 		distanceInMiles, distanceInKM := CalculateDistanceBetween(location, users[i].Address_1)
 		fmt.Println(distanceInMiles, distanceInKM)
@@ -575,6 +619,7 @@ func FindUsersWithSearch(w http.ResponseWriter, r *http.Request) {
 		userSearchInfo[i].Address_1 = users[i].Address_1
 		userSearchInfo[i].Country = users[i].Country
 		userSearchInfo[i].Distance_from_target_miles, userSearchInfo[i].Distance_from_target_km = distanceInMiles, distanceInKM
+
 	}
 
 	sort.SliceStable(userSearchInfo, func(i, j int) bool {
@@ -582,9 +627,36 @@ func FindUsersWithSearch(w http.ResponseWriter, r *http.Request) {
 	})
 	// Sorts the users in the slice by how close they are to the target distination, with closest first and furthest last
 
-	//for i := 0; i < len(users); i++ {
-	//	fmt.Println(i, users[i].Address_1)
-	//}
+	var similarUserInfo entities.CommonUsersPart
+	var sharedTags []entities.SharedTag
+	var emptyTag entities.SharedTag
+	// temporary variables used to assign all parts of the userSearchInfo information as related to tags
+
+	for i := 0; i < len(userSearchInfo); i++ {
+		database.Instance.Raw(`SELECT tag2.username, COUNT(tag2.tag_name) AS count
+							   FROM tags AS tag1, tags AS tag2
+							   WHERE tag1.username = ? 
+							   		 AND tag2.username = ?
+							   		 AND tag1.username != tag2.username 
+							   		 AND tag1.tag_name = tag2.tag_name
+							   GROUP BY tag2.username`, username, userSearchInfo[i].Username).Scan(&similarUserInfo)
+		userSearchInfo[i].NumberSharedTags = similarUserInfo.Count
+		// Provides the number of shared tags between the user (provided in the URL) shares with each corresponding user close to their searched location
+
+		database.Instance.Raw(`SELECT tag2.tag_name
+						  FROM tags AS tag1, tags AS tag2
+						  WHERE tag1.username = ? 
+								AND tag2.username = ? 
+								AND tag1.username != tag2.username 
+								AND tag1.tag_name = tag2.tag_name`, username, similarUserInfo.Username).Scan(&sharedTags)
+		// Lists the tags that the user (provided in the URL) shares with each corresponding user close to their searched location
+		for j := 0; j < len(sharedTags); j++ {
+			userSearchInfo[i].SharedTags = append(userSearchInfo[i].SharedTags, emptyTag)
+			userSearchInfo[i].SharedTags[j].TagName = sharedTags[j].TagName
+		}
+		// Adds all of the tags shared by the users from the temporary sharedTags slice to the userSearchInfo.SharedTags slice
+		// FOR ALEX => If I need to sort these in alphabetical order, please let me know
+	}
 
 	if len(userSearchInfo) > 0 {
 		w.Header().Set("Content-Type", "application/json")
@@ -596,6 +668,64 @@ func FindUsersWithSearch(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(204)
 		// Returns a 204, No Content, response, if the query goes through but no users exist that match the query
 	}
+}
+
+func TestSameTags(w http.ResponseWriter, r *http.Request) {
+	username := r.URL.Query().Get("username")
+	//var users []entities.User
+	var similarUsers []entities.CommonUsers
+	var sharedTags []entities.SharedTag
+	database.Instance.Raw(`SELECT tag2.username, COUNT(tag2.tag_name) AS count
+						   FROM tags AS tag1, tags AS tag2
+						   WHERE tag1.username = ? 
+						   		 AND tag1.username != tag2.username 
+						   		 AND tag1.tag_name = tag2.tag_name
+						   GROUP BY tag2.username`, username).Scan(&similarUsers)
+	database.Instance.Raw(`SELECT tag2.username, tag2.tag_name
+						   FROM tags AS tag1, tags AS tag2
+						   WHERE tag1.username = ? 
+						         AND tag1.username != tag2.username 
+								 AND tag1.tag_name = tag2.tag_name`, username).Scan(&sharedTags)
+	w.Header().Set("Content-Type", "application/json")
+
+	w.WriteHeader(http.StatusOK)
+	json.NewEncoder(w).Encode(similarUsers)
+	json.NewEncoder(w).Encode(sharedTags)
+}
+
+func TestSameTagsOther(w http.ResponseWriter, r *http.Request) {
+	username := r.URL.Query().Get("username")
+	//var users []entities.User
+	var temporaryCommonUser entities.CommonUsers
+	var similarUsers []entities.CommonUsers
+	var similarUserInfo []entities.CommonUsersPart
+	var sharedTags []entities.SharedTag
+	var emptyTag entities.SharedTag
+	database.Instance.Raw(`SELECT tag2.username, COUNT(tag2.tag_name) AS count
+						   FROM tags AS tag1, tags AS tag2
+						   WHERE tag1.username = ? 
+						   		 AND tag1.username != tag2.username 
+						   		 AND tag1.tag_name = tag2.tag_name
+						   GROUP BY tag2.username`, username).Scan(&similarUserInfo)
+	for i := 0; i < len(similarUserInfo); i++ {
+		similarUsers = append(similarUsers, temporaryCommonUser)
+		database.Instance.Raw(`SELECT tag2.tag_name
+						   FROM tags AS tag1, tags AS tag2
+						   WHERE tag1.username = ? 
+						   		 AND tag2.username = ? 
+						         AND tag1.username != tag2.username 
+								 AND tag1.tag_name = tag2.tag_name`, username, similarUserInfo[0].Username).Scan(&sharedTags)
+		similarUsers[i].Username = similarUserInfo[i].Username
+		similarUsers[i].Count = similarUserInfo[i].Count
+		for j := 0; j < len(sharedTags); j++ {
+			similarUsers[i].SharedTags = append(similarUsers[i].SharedTags, emptyTag)
+			similarUsers[i].SharedTags[j].TagName = sharedTags[j].TagName
+		}
+	}
+
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(http.StatusOK)
+	json.NewEncoder(w).Encode(similarUsers)
 }
 
 func TestSearch(w http.ResponseWriter, r *http.Request) {

@@ -1,0 +1,138 @@
+<div class="card mb-4">
+  <div class="card-header">
+    <div class="row">
+      <div class="col">Personal Info</div>
+      <div class="col">
+        <button
+          type="button"
+          class="btn pull-right py-0 my-0"
+          [class]="isEditingInfo? 'btn-outline-danger' : 'btn-outline-secondary'"
+          (click)="onClickEditInfo()">
+          {{ isEditingInfo? 'Stop Editing' : 'Edit' }}
+        </button>
+      </div>
+    </div>
+    
+  </div>
+  <div class="card-body pb-1">
+    <div class="row my-3">
+      <div class="col-12 col-md-4 mb-4 mb-md-0 mx-auto text-center" style="max-width: 250px">
+        <img [src]="imagePath"
+          class="rounded-circle img-fluid mb-3" style="max-width: 200px">
+        <form #p="ngForm">
+          <button
+            type="button"
+            class="btn py-0 mt-0 mb-2"
+            [class]="isEditingPfp? 'btn-outline-danger' : 'btn-outline-secondary'"
+            (click)="onClickEditPfp()">
+            {{ isEditingPfp? 'Cancel' : 'Change Picture' }}
+        </button>
+          <input
+            *ngIf="isEditingPfp"
+            type="file"
+            class="form-control form-control-sm"
+            ngModel
+            required
+            name="newpfp"
+            accept="image/png, image/jpeg"
+            (change)="onUploadPfp($event)">
+        </form>
+      </div>
+      <div class="col-xs-12 col-md-8">
+        <form (ngSubmit)="onSubmitChangesInfo()" #f="ngForm">
+          <ul class="list-group list-group-flush">
+
+            <!-- Input For Username -->
+            <li class="list-group-item mb-3 pb-4">
+              <div class="row">
+                <div class="col-4 pb-1">
+                  Username
+                </div>
+                <div class="col-8">
+                  <label *ngIf="!isEditingInfo" class="py-0">{{ activeUser.username }}</label>
+                  <input
+                    required
+                    autocomplete="off"
+                    *ngIf="isEditingInfo"
+                    ngModel
+                    [(ngModel)]="inputValuesInfo.newUsername"
+                    type="text"
+                    id="newusername"
+                    name="newusername"
+                    class="form-control py-0">
+                </div>
+              </div>
+            </li>
+
+            <!-- Input For Email -->
+            <li class="list-group-item mb-3 pb-4">
+              <div class="row">
+                <div class="col-4 pb-1">
+                  Email
+                </div>
+                <div class="col-8">
+                  <label *ngIf="!isEditingInfo" class="py-0">{{ activeUser.email }}</label>
+                  <input
+                    email
+                    required
+                    autocomplete="off"
+                    *ngIf="isEditingInfo"
+                    ngModel
+                    [(ngModel)]="inputValuesInfo.newEmail"
+                    type="email"
+                    id="newemail"
+                    name="newemail"
+                    class="form-control py-0">
+                </div>
+              </div>
+            </li>
+
+            <!-- Input For Password -->
+            <li class="list-group-item mb-3 pb-4">
+              <div class="row">
+                <div class="col-4 pb-1">
+                  Password
+                </div>
+                <div class="col-8">
+                  <label *ngIf="!isEditingInfo" class="py-0">********</label>
+                  <input
+                    autocomplete="off"
+                    *ngIf="isEditingInfo"
+                    ngModel
+                    [(ngModel)]="inputValuesInfo.newPassword"
+                    placeholder="********"
+                    type="text"
+                    id="newpassword"
+                    name="newpassword"
+                    class="form-control py-0">
+                </div>
+              </div>
+            </li>
+            <li *ngIf="!isEditingInfo || !f.dirty" class="list-group-item"></li>
+            <button
+              *ngIf="isEditingInfo && f.dirty"
+              [disabled]="!f.valid"
+              type="submit"
+              class="btn btn-primary my-1 py-1 mx-auto">Save Changes
+            </button>
+          </ul>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="card mb-4">
+  <div class="card-header">
+    <div class="row">
+      <div class="col">Details</div>
+      <div class="col">
+        <button type="button" class="btn btn-outline-secondary pull-right py-0 my-0">Edit</button>
+      </div>
+    </div>
+    
+  </div>
+  <div class="card-body">
+
+  </div>
+</div>

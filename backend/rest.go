@@ -30,6 +30,7 @@ func httpHandler() http.Handler {
 
 	// ** Delete Routes ** //
 	router.HandleFunc("/api/users/{id}", DeleteUser).Methods("DELETE")
+	router.HandleFunc("/api/tags", DeleteTags).Methods("DELETE")
 
 	// ** Normal Routes ** //
 	// Pages/Authentication
@@ -41,6 +42,7 @@ func httpHandler() http.Handler {
 
 	//Searches
 	router.HandleFunc("/api/search", FindUsersWithSearch)
+	router.HandleFunc("/api/tagging", TestSameTagsOther)
 
 	// Friend Request routes
 	router.HandleFunc("/api/sendFriendRequest", SendFriendRequest)

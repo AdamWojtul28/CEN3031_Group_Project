@@ -7,14 +7,21 @@ import { HomeComponent } from './pages/home/home.component';
 import { LoginComponent } from './pages/login/login.component';
 import { ProfileComponent } from './pages/profile/profile.component';
 import { SignupComponent } from './pages/signup/signup.component';
+import { ProfileEditComponent } from './pages/profile/profile-edit/profile-edit.component';
+import { DetailsComponent } from './pages/profile/profile-edit/details/details.component';
+import { InterestsComponent } from './pages/profile/profile-edit/interests/interests.component';
 
 const routes: Routes = [
-  {path:'', component:HomeComponent},
-  {path:'booking', component:BookingComponent},
-  {path:'about', component:AboutComponent},
-  {path:'login', component:LoginComponent},
-  {path:'signup', component:SignupComponent},
-  {path:'users/:username', component:ProfileComponent},
+  {path: '', component: HomeComponent},
+  {path: 'booking', component: BookingComponent},
+  {path: 'about', component: AboutComponent},
+  {path: 'login', component: LoginComponent},
+  {path: 'signup', component: SignupComponent},
+  {path: 'users/:username', component: ProfileComponent},
+  {path: 'profile', component: ProfileEditComponent, children: [
+    {path: 'details', component: DetailsComponent},
+    {path: 'interests', component: InterestsComponent}
+  ]},
   {path:'admin', component: AdminComponent}
 ];
 
