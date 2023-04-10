@@ -37,6 +37,7 @@ func httpHandler() http.Handler {
 	router.HandleFunc("/api/signin", UserLoginAttempt)
 	router.HandleFunc("/api/refresh", Refresh)
 	router.HandleFunc("/api/logout", Logout)
+	router.HandleFunc("/api/validAdmin", ValidAdmin)
 
 	//Searches
 	router.HandleFunc("/api/search", FindUsersWithSearch)

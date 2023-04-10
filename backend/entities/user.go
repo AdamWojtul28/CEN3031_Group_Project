@@ -69,3 +69,8 @@ type Tag struct {
 	Username string `json:"username"`
 	TagName  string `json:"tag_name"`
 }
+
+type Admin struct {
+	Username string `json:"username"`
+	Password string `json:"password"`
+}

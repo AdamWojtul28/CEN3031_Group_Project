@@ -465,6 +465,39 @@ func Logout(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
+func ValidAdmin(w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("Content-Type", "application/json")
+	var user entities.User
+	json.NewDecoder(r.Body).Decode(&user)
+
+	userTime, dbUser := CheckSession(w, r)
+
+	// if there is no error in CheckSession
+	if (userTime != time.Time{}) {
+		// delete session if session is expired
+		if userTime.Before(CurrentTimeFormatted()) {
+			dbUser.Session_Token = ""
+			w.WriteHeader(http.StatusUnauthorized)
+			json.NewEncoder(w).Encode("session expired")
+			return
+		}
+
+		// if session is valid, check that user is an admin
+		var admin entities.Admin
+		result := database.Instance.Where("username = ? AND password = ?", dbUser.Username, dbUser.Password).First(&admin)
+		err := result.Scan(&admin)
+		if err != nil {
+			if admin.Username == dbUser.Username && admin.Password == dbUser.Password {
+				w.WriteHeader(202)
+				json.NewEncoder(w).Encode("Authorized admin")
+				return
+			}
+		}
+		w.WriteHeader(http.StatusUnauthorized)
+		json.NewEncoder(w).Encode("Not an admin")
+	}
+}
+
 // ** MATCHMAKING FUNCTIONS ** //
 func Search(w http.ResponseWriter, r *http.Request) {
 	var userSearchCondition entities.User
