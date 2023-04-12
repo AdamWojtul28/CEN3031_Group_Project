@@ -20,6 +20,7 @@ type User struct {
 	Emergency_contact_phone_number string `json:"emergency_contact_phone_number"`
 	Emergency_contact_address      string `json:"emergency_contact_address"`
 	ProfileImage                   string `json:"profile_image"`
+	Status                         string `json:"status"`
 }
 
 type Listing struct {

@@ -82,6 +82,48 @@ func CheckSession(w http.ResponseWriter, r *http.Request) (time.Time, entities.U
 	return userTime, dbUser
 }
 
+func UpdateDbUser(w http.ResponseWriter, r *http.Request, user entities.User) {
+	database.Instance.Save(&user)
+	w.Header().Set("Content-Type", "application/json")
+	json.NewEncoder(w).Encode(user)
+	w.WriteHeader(202)
+}
+
+func RegisterUser(w http.ResponseWriter, r *http.Request, status string) {
+	var tmpUser entities.User
+	json.NewDecoder(r.Body).Decode(&tmpUser)
+	if !CheckIfUserNameExists(tmpUser.Username) {
+		w.WriteHeader(http.StatusNotFound)
+		json.NewEncoder(w).Encode("No such username exists")
+		return
+	}
+	// double check that logged in user is an admin
+	userTime, dbUser := CheckSession(w, r)
+
+	// if there is no error in CheckSession
+	if (userTime != time.Time{}) {
+		// delete session if session is expired
+		if userTime.Before(CurrentTimeFormatted()) {
+			dbUser.Session_Token = ""
+			w.WriteHeader(http.StatusUnauthorized)
+			json.NewEncoder(w).Encode("session expired")
+			return
+		}
+		if !CheckIfAdmin(dbUser) {
+			w.WriteHeader(http.StatusUnauthorized)
+			json.NewEncoder(w).Encode("Not an admin")
+			return
+		}
+
+		var user entities.User
+		database.Instance.Where("username = ?", tmpUser.Username).First(&user)
+		json.NewDecoder(r.Body).Decode(&user)
+		user.Status = status
+
+		UpdateDbUser(w, r, user)
+	}
+}
+
 // ** CREATE USER ** //
 func CreateUser(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
@@ -100,6 +142,7 @@ func CreateUser(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	user.Password = string(hashedPassword)
+	user.Status = "Pending"
 
 	// create new random session token
 	sessionToken := uuid.New().String()
@@ -142,7 +185,6 @@ func CreateListing(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
-// ** CREATE LISTING ** //
 func AddTags(w http.ResponseWriter, r *http.Request) {
 	username := r.URL.Query().Get("username")
 	var rawTag entities.RawTag
@@ -373,6 +415,18 @@ func CheckIfConnectionExists(sender string, reciever string) (bool, entities.Con
 	return false, connection
 }
 
+func CheckIfAdmin(dbUser entities.User) bool {
+	var admin entities.Admin
+	result := database.Instance.Where("username = ? AND password = ?", dbUser.Username, dbUser.Password).First(&admin)
+	err := result.Scan(&admin)
+	if err != nil {
+		if admin.Username == dbUser.Username && admin.Password == dbUser.Password {
+			return true
+		}
+	}
+	return false
+}
+
 // ** AUTHENTICATION/QUERY FUNCTIONS ** //
 func UserLoginAttempt(w http.ResponseWriter, r *http.Request) {
 	var temporaryUser entities.User
@@ -380,13 +434,13 @@ func UserLoginAttempt(w http.ResponseWriter, r *http.Request) {
 	userName := temporaryUser.Username
 	if !(CheckIfUserNameExists(userName)) {
 		w.WriteHeader(http.StatusNotFound)
-		json.NewEncoder(w).Encode("No such username exists!")
+		json.NewEncoder(w).Encode("No such username exists")
 		return
 		// Checks if username does not exist
 	}
 	if !(CompareHashes(temporaryUser)) {
 		w.WriteHeader(401)
-		json.NewEncoder(w).Encode("Incorrect password!")
+		json.NewEncoder(w).Encode("Incorrect password")
 		return
 		// Checks if username exists, but password is incorrect
 	}
@@ -415,9 +469,6 @@ func UserLoginAttempt(w http.ResponseWriter, r *http.Request) {
 	json.NewEncoder(w).Encode(user)
 
 	w.WriteHeader(202)
-	// Code for 'Accepted'
-	//json.NewEncoder(w).Encode("Proceed to page")
-	// Checks if username and password check out, from here, proceed to profile page
 }
 
 func Welcome(w http.ResponseWriter, r *http.Request) {
@@ -525,19 +576,26 @@ func ValidAdmin(w http.ResponseWriter, r *http.Request) {
 		}
 
 		// if session is valid, check that user is an admin
-		var admin entities.Admin
-		result := database.Instance.Where("username = ? AND password = ?", dbUser.Username, dbUser.Password).First(&admin)
-		err := result.Scan(&admin)
-		if err != nil {
-			if admin.Username == dbUser.Username && admin.Password == dbUser.Password {
-				w.WriteHeader(202)
-				json.NewEncoder(w).Encode("Authorized admin")
-				return
-			}
+		if !CheckIfAdmin(dbUser) {
+			w.WriteHeader(http.StatusUnauthorized)
+			json.NewEncoder(w).Encode("Not an admin")
+			return
 		}
-		w.WriteHeader(http.StatusUnauthorized)
-		json.NewEncoder(w).Encode("Not an admin")
+		w.WriteHeader(202)
+		json.NewEncoder(w).Encode("Authorized admin")
 	}
+}
+
+func AcceptUser(w http.ResponseWriter, r *http.Request) {
+	RegisterUser(w, r, "Accepted")
+}
+
+func DenyUser(w http.ResponseWriter, r *http.Request) {
+	RegisterUser(w, r, "Denied")
+}
+
+func BanUser(w http.ResponseWriter, r *http.Request) {
+	RegisterUser(w, r, "Banned")
 }
 
 // ** MATCHMAKING FUNCTIONS ** //

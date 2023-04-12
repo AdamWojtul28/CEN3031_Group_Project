@@ -50,6 +50,11 @@ func httpHandler() http.Handler {
 	router.HandleFunc("/api/removeFriend", RemoveFriend)
 	router.HandleFunc("/api/retrieveFriends", RetrieveFriends)
 
+	// Admin Routes
+	router.HandleFunc("/api/acceptUser", AcceptUser)
+	router.HandleFunc("/api/denyUser", DenyUser)
+	router.HandleFunc("/api/banUser", BanUser)
+
 	// WARNING: this route must be the last route defined.
 	router.PathPrefix("/").Handler(AngularHandler).Methods("GET")
 

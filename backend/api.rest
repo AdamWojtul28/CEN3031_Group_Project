@@ -19,8 +19,12 @@ POST http://{{host}}/api/signin HTTP/1.1
 content-type: application/json
     
 {
+    // admin login
     "username": "DarrionRamos",
     "password": "sup3rs3cur3!?"
+
+    //"username": "MR. Invincible",
+    //"password": "you cant touch this"
 }
 
 ###
@@ -30,8 +34,8 @@ POST http://{{host}}/api/welcome HTTP/1.1
 content-type: application/json
 
 {
-    "username": "John3",
-    "password": "waffles"
+   "username": "DarrionRamos",
+   "password": "sup3rs3cur3!?"
 }
 
 ###
@@ -40,12 +44,38 @@ content-type: application/json
 POST http://{{host}}/api/validAdmin HTTP/1.1
 content-type: application/json
 
+###
+
+// Accept OR unban User (Admin)
+POST http://{{host}}/api/acceptUser HTTP/1.1
+content-type: application/json
+
 {
-    "username": "poop",
-    "password": ""
+    "username": "MR. Invincible"
 }
 
 ###
+
+// Deny User (Admin)
+POST http://{{host}}/api/denyUser HTTP/1.1
+content-type: application/json
+
+{
+    "username": "MR. Invincible"
+}
+
+###
+
+// Ban User (Admin)
+POST http://{{host}}/api/banUser HTTP/1.1
+content-type: application/json
+
+{
+    "username": "MR. Invincible"
+}
+
+###
+
 // Send Friend Request
 POST http://{{host}}/api/sendFriendRequest HTTP/1.1
 content-type: application/json
@@ -193,5 +223,5 @@ content-type: application/json
 ###
 
 // Delete User
-DELETE http://{{host}}/api/users/57 HTTP/1.1
+DELETE http://{{host}}/api/users/28 HTTP/1.1
 content-type: application/json
