@@ -1,6 +1,6 @@
 @host = localhost:5000
 
-// Reordering them so it kind follows a natural flow
+/////////////////////////////////////// ** Basic User Routes ** ///////////////////////////////////////
 
 // Create User
 POST http://{{host}}/api/users HTTP/1.1
@@ -14,17 +14,73 @@ content-type: application/json
 
 ###
 
+// Get All User OR search for a user (?username= exampleName)
+GET http://{{host}}/api/users?username=Jim%2C+SmithHTTP/1.1
+content-type: application/json
+
+###
+
+// Update User Basic Info
+PUT http://{{host}}/api/users/59 HTTP/1.1
+content-type: application/json
+
+{
+    "username": "MATT",
+    "password": "acktumally",
+    "biography": "YEEA!"
+}
+
+###
+
+// Update User Detailed Info
+PUT http://{{host}}/api/users/6 HTTP/1.1
+content-type: application/json
+
+{
+    "birthday": "updated!",
+    "email": "updated",
+    "phone": "updated!",
+    "gender": "updated!",
+    "address_1": "updated!",
+    "address_2": "updated!",
+    "address_3": "updated!",
+    "biography": "updated!",
+    "country": "updated!",
+    "emergency_contact_name": "updated!",
+    "emergency_contact_phone_number": "updated!",
+    "emergency_contact_address": "updated!"
+}
+
+###
+
+// Delete User
+DELETE http://{{host}}/api/users/28 HTTP/1.1
+content-type: application/json
+
+###
+
+// Get User By ID
+GET http://{{host}}/api/users/5 HTTP/1.1
+content-type: application/json
+
+###
+
+/////////////////////////////////////// ** Basic Page Routes ** ///////////////////////////////////////
+
 // Login to profile
 POST http://{{host}}/api/signin HTTP/1.1
 content-type: application/json
     
 {
-    // admin login
-    "username": "DarrionRamos",
-    "password": "sup3rs3cur3!?"
+    // admin login (pls keep)
+    //"username": "DarrionRamos",
+    //"password": "sup3rs3cur3!?"
 
     //"username": "MR. Invincible",
     //"password": "you cant touch this"
+
+    "username": "John3",
+    "password": "waffles"
 }
 
 ###
@@ -40,41 +96,68 @@ content-type: application/json
 
 ###
 
-// Authenticate user as admin
-POST http://{{host}}/api/validAdmin HTTP/1.1
-content-type: application/json
-
-###
-
-// Accept OR unban User (Admin)
-POST http://{{host}}/api/acceptUser HTTP/1.1
+// Refresh the page for logged in user
+POST http://{{host}}/api/refresh HTTP/1.1
 content-type: application/json
 
 {
-    "username": "MR. Invincible"
+    "username": "John3",
+    "password": "waffles"
 }
 
 ###
 
-// Deny User (Admin)
-POST http://{{host}}/api/denyUser HTTP/1.1
+// Logout user
+POST http://{{host}}/api/logout HTTP/1.1
+content-type: application/json
+
+###
+
+/////////////////////////////////////// ** Listing Routes ** ///////////////////////////////////////
+
+// Add a reservation
+POST http://localhost:5000/api/reservations HTTP/1.1
 content-type: application/json
 
 {
-    "username": "MR. Invincible"
+    "start_date": "2006-11-15",
+    "end_date": "2006-11-25",
+    "guest_name": "Adam Wujtulewski",
+    "guest_username": "Adam Wujtulewski",
+    "guest_email": "adamwuj@gmail.com",
+    "host_name": "John Doe",
+    "host_username": "JohnDoe",
+    "host_email": "johndoe@gmail.com",
+    "host_address": "London, UK",
+    "host_country": "United Kingdom",
+    "status": "pending"
+}
+
+###
+// Add a listing
+POST http://localhost:5000/api/listings HTTP/1.1
+content-type: application/json
+{
+    "start_date": "2006-01-01",
+    "end_date": "2006-01-03",
+    "host_name": "Jake Doe",
+    "host_username": "JakeDoe",
+    "host_email": "jakedoe@gmail.com",
+    "host_address": "London, UK",
+    "host_country": "United Kingdom",
+    "capacity": 4,
+    "status": "pending"
 }
 
 ###
 
-// Ban User (Admin)
-POST http://{{host}}/api/banUser HTTP/1.1
+// Get users living close to a desired location
+GET http://{{host}}/api/search?location=Oxford%2C%20England&maxDistance=1000&unit=mi HTTP/1.1
 content-type: application/json
 
-{
-    "username": "MR. Invincible"
-}
-
 ###
+
+/////////////////////////////////////// ** Friend Routes ** ///////////////////////////////////////
 
 // Send Friend Request
 POST http://{{host}}/api/sendFriendRequest HTTP/1.1
@@ -119,109 +202,40 @@ content-type: application/json
 
 ###
 
-// Refresh the page for logged in user
-http://{{host}}/api/refresh HTTP/1.1
+/////////////////////////////////////// ** Admin Routes ** ///////////////////////////////////////
+
+// Authenticate user as admin
+POST http://{{host}}/api/validAdmin HTTP/1.1
+content-type: application/json
+
+###
+
+// Accept OR unban User (Admin)
+POST http://{{host}}/api/acceptUser HTTP/1.1
 content-type: application/json
 
 {
-    "username": "John3",
-    "password": "waffles"
+    "username": "MR. Invincible"
 }
 
 ###
 
-// Logout user
-POST http://{{host}}/api/logout HTTP/1.1
-content-type: application/json
-
-###
-
-// Add a reservation
-POST http://localhost:5000/api/reservations HTTP/1.1
+// Deny User (Admin)
+POST http://{{host}}/api/denyUser HTTP/1.1
 content-type: application/json
 
 {
-    "start_date": "2006-11-15",
-    "end_date": "2006-11-25",
-    "guest_name": "Adam Wujtulewski",
-    "guest_username": "Adam Wujtulewski",
-    "guest_email": "adamwuj@gmail.com",
-    "host_name": "John Doe",
-    "host_username": "JohnDoe",
-    "host_email": "johndoe@gmail.com",
-    "host_address": "London, UK",
-    "host_country": "United Kingdom",
-    "status": "pending"
-}
-
-###
-// Add a listing
-POST http://localhost:5000/api/listings HTTP/1.1
-content-type: application/json
-{
-    "start_date": "2006-01-01",
-    "end_date": "2006-01-03",
-    "host_name": "Jake Doe",
-    "host_username": "JakeDoe",
-    "host_email": "jakedoe@gmail.com",
-    "host_address": "London, UK",
-    "host_country": "United Kingdom",
-    "capacity": 4,
-    "status": "pending"
+    "username": "MR. Invincible"
 }
 
 ###
 
-// Get User By ID
-GET http://{{host}}/api/users/5 HTTP/1.1
-content-type: application/json
-
-###
-
-// Get All User OR search for a user (?username= exampleName)
-GET http://{{host}}/api/users?username=Jim%2C+SmithHTTP/1.1
-content-type: application/json
-
-###
-// Get users living close to a desired location
-GET http://{{host}}/api/search?location=Oxford%2C%20England&maxDistance=1000&unit=mi HTTP/1.1
-content-type: application/json
-
-###
-
-// Update User Basic Info
-PUT http://{{host}}/api/users/59 HTTP/1.1
+// Ban User (Admin)
+POST http://{{host}}/api/banUser HTTP/1.1
 content-type: application/json
 
 {
-    "username": "MATT",
-    "password": "acktumally",
-    "biography": "YEEA!"
+    "username": "MR. Invincible"
 }
 
 ###
-
-// Update User Detailed Info
-PUT http://{{host}}/api/users/6 HTTP/1.1
-content-type: application/json
-
-{
-    "birthday": "updated!",
-    "email": "updated",
-    "phone": "updated!",
-    "gender": "updated!",
-    "address_1": "updated!",
-    "address_2": "updated!",
-    "address_3": "updated!",
-    "biography": "updated!",
-    "country": "updated!",
-    "emergency_contact_name": "updated!",
-    "emergency_contact_phone_number": "updated!",
-    "emergency_contact_address": "updated!"
-}
-
-###
-
-// Delete User
-DELETE http://{{host}}/api/users/28 HTTP/1.1
-content-type: application/json

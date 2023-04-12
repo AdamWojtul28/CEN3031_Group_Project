@@ -35,7 +35,7 @@ func httpHandler() http.Handler {
 	// ** Normal Routes ** //
 	// Pages/Authentication
 	router.HandleFunc("/api/welcome", Welcome)
-	router.HandleFunc("/api/signin", UserLoginAttempt)
+	router.HandleFunc("/api/signin", Login)
 	router.HandleFunc("/api/refresh", Refresh)
 	router.HandleFunc("/api/logout", Logout)
 	router.HandleFunc("/api/validAdmin", ValidAdmin)
