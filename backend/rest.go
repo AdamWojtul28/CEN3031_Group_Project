@@ -16,6 +16,7 @@ func httpHandler() http.Handler {
 	// each request defines what function will be called for the respective url.
 	// each URL can only have one of each get, post, etc .. or it will use the first
 
+	//router.HandleFunc("/websocket", handleConnections)
 	// ** Get Routes ** //
 	router.HandleFunc("/api/users", GetUsers).Methods("GET")
 	router.HandleFunc("/api/users/{id}", GetUserById).Methods("GET")
