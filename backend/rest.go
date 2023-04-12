@@ -1,11 +1,14 @@
 package main
 
 import (
+	"golang_angular/sockets"
+	"log"
 	"net/http"
 	"os"
 
 	"github.com/gorilla/handlers"
 	"github.com/gorilla/mux"
+	"github.com/gorilla/websocket"
 )
 
 // httpHandler creates the backend HTTP router for queries, types,
@@ -15,6 +18,9 @@ func httpHandler() http.Handler {
 	// Your REST API requests go here
 	// each request defines what function will be called for the respective url.
 	// each URL can only have one of each get, post, etc .. or it will use the first
+
+	hub := sockets.NewHub()
+	go hub.Run()
 
 	// ** Get Routes ** //
 	router.HandleFunc("/api/users", GetUsers).Methods("GET")
@@ -54,6 +60,26 @@ func httpHandler() http.Handler {
 	router.HandleFunc("/api/acceptUser", AcceptUser)
 	router.HandleFunc("/api/denyUser", DenyUser)
 	router.HandleFunc("/api/banUser", BanUser)
+
+	router.HandleFunc("/ws/{username}", func(responseWriter http.ResponseWriter, request *http.Request) {
+		var upgrader = websocket.Upgrader{
+			ReadBufferSize:  1024,
+			WriteBufferSize: 1024,
+		}
+
+		// Reading username from request parameter
+		username := mux.Vars(request)["username"]
+
+		// Upgrading the HTTP connection socket connection
+		connection, err := upgrader.Upgrade(responseWriter, request, nil)
+		if err != nil {
+			log.Println(err)
+			return
+		}
+
+		sockets.CreateNewSocketUser(hub, connection, username)
+
+	})
 
 	// WARNING: this route must be the last route defined.
 	router.PathPrefix("/").Handler(AngularHandler).Methods("GET")
