@@ -94,10 +94,3 @@ type Admin struct {
 	Username string `json:"username"`
 	Password string `json:"password"`
 }
-
-type DirectMessage struct {
-	User1   string `json:"user1"`
-	User2   string `json:"user2"`
-	Content string `json:"content"`
-	Date    string `json:"date"`
-}

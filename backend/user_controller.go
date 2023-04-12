@@ -5,8 +5,6 @@ import (
 	"fmt"
 	"golang_angular/database"
 	"golang_angular/entities"
-	"io"
-	"log"
 	"net/http"
 	"sort"
 	"strconv"
@@ -15,7 +13,6 @@ import (
 
 	"github.com/google/uuid"
 	"github.com/gorilla/mux"
-	"github.com/gorilla/websocket"
 	"golang.org/x/crypto/bcrypt"
 )
 
@@ -821,49 +818,4 @@ func DeleteUser(w http.ResponseWriter, r *http.Request) {
 	database.Instance.Delete(&user, userId)
 	w.WriteHeader(http.StatusOK)
 	json.NewEncoder(w).Encode("User Deleted Successfully!")
-}
-
-func handleConnections(w http.ResponseWriter, r *http.Request) {
-	ws, err := upgrader.Upgrade(w, r, nil)
-	if err != nil {
-		log.Fatal(err)
-	}
-	// Defer is used because the connection is closed only when the function returns
-	defer ws.Close()
-	clients[ws] = true
-
-	for {
-		// infinite loop, but this is encouraged in Go
-		var newMessage entities.DirectMessage
-		err := ws.ReadJSON(&newMessage)
-		// Reads in a new message as JSON and maps it to a Message object
-		if err != nil {
-			delete(clients, ws)
-			break
-			// if this websocket has issues, it removes itself from the clients pool and breaks out of the connection
-		}
-		broadcaster <- newMessage
-		// Above sends a new message to the channel
-	}
-}
-
-func handleMessages() {
-	for {
-		newMessage := <-broadcaster
-
-		for client := range clients {
-			err := client.WriteJSON(newMessage)
-			if err != nil && unsafeError(err) {
-				log.Printf("error: %v", err)
-				client.Close()
-				delete(clients, client)
-			}
-		}
-	}
-
-}
-
-// If a message is sent while a client is closing, ignore the error
-func unsafeError(err error) bool {
-	return !websocket.IsCloseError(err, websocket.CloseGoingAway) && err != io.EOF
 }
