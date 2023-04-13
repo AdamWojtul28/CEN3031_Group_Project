@@ -9,6 +9,7 @@ import (
 	"log"
 	"time"
 
+	"github.com/google/uuid"
 	"github.com/gorilla/websocket"
 )
 
@@ -20,17 +21,19 @@ const (
 )
 
 func CreateNewSocketUser(hub *Hub, connection *websocket.Conn, username string) {
+	uniqueID := uuid.New()
 	client := &Client{
 		hub:                 hub,
 		webSocketConnection: connection,
 		send:                make(chan SocketEventStruct),
 		username:            username,
+		userID:              uniqueID.String(),
 	}
-
-	client.hub.active <- client
 
 	go client.writePump()
 	go client.readPump()
+
+	client.hub.active <- client
 }
 
 // CreateNewSocketUser creates a new user who can use a socket
