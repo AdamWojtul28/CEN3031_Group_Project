@@ -16,6 +16,29 @@
 /*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
 
 --
+-- Table structure for table `admins`
+--
+
+DROP TABLE IF EXISTS `admins`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `admins` (
+  `username` varchar(30) NOT NULL,
+  `password` varchar(60) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='no routes should be able to change this table';
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `admins`
+--
+
+LOCK TABLES `admins` WRITE;
+/*!40000 ALTER TABLE `admins` DISABLE KEYS */;
+INSERT INTO `admins` VALUES ('DarrionRamos','$2a$08$yWy6L1P6GxycYjtrH5NGWuFTaUrvlVbT4HPJMpU1iY3c1JsDsNXFq');
+/*!40000 ALTER TABLE `admins` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
 -- Table structure for table `connections`
 --
 
@@ -24,12 +47,12 @@ DROP TABLE IF EXISTS `connections`;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `connections` (
   `ID` bigint unsigned NOT NULL AUTO_INCREMENT,
-  `sender` longtext NOT NULL,
-  `reciever` longtext NOT NULL,
-  `status` longtext NOT NULL,
+  `sender` varchar(30) NOT NULL,
+  `reciever` varchar(30) NOT NULL,
+  `status` varchar(15) NOT NULL,
   PRIMARY KEY (`ID`),
   UNIQUE KEY `idconnections_UNIQUE` (`ID`)
-) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=15 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -38,7 +61,7 @@ CREATE TABLE `connections` (
 
 LOCK TABLES `connections` WRITE;
 /*!40000 ALTER TABLE `connections` DISABLE KEYS */;
-INSERT INTO `connections` VALUES (1,'John3','Bob','Pending');
+INSERT INTO `connections` VALUES (10,'G','YEEE','Pending'),(11,'God','Disciple','Pending'),(12,'YareDaze','brother','Accepted'),(13,'YareDaze','yesMan','Accepted'),(14,'YareDaze','test','Pending');
 /*!40000 ALTER TABLE `connections` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -53,16 +76,16 @@ CREATE TABLE `listings` (
   `id` int unsigned NOT NULL AUTO_INCREMENT,
   `start_date` date NOT NULL,
   `end_date` date NOT NULL,
-  `host_name` longtext,
-  `host_username` longtext NOT NULL,
-  `host_email` longtext,
-  `host_address` longtext NOT NULL,
-  `guest_username_1` longtext,
-  `guest_username_2` longtext,
-  `guest_username_3` longtext,
-  `guest_username_4` longtext,
+  `host_name` varchar(100) DEFAULT NULL,
+  `host_username` varchar(30) NOT NULL,
+  `host_email` varchar(100) DEFAULT NULL,
+  `host_address` varchar(100) NOT NULL,
+  `guest_username_1` varchar(30) DEFAULT NULL,
+  `guest_username_2` varchar(30) DEFAULT NULL,
+  `guest_username_3` varchar(30) DEFAULT NULL,
+  `guest_username_4` varchar(30) DEFAULT NULL,
   `capacity` int NOT NULL,
-  `status` longtext NOT NULL,
+  `status` varchar(30) NOT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `id_UNIQUE` (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
@@ -87,26 +110,28 @@ DROP TABLE IF EXISTS `users`;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `users` (
   `id` bigint unsigned NOT NULL AUTO_INCREMENT,
-  `username` longtext NOT NULL,
-  `password` longtext NOT NULL,
-  `name` longtext,
-  `biography` longtext,
-  `birthday` longtext,
-  `email` longtext,
-  `phone` longtext,
-  `gender` longtext,
-  `address_1` longtext,
+  `username` varchar(30) NOT NULL,
+  `password` varchar(60) NOT NULL,
+  `status` varchar(15) NOT NULL,
+  `session_token` varchar(50) DEFAULT NULL,
+  `expiry` varchar(30) DEFAULT NULL,
+  `name` varchar(100) DEFAULT NULL,
   `address_2` longtext,
-  `address_3` longtext,
-  `country` longtext,
-  `emergency_contact_name` longtext,
-  `emergency_contact_phone_number` longtext,
-  `emergency_contact_address` longtext,
-  `expiry` longtext,
-  `session_token` longtext,
+  `email` varchar(100) DEFAULT NULL,
+  `phone` varchar(15) DEFAULT NULL,
+  `country` varchar(56) DEFAULT NULL,
+  `gender` varchar(50) DEFAULT NULL,
+  `birthday` varchar(50) DEFAULT NULL,
+  `address_1` varchar(100) DEFAULT NULL,
+  `address_3` varchar(100) DEFAULT NULL,
+  `emergency_contact_name` varchar(100) DEFAULT NULL,
+  `emergency_contact_phone_number` varchar(15) DEFAULT NULL,
+  `emergency_contact_address` varchar(100) DEFAULT NULL,
+  `biography` varchar(500) DEFAULT NULL,
+  `profile_image` longtext,
   PRIMARY KEY (`id`),
   UNIQUE KEY `id_UNIQUE` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=35 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=38 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -115,7 +140,7 @@ CREATE TABLE `users` (
 
 LOCK TABLES `users` WRITE;
 /*!40000 ALTER TABLE `users` DISABLE KEYS */;
-INSERT INTO `users` VALUES (1,'Jim Smith','password123',NULL,'I love UF so muuch, Go Gators!','','','','','','','','','','','',NULL,NULL),(2,'Adam Wujuletski','GoG8torz!',NULL,'Big BrAIN',NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL),(3,'MATT','acktumally',NULL,'Da!',NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL),(8,'testuser1','pass123',NULL,'','','','','','London, UK','','','','','','','',''),(9,'MATT','password123',NULL,'I love UF so muuch, this place rules.','','','','','','','','','','','',NULL,NULL),(10,'MATT','password123',NULL,'I love UF so muuch, this place rules.','','','','','','','','','','','',NULL,NULL),(11,'MATT','password123',NULL,'I love UF so muuch, this place rules.','','','','','','','','','','','',NULL,NULL),(14,'MATTY4','password123',NULL,'I love UF so muuch, this place rules.','','','','','','','','','','','',NULL,NULL),(15,'John Doe','password123',NULL,'I love UF so muuch, this place rules.','','','','','','','','','','','',NULL,NULL),(16,'Jake Doe','password123',NULL,'I love UF so muuch, this place rules.','','','','','','','','','','','',NULL,NULL),(25,'Johnny Miller','password123',NULL,'I love UF so muuch, this place rules.','','','','','','','','','','','',NULL,NULL),(26,'JimmyBoah','$2a$08$CpXZl3Jmv491vc9HEHSiIObl5cn.g6PUoSEb53EYdnKohfowX8n1O',NULL,'','','','','','','','','','','','',NULL,NULL),(27,'FredSmith','$2a$08$e5SoADGsAH01jX8cEhlvcuxa96bITdY1h0RZT1UF6mEJ1wW8vB5nG',NULL,'','','','','','','','','','','','',NULL,NULL),(28,'Jack Daniels','SomePassword123',NULL,'','','','','','Warsaw, PL','','','','','','','2023-03-16 18:34:50.0413','096d9c84-d20f-42f4-938e-d889604e2bcc');
+INSERT INTO `users` VALUES (35,'John3','$2a$08$wIYms7cgPbKSVX.Peugp1evvQ5AJ3Pd7nOlmz5SCkoVZjPQQDq6v.','Accepted','752207f0-f3bf-4be1-a73a-2abe284d7f1c','2023-04-12 18:41:20.6745','BOBBY','','','','','','','','','','','','',''),(36,'DarrionRamos','$2a$08$yWy6L1P6GxycYjtrH5NGWuFTaUrvlVbT4HPJMpU1iY3c1JsDsNXFq','Accepted','6bcebf37-2841-4c6e-9b9e-64757786974e','2023-04-12 19:40:55.4299','Darrion Ramos','','','','','','','','','','','','',''),(37,'MR. Invincible','$2a$08$4DB/Bid6pKMjyEYWlRLekeeG4.KhKWup4Y31rMU0n.USjaTGaiNde','Accepted','af7a8f9a-ca2b-49e0-b8ff-a152e1c6c3b1','2023-04-12 18:17:03.5803','Bob John','','','','','','','','','','','','','');
 /*!40000 ALTER TABLE `users` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
@@ -128,4 +153,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2023-03-29 16:43:11
+-- Dump completed on 2023-04-12 20:10:40
