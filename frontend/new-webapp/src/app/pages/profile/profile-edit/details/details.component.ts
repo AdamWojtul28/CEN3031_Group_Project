@@ -1,6 +1,7 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { NgForm } from '@angular/forms';
 import { DomSanitizer } from '@angular/platform-browser';
+import { Router } from '@angular/router';
 import { UpdateProfileInfoModel } from 'src/app/models/http-formatting.model';
 import { User } from 'src/app/models/user.model';
 import { UsersHttpService } from 'src/app/services/users-http.service';
@@ -10,12 +11,9 @@ import { UsersHttpService } from 'src/app/services/users-http.service';
   templateUrl: './details.component.html',
   styleUrls: ['./details.component.css']
 })
-export class DetailsComponent implements OnInit{
+export class DetailsComponent implements OnInit, OnDestroy{
   @ViewChild('f') infoForm!: NgForm;
   @ViewChild('p') pfpForm!: NgForm;
-
-  //activeUser= new User('alexander', 'sojhfksdjasdfiluhjkdsf', '12', 'alex@gmail.com',
-  //  'There once was a person. That person is me.', 'sdfsdf', new Date());
 
   isEditingInfo: boolean = false;
   isEditingPfp: boolean = false;
@@ -26,17 +24,29 @@ export class DetailsComponent implements OnInit{
     newPassword: "********"
   }
 
+  activeUserSub: any;
   activeUser: User;
   imagePath: any = "https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_960_720.png";
 
-  constructor(private userHttpService: UsersHttpService, private sanitizer: DomSanitizer) {}
+  constructor(private userHttpService: UsersHttpService, private sanitizer: DomSanitizer, private router: Router) {}
 
   ngOnInit() {
-    this.activeUser = this.userHttpService.userSnapshot;
-    if (this.activeUser.profile_image) {
-      this.imagePath = this.sanitizer.bypassSecurityTrustResourceUrl(this.activeUser.profile_image)
-      console.log(this.imagePath);
-    }
+    this.activeUserSub = this.userHttpService.user.subscribe({
+      next: (value: User) => {
+        if(value === null){
+          this.router.navigate(['/login'])
+        }
+        this.activeUser = value;
+        if (this.activeUser.profile_image) {
+          this.imagePath = this.sanitizer.bypassSecurityTrustResourceUrl(this.activeUser.profile_image)
+          console.log(this.imagePath);
+        }
+      }
+    });    
+  }
+
+  ngOnDestroy() {
+    this.activeUserSub.unsubscribe();
   }
 
   onClickEditPfp() {
@@ -70,6 +80,7 @@ export class DetailsComponent implements OnInit{
       console.log(myReader.result);
       this.userHttpService.updateUserInfo(changes).subscribe({
         next: (res) => {
+          this.isEditingPfp = false;
           console.log(res);
         },
         error: (err) => {
@@ -94,6 +105,7 @@ export class DetailsComponent implements OnInit{
 
     this.userHttpService.updateUserInfo(changes).subscribe({
       next: (res) => {
+        this.isEditingInfo = false;
         console.log(res);
       },
       error: (err) => {

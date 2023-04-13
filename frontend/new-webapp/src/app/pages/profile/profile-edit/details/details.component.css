@@ -1,3 +1,14 @@
-.form-control{
+.form-control {
   color: #666;
+}
+
+.square-img {
+  width: 200px;
+  height: 200px;
+  object-fit: cover;
+  object-position: top;
+  border-radius: 50px;
+  border-width: 2px;
+  border-style: solid;
+  border-color: #ddd;
 }
