@@ -1,6 +1,7 @@
 package main
 
 import (
+	"fmt"
 	"golang_angular/sockets"
 	"log"
 	"net/http"
@@ -62,9 +63,24 @@ func httpHandler() http.Handler {
 	router.HandleFunc("/api/banUser", BanUser)
 
 	router.HandleFunc("/ws/{username}", func(responseWriter http.ResponseWriter, request *http.Request) {
+		var origins = []string{"http://localhost:5000", "http://127.0.0.1"}
 		var upgrader = websocket.Upgrader{
 			ReadBufferSize:  1024,
 			WriteBufferSize: 1024,
+			//CheckOrigin: func(r *http.Request) bool {
+			//	var origin = r.Header.Get("origin")
+			//	fmt.Println(origin)
+			//	return true
+			//},
+			CheckOrigin: func(r *http.Request) bool {
+				var origin = r.Header.Get("origin")
+				for _, allowOrigin := range origins {
+					if origin == allowOrigin {
+						return true
+					}
+				}
+				return false
+			},
 		}
 
 		// Reading username from request parameter
@@ -79,6 +95,8 @@ func httpHandler() http.Handler {
 
 		sockets.CreateNewSocketUser(hub, connection, username)
 
+		currentClients := sockets.GetAllConnectedUsers(hub)
+		fmt.Print(len(currentClients))
 	})
 
 	// WARNING: this route must be the last route defined.
