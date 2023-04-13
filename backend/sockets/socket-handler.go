@@ -5,6 +5,7 @@ package sockets
 import (
 	"bytes"
 	"encoding/json"
+	"fmt"
 	"log"
 	"time"
 
@@ -87,7 +88,7 @@ func handleSocketPayloadEvents(client *Client, socketEventPayload SocketEventStr
 			EventName: socketEventPayload.EventName,
 			EventPayload: JoinDisconnectPayload{
 				UserID: client.userID,
-				Users:  getAllConnectedUsers(client.hub),
+				Users:  GetAllConnectedUsers(client.hub),
 			},
 		})
 
@@ -97,7 +98,7 @@ func handleSocketPayloadEvents(client *Client, socketEventPayload SocketEventStr
 			EventName: socketEventPayload.EventName,
 			EventPayload: JoinDisconnectPayload{
 				UserID: client.userID,
-				Users:  getAllConnectedUsers(client.hub),
+				Users:  GetAllConnectedUsers(client.hub),
 			},
 		})
 
@@ -115,13 +116,14 @@ func handleSocketPayloadEvents(client *Client, socketEventPayload SocketEventStr
 	}
 }
 
-func getAllConnectedUsers(hub *Hub) []Client {
+func GetAllConnectedUsers(hub *Hub) []Client {
 	var users []Client
 	var blankClient Client
 	for singleClient := range hub.clients {
 		blankClient.userID = singleClient.userID
 		blankClient.username = singleClient.username
 		users = append(users, blankClient)
+		fmt.Println(blankClient.userID, blankClient.username)
 	}
 	return users
 }
