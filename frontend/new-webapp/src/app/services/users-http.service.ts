@@ -3,9 +3,8 @@ import { Injectable } from "@angular/core";
 import { ResponseData, User } from "../models/user.model";
 import { LoginUserInfo } from "../models/user.model";
 
-import { map } from 'rxjs/operators';
-import { Subject } from "rxjs";
-import { tap } from "rxjs/operators";
+import { map, tap, take } from 'rxjs/operators';
+import { BehaviorSubject } from "rxjs";
 import { Router } from "@angular/router";
 import { UpdateProfileInfoModel } from "../models/http-formatting.model";
 
@@ -13,8 +12,8 @@ import { UpdateProfileInfoModel } from "../models/http-formatting.model";
 
 @Injectable({providedIn: 'root'})
 export class UsersHttpService {
-  userSnapshot: User;
-  user = new Subject<User>();
+  user = new BehaviorSubject<User>(null);
+  private tokenExpirationTimer: any;
 
   constructor(private http: HttpClient, private router: Router) {}
 
@@ -32,7 +31,8 @@ export class UsersHttpService {
           res.session_token, 
           res.expiry);
         this.user.next(user);
-        this.userSnapshot = user;
+        this.autoLogout(user.tokenExpiration);
+        localStorage.setItem('userData', JSON.stringify(user));
       }));
   }
 
@@ -50,14 +50,58 @@ export class UsersHttpService {
           res.session_token, 
           res.expiry);
         this.user.next(user);
-        this.userSnapshot = user;
+        this.autoLogout(user.tokenExpiration);
+        localStorage.setItem('userData', JSON.stringify(user));
       }));
   }
 
+  autoLogin() {
+    const userData: {
+      username: string,
+      password: string,
+      id: string,
+      email: string,
+      bio: string,
+      profile_image: string,
+      _token: string,
+      _tokenExpiration: Date
+    } = JSON.parse(localStorage.getItem('userData'));
+    if (!userData) {
+      return;
+    }
+
+    const loadedUser = new User(
+      userData.username,
+      userData.password,
+      userData.id,
+      userData.email,
+      userData.bio,
+      userData.profile_image,
+      userData._token,
+      userData._tokenExpiration);
+    
+    if (loadedUser.token) {
+      this.user.next(loadedUser);
+      this.autoLogout(loadedUser.tokenExpiration);
+    }
+  }
+
   logoutUser() {
-    console.log('logigin out')
     this.user.next(null);
     this.router.navigate(['']);
+    localStorage.removeItem('userData');
+    if(this.tokenExpirationTimer) {
+      clearTimeout(this.tokenExpirationTimer);
+    }
+    this.tokenExpirationTimer = null;
+  }
+
+  autoLogout(expirationDate: Date) {
+    var expirationDuration = new Date(expirationDate).getTime() - new Date().getTime();
+    console.log(expirationDuration);
+    this.tokenExpirationTimer = setTimeout(() => {
+      this.logoutUser();
+    }, expirationDuration);
   }
 
   deleteUser(userId: string) {
@@ -85,7 +129,20 @@ export class UsersHttpService {
   }
 
   updateUserInfo(changes: UpdateProfileInfoModel) {
-    return this.http.put<ResponseData>('http://localhost:5000/api/users/' + this.userSnapshot.id, changes);
+    return this.http.put<ResponseData>('http://localhost:5000/api/users/' + this.user.value.id, changes)
+    .pipe(tap(res => {
+      const user = new User(
+        res.username, 
+        res.password, 
+        res.id, 
+        res.email, 
+        res.biography, 
+        res.profile_image,
+        res.session_token, 
+        res.expiry);
+      this.user.next(user);
+      localStorage.setItem('userData', JSON.stringify(user));
+    }));
   }
 
 }

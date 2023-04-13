@@ -17,6 +17,10 @@ export class User {
     }
     return this._token;
   }
+
+  get tokenExpiration() {
+    return this._tokenExpiration;
+  }
 }
 
 export interface LoginUserInfo {
