@@ -10,6 +10,7 @@ import { SignupComponent } from './pages/signup/signup.component';
 import { ProfileEditComponent } from './pages/profile/profile-edit/profile-edit.component';
 import { DetailsComponent } from './pages/profile/profile-edit/details/details.component';
 import { InterestsComponent } from './pages/profile/profile-edit/interests/interests.component';
+import { AuthGuard } from './services/auth.guard';
 
 const routes: Routes = [
   {path: '', component: HomeComponent},
@@ -17,8 +18,8 @@ const routes: Routes = [
   {path: 'about', component: AboutComponent},
   {path: 'login', component: LoginComponent},
   {path: 'signup', component: SignupComponent},
-  {path: 'users/:username', component: ProfileComponent},
-  {path: 'profile', component: ProfileEditComponent, children: [
+  {path: 'users/:username', component: ProfileComponent, canActivate: [AuthGuard]},
+  {path: 'profile', component: ProfileEditComponent, canActivate: [AuthGuard], children: [
     {path: 'details', component: DetailsComponent},
     {path: 'interests', component: InterestsComponent}
   ]},
