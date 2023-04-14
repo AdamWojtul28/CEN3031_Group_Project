@@ -11,9 +11,11 @@ import { ProfileEditComponent } from './pages/profile/profile-edit/profile-edit.
 import { DetailsComponent } from './pages/profile/profile-edit/details/details.component';
 import { InterestsComponent } from './pages/profile/profile-edit/interests/interests.component';
 import { AuthGuard } from './services/auth.guard';
+import { UserHomeComponent } from './pages/home/user-home/user-home.component';
 
 const routes: Routes = [
   {path: '', component: HomeComponent},
+  {path: 'home', component: UserHomeComponent},
   {path: 'booking', component: BookingComponent},
   {path: 'about', component: AboutComponent},
   {path: 'login', component: LoginComponent},

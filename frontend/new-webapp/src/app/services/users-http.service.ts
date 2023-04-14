@@ -1,6 +1,6 @@
 import { HttpClient } from "@angular/common/http";
 import { Injectable } from "@angular/core";
-import { ResponseData, User } from "../models/user.model";
+import { Friendship, ResponseData, User } from "../models/user.model";
 import { LoginUserInfo } from "../models/user.model";
 
 import { map, tap, take } from 'rxjs/operators';
@@ -99,9 +99,9 @@ export class UsersHttpService {
   autoLogout(expirationDate: Date) {
     var expirationDuration = new Date(expirationDate).getTime() - new Date().getTime();
     console.log(expirationDuration);
-    this.tokenExpirationTimer = setTimeout(() => {
-      this.logoutUser();
-    }, expirationDuration);
+    //this.tokenExpirationTimer = setTimeout(() => {
+    //  this.logoutUser();
+    //}, expirationDuration);
   }
 
   deleteUser(userId: string) {
@@ -145,4 +145,34 @@ export class UsersHttpService {
     }));
   }
 
+  // Requests Dealing with Friends
+
+  getFriends(username: string) {
+    const data = {username: username};
+    return this.http.post<{[key: number] : Friendship}>('http://localhost:5000/api/retrieveFriends', data)
+    .pipe(
+      map(data => {
+        const friendsArray : Friendship[] = [];
+        for (const key in data) {
+          friendsArray.push(data[key]);
+        }
+        return friendsArray;
+      })
+    )
+  }
+
+  sendFriendRequest(sender: string, receiver: string) {
+    const data = {sender: sender, reciever: receiver};
+    return this.http.post('http://localhost:5000/api/sendFriendRequest', data);
+  }
+
+  acceptFriendRequest(sender: string, receiver: string) {
+    const data = {sender: sender, reciever: receiver};
+    return this.http.post('http://localhost:5000/api/acceptFriendRequest', data);
+  }
+
+  deleteFriend(sender: string, receiver: string) {
+    const data = {sender: sender, reciever: receiver};
+    return this.http.post('http://localhost:5000/api/removeFriend', data);
+  }
 }

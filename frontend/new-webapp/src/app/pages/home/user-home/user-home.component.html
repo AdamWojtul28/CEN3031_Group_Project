@@ -1,0 +1,78 @@
+<section style="background-color: #507464; min-height: 100%">
+  <div class="container">
+    <div class="row" style="padding:100px 0px 50px 0px">
+      <div class="col-12 col-lg-4 mb-4 mb-lg-0">
+
+        <div class="card mb-4" *ngIf="incomingFriends.length > 0">
+          <div class="card-header">
+            Friend Requests
+          </div>
+          <div class="card-body">
+            <ul class="list-group">
+              <li class="list-group-item" *ngFor="let request of incomingFriends">
+                {{ request.sender }}
+                <button class="btn-icon" (click)="onAcceptRequest(request.sender)">
+                  <i class="fa fa-check p-0"></i>
+                </button>
+                <button class="btn-icon" (click)="onDeclineRequest(request.sender)">
+                  <i class="fa fa-trash p-0"></i>
+                </button>
+              </li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="card mb-4">
+          <div class="card-header">
+            Your Friends
+          </div>
+          
+          <div class="card-body">
+            <ul class="list-group">
+              <li class="list-group-item" *ngIf="userFriends.length === 0">
+                You have no friends
+              </li>
+              <li class="list-group-item" *ngFor="let friend of userFriends">
+                {{ friend.sender === activeUser.username ? friend.reciever : friend.sender }}
+              </li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-header">
+            Add Friends
+          </div>
+
+          <div class="card-body">
+            <div class="input-group mb-3">
+              <input 
+                [(ngModel)]="addFriendName"
+                type="text"
+                class="form-control"
+                placeholder="Username"
+                name="friendname"
+                required>
+              <div class="input-group-append">
+                <button class="btn btn-outline-secondary" type="submit" (click)="onAddFriend()">Add</button>
+              </div>
+            </div>
+
+            <div *ngIf="outgoingFriends.length > 0">
+              <hr>
+              <ul class="list-group">
+                <li class="list-group-item" *ngFor="let request of outgoingFriends">
+                  {{ request.reciever }}
+                  <button class="btn-icon" (click)="onUndoRequest(request.reciever)">
+                    <i class="fa fa-trash p-0"></i>
+                  </button>
+                </li>
+              </ul>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </div>
+  </div>
+</section>

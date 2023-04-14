@@ -48,5 +48,10 @@ export interface ResponseData {
   session_token : string;
   username : string;
   profile_image : string;
+}
 
+export interface Friendship {
+  sender: string;
+  reciever: string;
+  status: string;
 }

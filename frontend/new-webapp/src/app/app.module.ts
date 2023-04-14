@@ -19,6 +19,7 @@ import { AdminComponent } from './pages/admin/admin.component';
 import { ProfileEditComponent } from './pages/profile/profile-edit/profile-edit.component';
 import { DetailsComponent } from './pages/profile/profile-edit/details/details.component';
 import { InterestsComponent } from './pages/profile/profile-edit/interests/interests.component';
+import { UserHomeComponent } from './pages/home/user-home/user-home.component';
 
 @NgModule({
   declarations: [
@@ -34,7 +35,8 @@ import { InterestsComponent } from './pages/profile/profile-edit/interests/inter
     AdminComponent,
     ProfileEditComponent,
     DetailsComponent,
-    InterestsComponent
+    InterestsComponent,
+    UserHomeComponent
   ],
   imports: [
     BrowserModule,

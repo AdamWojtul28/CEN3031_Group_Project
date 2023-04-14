@@ -13,7 +13,7 @@ export class ProfileEditComponent implements OnInit{
   user: User;
   section: string = 'details'
 
-  constructor(private router: Router) { }
+  constructor(private router: Router, private userHttpService: UsersHttpService) { }
 
   ngOnInit() {
     this.router.navigate(['profile/details']);
@@ -21,6 +21,9 @@ export class ProfileEditComponent implements OnInit{
 
   onChooseSection(section: string) {
     this.section = section;
+  }
 
+  onLogout() {
+    this.userHttpService.logoutUser();
   }
 }

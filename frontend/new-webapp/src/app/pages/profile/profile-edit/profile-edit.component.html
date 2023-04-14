@@ -17,6 +17,9 @@
               (click)="onChooseSection('interests')"
               [ngClass]="{ 'select' : section === 'interests' }">Interests
             </li>
+            <li class="list-group-item py-4">
+              <button type="button" class="btn btn-outline-danger py-0" (click)="onLogout()">Log out</button>
+            </li>
           </ul>
         </div>
       </div>
