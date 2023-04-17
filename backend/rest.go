@@ -34,6 +34,7 @@ func httpHandler() http.Handler {
 
 	// ** Put Routes ** //
 	router.HandleFunc("/api/users/{id}", UpdateUser).Methods("PUT")
+	router.HandleFunc("/api/tags", UpdateTags).Methods("PUT")
 
 	// ** Delete Routes ** //
 	router.HandleFunc("/api/users/{id}", DeleteUser).Methods("DELETE")
