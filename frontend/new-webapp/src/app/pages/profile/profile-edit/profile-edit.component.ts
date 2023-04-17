@@ -16,7 +16,12 @@ export class ProfileEditComponent implements OnInit{
   constructor(private router: Router, private userHttpService: UsersHttpService) { }
 
   ngOnInit() {
-    this.router.navigate(['profile/details']);
+    if (this.router.url === '/profile') {
+      this.router.navigate(['profile/details']);
+    }
+    else {
+      this.section = this.router.url.substring(9);
+    }
   }
 
   onChooseSection(section: string) {

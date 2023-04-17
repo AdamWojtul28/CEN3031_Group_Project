@@ -1,14 +1,148 @@
 <div class="card mb-4">
   <div class="card-header">
     <div class="row">
-      <div class="col">Personal Info</div>
-      <div class="col">
-        <button type="button" class="btn btn-outline-secondary pull-right py-0 my-o">Edit</button>
-      </div>
+      <div class="col">Interests</div>
     </div>
     
   </div>
   <div class="card-body">
+    <form #f="ngForm" (submit)="onSaveChanges()">
+      <div class="accordion">
 
+        <div class="accordion-item">
+          <div class="accordion-header">
+            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseCreative" aria-expanded="false" aria-controls="collapseCreative">Creative</button>
+          </div>
+          <div id="collapseCreative" class="accordion-collapse collapse" aria-labelledby="headingOne">
+            <div class="accordion-body">
+              <div class="row">
+                <div class="col-12 col-sm-6 col-xl-4" *ngFor="let interest of creativeInterests.interests">
+                  <div class="form-check py-2">
+                    <input
+                      class="form-check-input"
+                      type="checkbox"
+                      [value]="false"
+                      id="flexCheckDefault"
+                      [name]="interest.interest"
+                      ngModel>
+                    <label class="form-check-label" for="flexCheckDefault">
+                      {{ interest.interest }}
+                    </label>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="accordion-item">
+          <div class="accordion-header" id="sportsHeader">
+            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseSports" aria-expanded="false" aria-controls="collapseSports">Sports</button>
+          </div>
+          <div id="collapseSports" class="accordion-collapse collapse" aria-labelledby="sportsHeader" data-bs-parent="#accordionExample">
+            <div class="accordion-body">
+              <div class="row">
+                <div class="col-12 col-sm-6 col-xl-4" *ngFor="let interest of sportsInterests.interests">
+                  <div class="form-check py-2">
+                    <input
+                      class="form-check-input"
+                      type="checkbox"
+                      [value]="false"
+                      id="flexCheckDefault"
+                      [name]="interest.interest"
+                      ngModel>
+                    <label class="form-check-label" for="flexCheckDefault">
+                      {{ interest.interest }}
+                    </label>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="accordion-item">
+          <div class="accordion-header" id="techHeader">
+            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseTech" aria-expanded="false" aria-controls="collapseTech">Technology</button>
+          </div>
+          <div id="collapseTech" class="accordion-collapse collapse" aria-labelledby="techHeader" data-bs-parent="#accordionExample">
+            <div class="accordion-body">
+              <div class="row">
+                <div class="col-12 col-sm-6 col-xl-4" *ngFor="let interest of techInterests.interests">
+                  <div class="form-check py-2">
+                    <input
+                      class="form-check-input"
+                      type="checkbox"
+                      [value]="false"
+                      id="flexCheckDefault"
+                      [name]="interest.interest"
+                      ngModel>
+                    <label class="form-check-label" for="flexCheckDefault">
+                      {{ interest.interest }}
+                    </label>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="accordion-item">
+          <div class="accordion-header" id="leisureHeader">
+            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseLeisure" aria-expanded="false" aria-controls="collapseLeisure">Leisure</button>
+          </div>
+          <div id="collapseLeisure" class="accordion-collapse collapse" aria-labelledby="leisureHeader" data-bs-parent="#accordionExample">
+            <div class="accordion-body">
+              <div class="row">
+                <div class="col-12 col-sm-6 col-xl-4" *ngFor="let interest of leisureInterests.interests">
+                  <div class="form-check py-2">
+                    <input
+                      class="form-check-input"
+                      type="checkbox"
+                      [value]="false"
+                      id="flexCheckDefault"
+                      [name]="interest.interest"
+                      ngModel>
+                    <label class="form-check-label" for="flexCheckDefault">
+                      {{ interest.interest }}
+                    </label>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="accordion-item">
+          <div class="accordion-header" id="miscHeader">
+            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseMisc" aria-expanded="false" aria-controls="collapseMisc">Other</button>
+          </div>
+          <div id="collapseMisc" class="accordion-collapse collapse" aria-labelledby="miscHeader" data-bs-parent="#accordionExample">
+            <div class="accordion-body">
+              <div class="row">
+                <div class="col-12 col-sm-6 col-xl-4" *ngFor="let interest of miscInterests.interests">
+                  <div class="form-check py-2">
+                    <input
+                      class="form-check-input"
+                      type="checkbox"
+                      [value]="false"
+                      id="flexCheckDefault"
+                      [name]="interest.interest"
+                      ngModel>
+                    <label class="form-check-label" for="flexCheckDefault">
+                      {{ interest.interest }}
+                    </label>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+      <button type="submit" class="btn btn-primary mt-4" *ngIf="f.dirty">Save Changes</button>
+
+    </form>
   </div>
 </div>
