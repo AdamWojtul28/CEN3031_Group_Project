@@ -519,6 +519,28 @@ func UpdateTags(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
+func GetTags(w http.ResponseWriter, r *http.Request) {
+	// either get all users, or search for a username (using ?username=example username)
+	username := r.URL.Query().Get("username")
+	if username != "" {
+		var tags []entities.Tag
+		database.Instance.Where("username = ?", username).Find(&tags)
+		if len(tags) > 0 {
+			w.Header().Set("Content-Type", "application/json")
+			w.WriteHeader(http.StatusOK)
+			json.NewEncoder(w).Encode(tags)
+		} else {
+			w.WriteHeader(204)
+		}
+	} else {
+		var tags []entities.User
+		database.Instance.Find(&tags)
+		w.Header().Set("Content-Type", "application/json")
+		w.WriteHeader(http.StatusOK)
+		json.NewEncoder(w).Encode(tags)
+	}
+}
+
 func AddTags(w http.ResponseWriter, r *http.Request) {
 	username := r.URL.Query().Get("username")
 	var rawTag entities.RawTag
