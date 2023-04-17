@@ -74,6 +74,11 @@ type Tag struct {
 	TagName  string `json:"tag_name"`
 }
 
+type TagsToUpdate struct {
+	TagsToAdd    string `json:"tags_to_add"`
+	TagsToRemove string `json:"tags_to_remove"`
+}
+
 type CommonUsersPart struct {
 	Username string `json:"username"`
 	Count    uint   `json:"count"`
