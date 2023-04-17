@@ -1,0 +1,27 @@
+<section style="background-color: #507464; min-height: 100%">
+  <div class="container">
+    <div class="row" style="padding:100px 0px 50px 0px">
+
+      <div class="col-lg-3">
+        <div class="card mb-4 mb-lg-0">
+          <div class="card-header">
+            <b>Users</b>
+          </div>
+          <ul class="list-group" style="cursor: pointer">
+            <li
+              *ngFor="let friend of friends"
+              class="list-group-item py-2"
+              routerLink="{{ friend.username }}"
+              (click)="onChooseUser(friend.username)"
+              [ngClass]="{ 'select' : chattingWith === friend.username }">{{ friend.username }}
+            </li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="col-lg-9">
+        <router-outlet></router-outlet>
+      </div>
+    </div>
+  </div>
+</section>

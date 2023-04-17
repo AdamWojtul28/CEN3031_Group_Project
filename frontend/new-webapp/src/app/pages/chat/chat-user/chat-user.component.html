@@ -1,0 +1,18 @@
+<div class="card" *ngIf="chattingWith != null">
+  <div class="card-header">
+    {{ chattingWith }}
+  </div>
+
+  <div class="card-body">
+    <ul id="messages" class="list-group">
+      <li *ngFor="let message of messages" class="list-group-item">
+        {{ message }}
+      </li>
+    </ul>
+    <hr>
+    <form>
+      <input type="text" class="form-control" [(ngModel)]="chatBox" [ngModelOptions]="{standalone: true}">
+      <button class="btn btn-primary mt-1" (click)="send()">Send</button>
+    </form>
+  </div>
+</div>
