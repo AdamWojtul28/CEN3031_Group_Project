@@ -396,7 +396,7 @@ pm.test("must send unauthorized response", function () {
 
 ## Add documentation for Backend API
 
-### Exclusively Sprint 2 Documentation: 
+### Basic User Routes: 
   
 #### Get Single User:
 
@@ -428,9 +428,13 @@ DELETE http://localhost:5000/api/users/{id}
 
 - The above API call takes the id parameter in the URL and uses it to find (and later update) a user with the corresponding id, which is the primary key used in the application; this call uses the DeleteUser(w http.ResponseWriter, r \*http.Request) function to achieve this purpose. Firstly, the parameter in the URL is taken and stored in a mux variable. Then, before retreiving this user and encoding information to send back to user, the CheckIfUserIdExists function is employed, which takes the recently created ID of the user and queries for this id in the database. If the ID turns out to be zero (which is not possible since the first value in the database will be 1), this indicates that the user does not exist in the database, returning a false boolean. Otherwise, the instance of that user is deleted and the encoded message "User Deleted Successfully!" is sent to the frontend.
 
+#### Get Single User by Username:
 
-### New documentation for Backend API
+GET http://localhost:5000/api/users?username=exampleUserName
 
+- This route will return a user struct that matches the entered username if one exists (search for user via username).
+
+### Basic Page Routes
 #### User Sign Up:
 
 POST http://localhost:5000/api/users
@@ -463,12 +467,21 @@ POST http://localhost:5000/api/logout
 
 - This API call will be used to bring the user to logout the user from their current session. This means that the users cookie and the token in the database will be removed and the expiry time will be changed to the current time.
 
-#### Get Single User by Username:
+### Listing Routes
+#### Add Listing:
 
-GET http://localhost:5000/api/users?username=exampleUserName
+POST http://localhost:5000/api/listings
 
-- This route will return a user struct that matches the entered username if one exists (search for user via username).
+ - The above API call requires the frontend to send a Listing Object, which contains information about the listing, including start date, end date, status, capacity, and information about the host and guests. If a listing conflicts with another listing, the host will not be able to post the listing, as a host can only put up one listing at a time as it currently stands.
 
+#### Searching Test:
+
+GET http://localhost:5000/api/search
+
+- The above API call, when provided with URL query parameters, retreives other users platform who are close the desired location of the user, sent as a JSON Object to the frontend in sorted fashion, where users closest to the desired location are retreived first and furthest users from the desired location, but still within the radius of search (represented by the maxDistance parameter) are retreived last. Currently, this endpoint only works when all 3 parameters are provided.
+  - In the case of the following endpoint: http://localhost:5000/api/search?location=Oxford%2C%20England&maxDistance=1000&unit=mi, all users who are within 1000 miles of Oxford, England are retreived.
+
+### Friend Routes
 #### Send Friend Request:
 
 POST http://localhost:5000/api/sendFriendRequest
@@ -487,16 +500,4 @@ POST http://localhost:5000/api/removeFriend
 
 - Deletes a valid entry in the connectinons table. Checks for either combination of sender/reciever since either can cancel the friendship.
 
-#### Add Listing:
-
-POST http://localhost:5000/api/listings
-
- - The above API call requires the frontend to send a Listing Object, which contains information about the listing, including start date, end date, status, capacity, and information about the host and guests. If a listing conflicts with another listing, the host will not be able to post the listing, as a host can only put up one listing at a time as it currently stands.
-
-#### Searching Test:
-
-GET http://localhost:5000/api/search
-
-- The above API call, when provided with URL query parameters, retreives other users platform who are close the desired location of the user, sent as a JSON Object to the frontend in sorted fashion, where users closest to the desired location are retreived first and furthest users from the desired location, but still within the radius of search (represented by the maxDistance parameter) are retreived last. Currently, this endpoint only works when all 3 parameters are provided.
-  - In the case of the following endpoint: http://localhost:5000/api/search?location=Oxford%2C%20England&maxDistance=1000&unit=mi, all users who are within 1000 miles of Oxford, England are retreived.
-
+### Admin Routes
