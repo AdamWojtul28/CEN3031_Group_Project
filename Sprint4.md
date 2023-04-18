@@ -422,6 +422,12 @@ PUT http://localhost:5000/api/users/{id}
 
 - Updates the user's information connected with the ID sent in the route. Send any user elements to be updated as a json object.
 
+#### Remove Single User:
+
+DELETE http://localhost:5000/api/users/{id}
+
+- Simply removes the entire user from the backend database. The user to be deleted is the one with the corresponding ID sent in the route.
+
 ### Basic Page Routes
 #### User Sign Up:
 
@@ -473,23 +479,47 @@ GET http://localhost:5000/api/search
 
 POST http://localhost:5000/api/sendFriendRequest
 
-- This creates a new user connection in the connections table. This table is simply the username of the sender of the friend request, the username of the reciever, and the status of the request. The status will always be pending when sending a request. The frontend can use the sender/reciever information to display the proper information to each user.
+- This creates a new user connection in the connections table. This table is simply the username of the sender of the friend request, the username of the reciever, and the status of the request. The status will always be pending when sending a request. The frontend can use the sender/reciever information to display the proper information to each user. (requires a sender and reciever json object to be sent)
 
 #### Accept Friend Request:
 
 POST http://localhost:5000/api/acceptFriendRequest
 
-- Simply updates the entry in the connections table that corresponds to the user clicking accept, by changing the status of the connection to accepted. This checks first if there is a valid connection to modify.
+- Simply updates the entry in the connections table that corresponds to the user clicking accept, by changing the status of the connection to accepted. This checks first if there is a valid connection to modify. (requires a sender and reciever json object to be sent)
   
 #### Remove Friend:
 
 POST http://localhost:5000/api/removeFriend
 
-- Deletes a valid entry in the connectinons table. Checks for either combination of sender/reciever since either can cancel the friendship.
+- Recieves a sender and reciever json object. Deletes this pair if it is a valid entry in the connectinons table. Checks for either combination of sender/reciever since either can cancel the friendship.
+
+#### Retrieve Friends:
+
+POST http://localhost:5000/api/retrieveFriends
+
+- Retrieves a username as a json, and sends a json object of all connections where the username is present, regardless of status or reciever/sender.
 
 ### Admin Routes
-#### Remove Single User:
+#### Authenticate Admin:
 
-DELETE http://localhost:5000/api/users/{id}
+POST http://localhost:5000/api/validAdmin
 
-- Simply removes the entire 
+- No frontend data needs to be sent. This route will check the current user's session and cross check the logged in username and password with an admin SQL table. This table will have no routes that can edit it, so that admins can only be added manually to the table. Will return an unauthorized status if not found in the admin table and authorized if found.
+
+#### Accept a User:
+
+POST http://localhost:5000/api/acceptUser
+
+- Recieves a json object of the username of the user to be accepted. If this username is not in the users table this will return a status not found error. If found, the function will double check that the current session is still an admin session and then will change the status of the user to "Accepted" and will return a 200 status. (Can also be used to unban a user by resetting their status to accepted)
+
+#### Deny a User:
+
+POST http://localhost:5000/api/denyUser
+
+- Operates the same as Accept user, but modifies the status so that it reads "Denied".
+
+#### Ban a User:
+
+POST http://localhost:5000/api/banUser
+
+- Operates the same as Accept user, but modifies the status so that it reads "Banned".
