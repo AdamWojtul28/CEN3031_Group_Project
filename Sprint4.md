@@ -8,7 +8,16 @@
 
 
 #### Work Completed by Backend During this Sprint
-
+- Finished friend connection functionality so that now all of a users friends can be sent to the front end.
+- Completed current admin functionality goals:
+    - Admins can be manually added via SQL commands into admin table
+    - To access sensitive admin only sites, users will be checked. Their current session will be grabbed and compared to the information in the admin table to verify         they are one of the admins.
+    - Admins must now accept or deny new users. New users will not be able to access the site until they are approved
+    - Admins can also ban users from the site 
+- Added websocket functionality so that users can chat with each other:
+    -
+- Added the ability to store images as blobs of data so that users can have profile pictures
+- Changed the SQL table values to be specific character lengths to save space
 
 ## List unit tests and Cypress tests for frontend
 
