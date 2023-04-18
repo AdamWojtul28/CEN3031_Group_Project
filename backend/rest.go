@@ -1,15 +1,12 @@
 package main
 
 import (
-	"fmt"
 	"golang_angular/sockets"
-	"log"
 	"net/http"
 	"os"
 
 	"github.com/gorilla/handlers"
 	"github.com/gorilla/mux"
-	"github.com/gorilla/websocket"
 )
 
 // httpHandler creates the backend HTTP router for queries, types,
@@ -65,43 +62,6 @@ func httpHandler() http.Handler {
 
 	// Web Sockets
 	router.HandleFunc("/api/startSocket", webSocket)
-
-	router.HandleFunc("/ws/{username}", func(responseWriter http.ResponseWriter, request *http.Request) {
-		var origins = []string{"http://localhost:5000", "http://127.0.0.1"}
-		var upgrader = websocket.Upgrader{
-			ReadBufferSize:  1024,
-			WriteBufferSize: 1024,
-			//CheckOrigin: func(r *http.Request) bool {
-			//	var origin = r.Header.Get("origin")
-			//	fmt.Println(origin)
-			//	return true
-			//},
-			CheckOrigin: func(r *http.Request) bool {
-				var origin = r.Header.Get("origin")
-				for _, allowOrigin := range origins {
-					if origin == allowOrigin {
-						return true
-					}
-				}
-				return false
-			},
-		}
-
-		// Reading username from request parameter
-		username := mux.Vars(request)["username"]
-
-		// Upgrading the HTTP connection socket connection
-		connection, err := upgrader.Upgrade(responseWriter, request, nil)
-		if err != nil {
-			log.Println(err)
-			return
-		}
-
-		sockets.CreateNewSocketUser(hub, connection, username)
-
-		currentClients := sockets.GetAllConnectedUsers(hub)
-		fmt.Print(len(currentClients))
-	})
 
 	// WARNING: this route must be the last route defined.
 	router.PathPrefix("/").Handler(AngularHandler).Methods("GET")
