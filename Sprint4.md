@@ -15,7 +15,6 @@
     - Admins must now accept or deny new users. New users will not be able to access the site until they are approved
     - Admins can also ban users from the site 
 - Added websocket functionality so that users can chat with each other:
-    -
 - Added the ability to store images as blobs of data so that users can have profile pictures
 - Changed the SQL table values to be specific character lengths to save space
 
