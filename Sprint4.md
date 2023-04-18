@@ -394,7 +394,7 @@ pm.test("must send unauthorized response", function () {
 });
 ```
 
-## Add documentation for Backend API
+## Documentation for Backend API
 
 ### Basic User Routes: 
   
@@ -402,31 +402,7 @@ pm.test("must send unauthorized response", function () {
 
 GET http://localhost:5000/api/users/{id}
 
-- The above API call takes the id parameter in the URL and uses it to find a user with the corresponding id, which is the primary key used in the application; this call uses the GetUserById(w http.ResponseWriter, r \*http.Request) function to achieve this purpose. Firstly, the parameter in the URL is taken and stored in a mux variable. Then, before retreiving this user and encoding information to send back to user, the CheckIfUserIdExists function is employed, which takes the recently created ID of the user and queries for this id in the database. If the ID turns out to be zero (which is not possible since the first value in the database will be 1), this indicates that the user does not exist in the database, returning a false boolean. Otherwise, the instance of that user is stored and this user's information is encoded as a json and sent back to the frontend.
-
-#### Get All Users:
-
-GET http://localhost:5000/api/users
-
-- This function takes in no parameters and calls the GetUsers function. The GetUsers function takes all instances of users and encodes it into a json file and sends this json file to the front end.
-
-#### Update User Variation 1:
-
-PUT http://localhost:5000/api/users/{id}
-
-- The above API call takes the id parameter in the URL and uses it to find (and later update) a user with the corresponding id, which is the primary key used in the application; this call uses the UpdateUser(w http.ResponseWriter, r \*http.Request) function to achieve this purpose. Firstly, the parameter in the URL is taken and stored in a mux variable. Then, before retreiving this user and encoding information to send back to user, the CheckIfUserIdExists function is employed, which takes the recently created ID of the user and queries for this id in the database. If the ID turns out to be zero (which is not possible since the first value in the database will be 1), this indicates that the user does not exist in the database, returning a false boolean. Otherwise, the instance of that user is decoded, saved, and later updated by encoding the json body provided.
-
-#### Update User Variation 2:
-
-PUT http://localhost:5000/api/users/{id}
-
-- This API call behaves the same as the first update user variation, the only difference being that this updates detailed user information. Such as addresses, country, and other details.
-
-#### Remove Single User:
-
-DELETE http://localhost:5000/api/users/{id}
-
-- The above API call takes the id parameter in the URL and uses it to find (and later update) a user with the corresponding id, which is the primary key used in the application; this call uses the DeleteUser(w http.ResponseWriter, r \*http.Request) function to achieve this purpose. Firstly, the parameter in the URL is taken and stored in a mux variable. Then, before retreiving this user and encoding information to send back to user, the CheckIfUserIdExists function is employed, which takes the recently created ID of the user and queries for this id in the database. If the ID turns out to be zero (which is not possible since the first value in the database will be 1), this indicates that the user does not exist in the database, returning a false boolean. Otherwise, the instance of that user is deleted and the encoded message "User Deleted Successfully!" is sent to the frontend.
+- Returns a full user object as a json. Request the user to be returned by sending the route with the respective user's ID number.
 
 #### Get Single User by Username:
 
@@ -434,13 +410,24 @@ GET http://localhost:5000/api/users?username=exampleUserName
 
 - This route will return a user struct that matches the entered username if one exists (search for user via username).
 
+#### Get All Users:
+
+GET http://localhost:5000/api/users
+
+- This function takes in no parameters and calls the GetUsers function. The GetUsers function takes all instances of users and encodes it into a json file and sends this json file to the front end.
+
+#### Update User:
+
+PUT http://localhost:5000/api/users/{id}
+
+- Updates the user's information connected with the ID sent in the route. Send any user elements to be updated as a json object.
+
 ### Basic Page Routes
 #### User Sign Up:
 
 POST http://localhost:5000/api/users
 
-- The above API call requires the input of a user's email, username, and password, relying on the CreateUser(w http.ResponseWriter, r \*http.Request) to achieve this purpose. The way that the CreateUser function operates is that it first establishes the content type of the input as a json and creates a User structure, which is stored in the entities/user.go file. Once the following two operations are completed, the body of the http request is decoded and stored in the newly created user struct. Before it is encoded as part of the database, the CheckIfUserNameExists(userName string) function is called, which performs a query using the GORM. Where function to ensure that the newly created username is not a duplicate. If the username is a duplicate, a 409 (Conflict) HTTP response status code is sent, along with a message "Username is Taken!" to indicate to the user that a change in usrename is necessary to submit create a profile. If the username is unique, a 202 (Accepted) HTTP response status code is sent and a new user is created.
-  - Sprint 3: The passwords are now hashed and stored in the database using bycrpt. Creating a new user will also log them in with a token for two minutes as described in login route.
+- The above API call requires the input of a user's email, username, and password. The username must not be a duplicate entry. If the username is a duplicate, a 409 (Conflict) HTTP response status code is sent. If the username is unique, the password is hashed and all entered infromation is stored in the database along with a status tag of pending (202 Accepted code is sent). Users who have just been created should not be able to access the site, until an admin has manually accepted them and their "status" is "Accepted".
 
 #### User Sign In:
 
@@ -501,3 +488,8 @@ POST http://localhost:5000/api/removeFriend
 - Deletes a valid entry in the connectinons table. Checks for either combination of sender/reciever since either can cancel the friendship.
 
 ### Admin Routes
+#### Remove Single User:
+
+DELETE http://localhost:5000/api/users/{id}
+
+- Simply removes the entire 
