@@ -110,24 +110,24 @@ DROP TABLE IF EXISTS `users`;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `users` (
   `id` bigint unsigned NOT NULL AUTO_INCREMENT,
-  `username` varchar(30) NOT NULL,
-  `password` varchar(60) NOT NULL,
-  `status` varchar(15) NOT NULL,
-  `session_token` varchar(50) DEFAULT NULL,
-  `expiry` varchar(30) DEFAULT NULL,
-  `name` varchar(100) DEFAULT NULL,
+  `username` longtext,
+  `password` longtext,
+  `status` longtext,
+  `session_token` longtext,
+  `expiry` longtext,
+  `name` longtext,
   `address_2` longtext,
-  `email` varchar(100) DEFAULT NULL,
-  `phone` varchar(15) DEFAULT NULL,
-  `country` varchar(56) DEFAULT NULL,
-  `gender` varchar(50) DEFAULT NULL,
-  `birthday` varchar(50) DEFAULT NULL,
-  `address_1` varchar(100) DEFAULT NULL,
-  `address_3` varchar(100) DEFAULT NULL,
-  `emergency_contact_name` varchar(100) DEFAULT NULL,
-  `emergency_contact_phone_number` varchar(15) DEFAULT NULL,
-  `emergency_contact_address` varchar(100) DEFAULT NULL,
-  `biography` varchar(500) DEFAULT NULL,
+  `email` longtext,
+  `phone` longtext,
+  `country` longtext,
+  `gender` longtext,
+  `birthday` longtext,
+  `address_1` longtext,
+  `address_3` longtext,
+  `emergency_contact_name` longtext,
+  `emergency_contact_phone_number` longtext,
+  `emergency_contact_address` longtext,
+  `biography` longtext,
   `profile_image` longtext,
   PRIMARY KEY (`id`),
   UNIQUE KEY `id_UNIQUE` (`id`)
@@ -153,4 +153,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2023-04-12 20:10:40
+-- Dump completed on 2023-04-18 18:01:25

@@ -1,7 +1,6 @@
 package main
 
 import (
-	"golang_angular/sockets"
 	"net/http"
 	"os"
 
@@ -16,9 +15,6 @@ func httpHandler() http.Handler {
 	// Your REST API requests go here
 	// each request defines what function will be called for the respective url.
 	// each URL can only have one of each get, post, etc .. or it will use the first
-
-	hub := sockets.NewHub()
-	go hub.Run()
 
 	// ** Get Routes ** //
 	router.HandleFunc("/api/users", GetUsers).Methods("GET")
