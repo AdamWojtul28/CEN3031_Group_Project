@@ -1,6 +1,7 @@
 package main
 
 import (
+	"fmt"
 	"net/http"
 	"os"
 
@@ -12,6 +13,8 @@ import (
 // and serving the Angular frontend.
 func httpHandler() http.Handler {
 	router := mux.NewRouter().StrictSlash(true)
+
+	server := NewServer()
 	// Your REST API requests go here
 	// each request defines what function will be called for the respective url.
 	// each URL can only have one of each get, post, etc .. or it will use the first
@@ -57,7 +60,19 @@ func httpHandler() http.Handler {
 	router.HandleFunc("/api/banUser", BanUser)
 
 	// Web Sockets
-	router.HandleFunc("/api/startSocket", webSocket)
+	router.HandleFunc("/api/ws", func(w http.ResponseWriter, r *http.Request) {
+		upgrader.CheckOrigin = func(r *http.Request) bool { return true }
+
+		ws, err := upgrader.Upgrade(w, r, nil)
+		if err != nil {
+			fmt.Println(err)
+		}
+
+		server.conns[ws] = true
+
+		fmt.Println("Client Successfully Connected...")
+		server.readLoop(ws)
+	})
 
 	// WARNING: this route must be the last route defined.
 	router.PathPrefix("/").Handler(AngularHandler).Methods("GET")

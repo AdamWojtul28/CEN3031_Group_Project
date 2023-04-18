@@ -960,21 +960,43 @@ var upgrader = websocket.Upgrader{
 	WriteBufferSize: 1024,
 }
 
-func reader(conn *websocket.Conn) {
+type Server struct {
+	conns map[*websocket.Conn]bool
+}
+
+func NewServer() *Server {
+	return &Server{
+		conns: make(map[*websocket.Conn]bool),
+	}
+}
+
+func (s *Server) handle(ws *websocket.Conn) {
+	fmt.Println("New incoming connection from clinet:", ws.RemoteAddr())
+
+	s.conns[ws] = true
+
+	s.readLoop(ws)
+}
+
+func (s *Server) readLoop(ws *websocket.Conn) {
 	for {
-		messageType, p, err := conn.ReadMessage()
+		messageType, p, err := ws.ReadMessage()
 		if err != nil {
 			fmt.Println(err)
 			return
 		}
 		fmt.Println(string(p))
+		// Add to the DB here
 
-		if err := conn.WriteMessage(messageType, p); err != nil {
-			fmt.Println(err)
-			return
+		for connections := range s.conns {
+			if err := connections.WriteMessage(messageType, p); err != nil {
+				fmt.Println(err)
+				return
+			}
 		}
 	}
 }
+
 func webSocket(w http.ResponseWriter, r *http.Request) {
 	upgrader.CheckOrigin = func(r *http.Request) bool { return true }
 
@@ -985,4 +1007,21 @@ func webSocket(w http.ResponseWriter, r *http.Request) {
 
 	fmt.Println("Client Successfully Connected...")
 	reader(ws)
+}
+
+func reader(conn *websocket.Conn) {
+	for {
+		messageType, p, err := conn.ReadMessage()
+		if err != nil {
+			fmt.Println(err)
+			return
+		}
+		fmt.Println(string(p))
+		// Add to the DB here
+
+		if err := conn.WriteMessage(messageType, p); err != nil {
+			fmt.Println(err)
+			return
+		}
+	}
 }
