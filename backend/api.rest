@@ -73,14 +73,14 @@ content-type: application/json
     
 {
     // admin login (pls keep)
-    //"username": "DarrionRamos",
-    //"password": "sup3rs3cur3!?"
+    "username": "DarrionRamos",
+    "password": "sup3rs3cur3!?"
 
     //"username": "MR. Invincible",
     //"password": "you cant touch this"
 
-    "username": "John3",
-    "password": "waffles"
+    //"username": "John3",
+    //"password": "waffles"
 }
 
 ###
@@ -237,5 +237,13 @@ content-type: application/json
 {
     "username": "MR. Invincible"
 }
+
+###
+
+/////////////////////////////////////// ** Web Socket Routes ** ///////////////////////////////////////
+
+// start the websocket?
+POST http://{{host}}/api/startSocket HTTP/1.1
+content-type: application/json
 
 ###

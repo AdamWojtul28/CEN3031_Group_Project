@@ -13,6 +13,7 @@ import (
 
 	"github.com/google/uuid"
 	"github.com/gorilla/mux"
+	"github.com/gorilla/websocket"
 	"golang.org/x/crypto/bcrypt"
 )
 
@@ -951,4 +952,37 @@ func DenyUser(w http.ResponseWriter, r *http.Request) {
 
 func BanUser(w http.ResponseWriter, r *http.Request) {
 	RegisterUser(w, r, "Banned")
+}
+
+// ///////////////////////////////////// ** Websocket Functions ** ///////////////////////////////////////
+var upgrader = websocket.Upgrader{
+	ReadBufferSize:  1024,
+	WriteBufferSize: 1024,
+}
+
+func reader(conn *websocket.Conn) {
+	for {
+		messageType, p, err := conn.ReadMessage()
+		if err != nil {
+			fmt.Println(err)
+			return
+		}
+		fmt.Println(string(p))
+
+		if err := conn.WriteMessage(messageType, p); err != nil {
+			fmt.Println(err)
+			return
+		}
+	}
+}
+func webSocket(w http.ResponseWriter, r *http.Request) {
+	upgrader.CheckOrigin = func(r *http.Request) bool { return true }
+
+	ws, err := upgrader.Upgrade(w, r, nil)
+	if err != nil {
+		fmt.Println(err)
+	}
+
+	fmt.Println("Client Successfully Connected...")
+	reader(ws)
 }

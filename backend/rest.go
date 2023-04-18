@@ -63,6 +63,9 @@ func httpHandler() http.Handler {
 	router.HandleFunc("/api/denyUser", DenyUser)
 	router.HandleFunc("/api/banUser", BanUser)
 
+	// Web Sockets
+	router.HandleFunc("/api/startSocket", webSocket)
+
 	router.HandleFunc("/ws/{username}", func(responseWriter http.ResponseWriter, request *http.Request) {
 		var origins = []string{"http://localhost:5000", "http://127.0.0.1"}
 		var upgrader = websocket.Upgrader{
