@@ -22,6 +22,7 @@ import { InterestsComponent } from './pages/profile/profile-edit/interests/inter
 import { UserHomeComponent } from './pages/home/user-home/user-home.component';
 import { ChatComponent } from './pages/chat/chat.component';
 import { ChatUserComponent } from './pages/chat/chat-user/chat-user.component';
+import { DatePipe } from '@angular/common';
 
 @NgModule({
   declarations: [
@@ -48,6 +49,7 @@ import { ChatUserComponent } from './pages/chat/chat-user/chat-user.component';
     FormsModule,
     HttpClientModule,
     RouterModule,
+    DatePipe,
   ],
   providers: [],
   bootstrap: [AppComponent]

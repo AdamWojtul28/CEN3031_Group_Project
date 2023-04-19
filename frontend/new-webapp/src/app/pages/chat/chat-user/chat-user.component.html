@@ -4,10 +4,19 @@
   </div>
 
   <div class="card-body px-4 pb-4">
-    <ul id="messages" class="list-group">
-      <div *ngFor="let message of messages" class="my-1">
-        <div class="py-2 px-3" [ngClass]="{'chat-message-friend pull-left': message.sender === chattingWith, 'chat-message-user pull-right': message.sender != chattingWith}">
-          {{ message.message }}
+    <ul id="messages" class="list-group scroll-div" id="scrollDiv">
+      <div *ngFor="let message of messages" class="my-1 me-3">
+        <div class="wrapper">
+
+          <div class="wrapper"[ngClass]="{'chat-message-friend-outer': message.sender === chattingWith, 'chat-message-user-outer': message.sender != chattingWith}">
+            <div class="py-2 px-3" [ngClass]="{'chat-message-friend pull-left me-5': message.sender === chattingWith, 'chat-message-user pull-right ms-5': message.sender != chattingWith}">
+              {{ message.message }} 
+            </div>
+            <div class="time-font" [ngClass]="{'pull-left': message.sender === chattingWith, 'pull-right': message.sender != chattingWith}">
+              {{ message.time | date:'M/d/yy H:mm' }}
+            </div>
+          </div>
+          
         </div>
       </div>
     </ul>
