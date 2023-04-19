@@ -978,24 +978,37 @@ func (s *Server) handle(ws *websocket.Conn) {
 	//s.readLoop(ws)
 }
 
-func (s *Server) readLoop(ws *websocket.Conn, sender string, receiver string) {
+func (s *Server) readLoop(ws *websocket.Conn, sender string) {
 	for {
-		messageType, p, err := ws.ReadMessage()
-		if err != nil {
-			fmt.Println(err)
-			return
+		var dMData entities.DMData
+		for connections, values := range s.conns {
+			if values == sender {
+				if err := connections.ReadJSON(dMData); err != nil {
+					fmt.Println(err)
+					return
+				}
+				break
+			}
+			// looks through the map for the connection that involves the sender and reading that socket will give the right JSON
 		}
-		fmt.Println(string(p))
+		receiver := dMData.Receiver
+		message := dMData.Message
+		//messageType, p, err := ws.ReadMessage()
+		//if err != nil {
+		//	fmt.Println(err)
+		//	return
+		//}
+		fmt.Println(message)
 		// Add to the DB here
 
 		for connections, values := range s.conns {
 			if receiver != "" && values == receiver {
-				if err := connections.WriteMessage(messageType, p); err != nil {
-					fmt.Println(err)
-					return
-				}
+				//if err := connections.WriteMessage(messageType, p); err != nil {
+				//	fmt.Println(err)
+				//	return
+				//}
 				var messageStruct entities.DirectMessage
-				messageStruct.Message = string(p)
+				messageStruct.Message = message
 				messageStruct.TimeSent = (time.Time{}).String()
 				messageStruct.Sender = sender
 				if err := connections.WriteJSON(messageStruct); err != nil {
