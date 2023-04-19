@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { User } from 'src/app/models/user.model';
+import { ImageService } from 'src/app/services/image.service';
 import { UsersHttpService } from 'src/app/services/users-http.service';
 
 @Component({
@@ -11,7 +12,7 @@ export class ChatComponent implements OnInit{
   chattingWith: string = '';
   friends: User[] = [];
 
-  constructor(private usersHttpService: UsersHttpService) {}
+  constructor(private usersHttpService: UsersHttpService, private imageService: ImageService) {}
 
   ngOnInit() {
     this.usersHttpService.getFriends(this.usersHttpService.user.value.username).subscribe({
@@ -29,6 +30,10 @@ export class ChatComponent implements OnInit{
         }
       }
     })
+  }
+
+  onLoadImage(friend: User) {
+    return this.imageService.loadImage(friend.profile_image);
   }
 
   onChooseUser(username: string) {

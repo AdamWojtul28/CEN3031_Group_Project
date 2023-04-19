@@ -5,7 +5,7 @@
       <div class="col-lg-3">
         <div class="card mb-4 mb-lg-0">
           <div class="card-header">
-            <b>Users</b>
+            Friends
           </div>
           <ul class="list-group" style="cursor: pointer">
             <li
@@ -13,7 +13,9 @@
               class="list-group-item py-2"
               routerLink="{{ friend.username }}"
               (click)="onChooseUser(friend.username)"
-              [ngClass]="{ 'select' : chattingWith === friend.username }">{{ friend.username }}
+              [ngClass]="{ 'select' : chattingWith === friend.username }">
+              <img [src]="onLoadImage(friend)" class="small-pfp me-2 my-1">
+              {{ friend.username }}
             </li>
           </ul>
         </div>

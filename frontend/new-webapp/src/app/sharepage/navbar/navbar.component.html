@@ -6,17 +6,23 @@
       </button>
       <div class="collapse navbar-collapse" id="navbarNav">
         <ul class="navbar-nav ms-auto me-auto">
-          <li class="nav-item me-5">
-            <a class="nav-link" routerLink="" routerLinkActive="active-link" [routerLinkActiveOptions]="{exact: true}">Home</a>
-          </li>
-          <li class="nav-item me-5">
-            <a class="nav-link" routerLink="booking" routerLinkActive="active-link">Search</a>
-          </li>
           <li class="nav-item">
             <a class="nav-link" routerLink="about" routerLinkActive="active-link">About</a>
           </li>
-          <li class="nav-item">
-            <a class="nav-link" routerLink="profile/details" routerLinkActive="active-link" *ngIf="isAuthenticated">Profile</a>
+          <li class="nav-item" *ngIf="!isAuthenticated">
+            <a class="nav-link" routerLink="" routerLinkActive="active-link" [routerLinkActiveOptions]="{exact: true}">Home</a>
+          </li>
+          <li class="nav-item" *ngIf="isAuthenticated">
+            <a class="nav-link" routerLink="home" routerLinkActive="active-link">Home</a>
+          </li>
+          <li class="nav-item" *ngIf="isAuthenticated">
+            <a class="nav-link" routerLink="chat" routerLinkActive="active-link">Chat</a>
+          </li>
+          <li class="nav-item" *ngIf="isAuthenticated">
+            <a class="nav-link" routerLink="booking" routerLinkActive="active-link">Find</a>
+          </li>
+          <li class="nav-item" *ngIf="isAuthenticated">
+            <a class="nav-link" routerLink="profile/details" routerLinkActive="active-link">Profile</a>
           </li>
         </ul>
         <div class="d-flex align-items-center">
