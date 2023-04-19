@@ -411,12 +411,14 @@ pm.test("must send unauthorized response", function () {
 GET http://localhost:5000/api/users/{id}
 
 - Returns a full user object as a json. Request the user to be returned by sending the route with the respective user's ID number.
+    - If ID is invalid returns 404
 
 #### Get Single User by Username:
 
 GET http://localhost:5000/api/users?username=exampleUserName
 
 - This route will return a user struct that matches the entered username if one exists (search for user via username).
+    - If no username is given, returns error code 204 no content
 
 #### Get All Users:
 
@@ -429,12 +431,14 @@ GET http://localhost:5000/api/users
 PUT http://localhost:5000/api/users/{id}
 
 - Updates the user's information connected with the ID sent in the route. Send any user elements to be updated as a json object.
+    - If ID is invalid returns 404
 
 #### Remove Single User:
 
 DELETE http://localhost:5000/api/users/{id}
 
 - Simply removes the entire user from the backend database. The user to be deleted is the one with the corresponding ID sent in the route.
+    - If ID is invalid returns 404
 
 ### Basic Page Routes
 #### User Sign Up:
