@@ -34,7 +34,7 @@ CREATE TABLE `admins` (
 
 LOCK TABLES `admins` WRITE;
 /*!40000 ALTER TABLE `admins` DISABLE KEYS */;
-INSERT INTO `admins` VALUES ('DarrionRamos','$2a$08$yWy6L1P6GxycYjtrH5NGWuFTaUrvlVbT4HPJMpU1iY3c1JsDsNXFq');
+INSERT INTO `admins` VALUES ('Darrion','$2a$08$GMgnxNBAGeeosoObJBsEQ.wnb8elSTtMqHbEl9olEkvfgsNs1l2NG'),('Alex','$2a$08$Stj97QwvZNSMv6lTkd/7BuhPU6V0HfMf0dsL6CZ4xLufUA8yFEAfS'),('Nico','$2a$08$kis5u6HVAh3k.j.61NTyw.fXrh07U4DxX/Ll1enJqVcCM0aYhjhde'),('Adam','$2a$08$CbXVmq03A090dVgmHS4mv.8G3xvZ82n5yA5swyl/1BfnSs2WblgLe');
 /*!40000 ALTER TABLE `admins` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -52,7 +52,7 @@ CREATE TABLE `connections` (
   `status` varchar(15) NOT NULL,
   PRIMARY KEY (`ID`),
   UNIQUE KEY `idconnections_UNIQUE` (`ID`)
-) ENGINE=InnoDB AUTO_INCREMENT=15 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=16 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -61,7 +61,6 @@ CREATE TABLE `connections` (
 
 LOCK TABLES `connections` WRITE;
 /*!40000 ALTER TABLE `connections` DISABLE KEYS */;
-INSERT INTO `connections` VALUES (10,'G','YEEE','Pending'),(11,'God','Disciple','Pending'),(12,'YareDaze','brother','Accepted'),(13,'YareDaze','yesMan','Accepted'),(14,'YareDaze','test','Pending');
 /*!40000 ALTER TABLE `connections` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -131,7 +130,7 @@ CREATE TABLE `users` (
   `profile_image` longtext,
   PRIMARY KEY (`id`),
   UNIQUE KEY `id_UNIQUE` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=38 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=47 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -140,7 +139,7 @@ CREATE TABLE `users` (
 
 LOCK TABLES `users` WRITE;
 /*!40000 ALTER TABLE `users` DISABLE KEYS */;
-INSERT INTO `users` VALUES (35,'John3','$2a$08$wIYms7cgPbKSVX.Peugp1evvQ5AJ3Pd7nOlmz5SCkoVZjPQQDq6v.','Accepted','752207f0-f3bf-4be1-a73a-2abe284d7f1c','2023-04-12 18:41:20.6745','BOBBY','','','','','','','','','','','','',''),(36,'DarrionRamos','$2a$08$yWy6L1P6GxycYjtrH5NGWuFTaUrvlVbT4HPJMpU1iY3c1JsDsNXFq','Accepted','6bcebf37-2841-4c6e-9b9e-64757786974e','2023-04-12 19:40:55.4299','Darrion Ramos','','','','','','','','','','','','',''),(37,'MR. Invincible','$2a$08$4DB/Bid6pKMjyEYWlRLekeeG4.KhKWup4Y31rMU0n.USjaTGaiNde','Accepted','af7a8f9a-ca2b-49e0-b8ff-a152e1c6c3b1','2023-04-12 18:17:03.5803','Bob John','','','','','','','','','','','','','');
+INSERT INTO `users` VALUES (38,'Darrion','$2a$08$GMgnxNBAGeeosoObJBsEQ.wnb8elSTtMqHbEl9olEkvfgsNs1l2NG','Accepted','01e712b4-d932-4cbf-81a7-238fbf6c1ce1','2023-04-18 19:53:42.0501','Darrion Ramos','','','','','','','','','','','','',''),(39,'Alex','$2a$08$Stj97QwvZNSMv6lTkd/7BuhPU6V0HfMf0dsL6CZ4xLufUA8yFEAfS','Accepted','a06aa05d-5228-4410-8e34-27b14a31d52b','2023-04-18 19:54:08.0308','Alex','','','','','','','','','','','','',''),(40,'Nico','$2a$08$kis5u6HVAh3k.j.61NTyw.fXrh07U4DxX/Ll1enJqVcCM0aYhjhde','Accepted','d587109e-bff7-4ad8-90f5-dd62a323c93d','2023-04-18 19:54:24.1313','Nico','','','','','','','','','','','','',''),(41,'Adam','$2a$08$CbXVmq03A090dVgmHS4mv.8G3xvZ82n5yA5swyl/1BfnSs2WblgLe','Accepted','e38b2c2c-0767-4b1c-9623-972122ad6439','2023-04-18 19:54:37.5664','Adam','','','','','','','','','','','','',''),(42,'testUser1','$2a$08$hfXVYzLPC41LIIP8jdzwYeuXUZR1XcNMnoAfVKOmq/FaB2zK3b5Xq','Pending','c46aca61-0bfb-4aff-8102-46d21dfbcade','2023-04-18 19:55:06.9140','testUser1','','','','','','','','','','','','',''),(43,'testUser2','$2a$08$ryV8pj/0pEdsgmXpCB81EeDErUQ62J.NzRAZxQlXMp.mxaY8JHy4y','Pending','61850d34-f355-48cd-b74c-318bd124bc49','2023-04-18 19:55:22.9041','testUser2','','','','','','','','','','','','',''),(44,'testUser3','$2a$08$ODDtMeNUCgujf.XwPBHR5Opy/fBZakKrUERFNBYUe4abK/9rZE22G','Pending','2af051a4-82a3-4916-af65-48636bac5a23','2023-04-18 19:55:28.5720','testUser3','','','','','','','','','','','','',''),(45,'testUser4','$2a$08$tSd4NIw4JfBUb31kUj/hAOz8SehP1kiUK1MTSvPZ/7lTGIw66DzjW','Pending','3d116f22-34c7-4379-98cd-8ca6076e1616','2023-04-18 19:55:33.1643','testUser4','','','','','','','','','','','','',''),(46,'testUser5','$2a$08$kWtbSaOb7W4DcyH5X5ovUe3gOlhL7WIi0igA06sSawqWO.D88XZti','Pending','c4aa5b48-97fd-4265-9d5a-d435784c783a','2023-04-18 19:55:38.1577','testUser5','','','','','','','','','','','','','');
 /*!40000 ALTER TABLE `users` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
@@ -153,4 +152,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2023-04-18 18:01:25
+-- Dump completed on 2023-04-18 20:30:55
