@@ -1,6 +1,6 @@
 .banner
 {
-    background-image: url('../../../assets/img/tuscany.jpg');
+    background-image: url('../../../assets/img/tavern.webp');
     height: 600px;
     background-position: center top;
     background-size: cover;
@@ -8,29 +8,45 @@
 .content
 {
     top: 30%;
-    left: 20%;
-    position: absolute;
+    margin: auto;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
 }
 .content h1 
 {
-    color: #fff;
+    color: #edf5e1;
+    padding-top:100px;
     font-size: 60px;
     font-weight: bold;
-  
+    
+}
+.content h2 
+{
+    color: #edf5e1;
+    font-size: 40px;
+    font-weight: bold;
+}
+.blue
+{
+    color: #1AA7EC;
 }
 .content a 
 {
     text-decoration: none;
-    background-color: #fff;
-    color: var(--primary-color);
+    background-color: #edf5e1;
+    font-size: 15px;
+    color: #1AA7EC;
     padding: 15px 20px;
-    border-radius: 5px;
+    border-radius: 50px;
+    font-weight: bold;
 }
 
 .content a:hover 
 {
-    background-color: var(--primary-color);
-    color: #fff;
+    background-color: #1AA7EC;
+    color: #edf5e1;
 }
 
 .stepBox 
