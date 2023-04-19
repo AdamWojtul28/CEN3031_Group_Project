@@ -12,8 +12,6 @@ import { UsersHttpService } from 'src/app/services/users-http.service';
 export class ChatUserComponent implements OnInit, OnDestroy{
   chattingWith: string;
   friendUser: User;
-  socket: WebSocket;
-  isSocketOpen: boolean = false;
   chatBox: string = '';
   messages: Message[] = [];
 
@@ -22,13 +20,6 @@ export class ChatUserComponent implements OnInit, OnDestroy{
   ngOnInit() {
     this.route.params.subscribe(params => {
       this.chattingWith = params['username'];
-
-      if (this.socket) {
-        if (this.isSocketOpen){
-          this.socket.close();
-        }
-        this.socket = null;
-      }
 
       this.userHttpService.fetchUserByUsername(this.chattingWith).subscribe({
         next: (res: User) => {
@@ -48,32 +39,15 @@ export class ChatUserComponent implements OnInit, OnDestroy{
         }
       })
       this.socketService.checkForMessages(this.chattingWith);
-  
-      this.socket = new WebSocket("ws://localhost:5000/api/ws?sender=" + encodeURIComponent(this.userHttpService.user.value.username) + "&receiver=" + this.chattingWith);
-      this.socket.onopen = event => {
-        console.log('Opening connection to ' + this.chattingWith)
-        this.isSocketOpen = true;
-      }
-      this.socket.onmessage = event => {
-        
-      }
-      this.socket.onclose = event => {
-        console.log('Closing direct connection');
-        console.log(event);
-        this.isSocketOpen = false;
-      }   
     })
-     
   }
 
-  ngOnDestroy() {
-    this.socket.close();
-  }
+  ngOnDestroy() { }
 
   send() {
     if (this.chatBox) {
-      this.socket.send(this.chatBox)
-      this.socketService.sentMessage(this.chattingWith, this.chatBox);
+      let data = {receiver: this.chattingWith, message: this.chatBox}
+      this.socketService.sendMessage(data);
       this.chatBox = "";
     }
   }

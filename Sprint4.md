@@ -411,12 +411,14 @@ pm.test("must send unauthorized response", function () {
 GET http://localhost:5000/api/users/{id}
 
 - Returns a full user object as a json. Request the user to be returned by sending the route with the respective user's ID number.
+    - If ID is invalid returns 404
 
 #### Get Single User by Username:
 
 GET http://localhost:5000/api/users?username=exampleUserName
 
 - This route will return a user struct that matches the entered username if one exists (search for user via username).
+    - If no username is given, returns error code 204 no content
 
 #### Get All Users:
 
@@ -429,12 +431,14 @@ GET http://localhost:5000/api/users
 PUT http://localhost:5000/api/users/{id}
 
 - Updates the user's information connected with the ID sent in the route. Send any user elements to be updated as a json object.
+    - If ID is invalid returns 404
 
 #### Remove Single User:
 
 DELETE http://localhost:5000/api/users/{id}
 
 - Simply removes the entire user from the backend database. The user to be deleted is the one with the corresponding ID sent in the route.
+    - If ID is invalid returns 404
 
 ### Basic Page Routes
 #### User Sign Up:
@@ -455,18 +459,21 @@ POST http://localhost:5000/api/signin
 POST http://localhost:5000/api/welcome
 
 - This API call will be used to bring the user to the welcome/homepage of the website. The user must be logged in to access this site. As long as the user has a valid token that matches the database token, a code 200 is sent and a welcome message to the user.
+    - If session is expired, or there is no matching token returns a 401 error code. Any other error when checking session will return 400
 
 #### Refresh Page:
 
 POST http://localhost:5000/api/refresh
 
 - This API call will be used to bring the user to refresh the user's cookie and the database token (making a new one entirely and distributing it) while also restarting the two minute expiry timer. This route should be called whenever the token should be renewed.
+    - If session is expired, or there is no matching token returns a 401 error code. Any other error when checking session will return 400
  
 #### Logout Route:
 
 POST http://localhost:5000/api/logout
 
 - This API call will be used to bring the user to logout the user from their current session. This means that the users cookie and the token in the database will be removed and the expiry time will be changed to the current time.
+    - If session is expired, or there is no matching token returns a 401 error code. Any other error when checking session will return 400
 
 ### Listing Routes
 #### Add Listing:
@@ -488,24 +495,28 @@ GET http://localhost:5000/api/search
 POST http://localhost:5000/api/sendFriendRequest
 
 - This creates a new user connection in the connections table. This table is simply the username of the sender of the friend request, the username of the reciever, and the status of the request. The status will always be pending when sending a request. The frontend can use the sender/reciever information to display the proper information to each user. (requires a sender and reciever json object to be sent)
+    - If connection already exists, returns code 409
 
 #### Accept Friend Request:
 
 POST http://localhost:5000/api/acceptFriendRequest
 
 - Simply updates the entry in the connections table that corresponds to the user clicking accept, by changing the status of the connection to accepted. This checks first if there is a valid connection to modify. (requires a sender and reciever json object to be sent)
+    - If connection is not found in database, will return 404
   
 #### Remove Friend:
 
 POST http://localhost:5000/api/removeFriend
 
 - Recieves a sender and reciever json object. Deletes this pair if it is a valid entry in the connectinons table. Checks for either combination of sender/reciever since either can cancel the friendship.
+    - If connection is not found in database, will return 404
 
 #### Retrieve Friends:
 
 POST http://localhost:5000/api/retrieveFriends
 
 - Retrieves a username as a json, and sends a json object of all connections where the username is present, regardless of status or reciever/sender.
+    - If the user has no friends, returns 404
 
 ### Admin Routes
 #### Authenticate Admin:
@@ -513,12 +524,14 @@ POST http://localhost:5000/api/retrieveFriends
 POST http://localhost:5000/api/validAdmin
 
 - No frontend data needs to be sent. This route will check the current user's session and cross check the logged in username and password with an admin SQL table. This table will have no routes that can edit it, so that admins can only be added manually to the table. Will return an unauthorized status if not found in the admin table and authorized if found.
+    - If session is expired, or there is no matching token returns a 401 error code. If Any other error when checking session will return 400
 
 #### Accept a User:
 
 POST http://localhost:5000/api/acceptUser
 
 - Recieves a json object of the username of the user to be accepted. If this username is not in the users table this will return a status not found error. If found, the function will double check that the current session is still an admin session and then will change the status of the user to "Accepted" and will return a 200 status. (Can also be used to unban a user by resetting their status to accepted)
+    - If session is expired, or there is no matching token returns a 401 error code. Any other error when checking session will return 400
 
 #### Deny a User:
 

@@ -110,3 +110,8 @@ type DirectMessage struct {
 	TimeSent string `json:"time"`
 	Sender   string `json:"sender"`
 }
+
+type DMData struct {
+	Receiver string `json:"receiver"`
+	Message  string `json:"message"`
+}
