@@ -12,8 +12,8 @@ export class HomeComponent implements AfterViewInit {
   ngAfterViewInit() {
     const options = {
       strings: ['the United States', 'Poland', 'the United Kingdom'],
-      typeSpeed: 150,
-      backSpeed: 150,
+      typeSpeed: 100,
+      backSpeed: 50,
       loop: true,
       
     };
