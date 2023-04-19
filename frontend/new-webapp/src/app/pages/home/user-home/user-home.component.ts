@@ -1,6 +1,8 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Router } from '@angular/router';
 import { Subscription } from 'rxjs';
 import { Friendship, User } from 'src/app/models/user.model';
+import { ImageService } from 'src/app/services/image.service';
 import { UsersHttpService } from 'src/app/services/users-http.service';
 
 @Component({
@@ -17,8 +19,9 @@ export class UserHomeComponent implements OnInit, OnDestroy{
   userFriends: Friendship[] = [];
   incomingFriends: Friendship[] = [];
   outgoingFriends: Friendship[] = [];
+  profileImages: Map<string, string> = new Map();
   
-  constructor(private userHttpService: UsersHttpService) { }
+  constructor(private userHttpService: UsersHttpService, private imageService: ImageService, private router: Router) { }
 
   ngOnInit() {
     this.activeUserSub = this.userHttpService.user.subscribe({
@@ -36,19 +39,26 @@ export class UserHomeComponent implements OnInit, OnDestroy{
     this.userHttpService.getFriends(this.activeUser.username).subscribe({
       next: (res: Friendship[]) => {
         for (const friendship of res) {
+          let friendName = '';
           if (friendship.status === "Accepted"){
             this.userFriends.push(friendship);
+            friendName = (friendship.sender === this.userHttpService.user.value.username ? friendship.reciever : friendship.sender);
           }
           else if (friendship.sender != this.activeUser.username) {
             this.incomingFriends.push(friendship);
+            friendName = friendship.sender;
           }
           else {
             this.outgoingFriends.push(friendship);
+            friendName = friendship.reciever;
           }
+          this.userHttpService.fetchUserByUsername(friendName).subscribe({
+            next: (user: User) => {
+              const path = this.imageService.loadImage(user.profile_image);
+              this.profileImages.set(friendName, path);
+            }
+          })
         }
-        console.log(this.userFriends);
-        console.log(this.incomingFriends);
-        console.log(this.outgoingFriends);
       },
       error: (err) => {
         console.log(err);
@@ -123,6 +133,23 @@ export class UserHomeComponent implements OnInit, OnDestroy{
         console.log(err);
       }
     })
+  }
+
+  onRemoveFriend(friend: Friendship){
+    this.userHttpService.deleteFriend(friend.sender, friend.reciever).subscribe({
+      next: (res) => {
+        console.log(res);
+        this.getFriends();
+      },
+      error: (err) => {
+        console.log(err);
+      }
+    })
+  }
+
+  chatWith(friend: string) {
+    console.log('routting')
+    this.router.navigate(['chat', friend]);
   }
 
   ngOnDestroy() {

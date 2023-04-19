@@ -13,7 +13,9 @@
               class="list-group-item py-2"
               routerLink="{{ friend.username }}"
               (click)="onChooseUser(friend.username)"
-              [ngClass]="{ 'select' : chattingWith === friend.username }">{{ friend.username }}
+              [ngClass]="{ 'select' : chattingWith === friend.username }">
+              <img [src]="onLoadImage(friend)" class="small-pfp me-2 my-1">
+              {{ friend.username }}
             </li>
           </ul>
         </div>

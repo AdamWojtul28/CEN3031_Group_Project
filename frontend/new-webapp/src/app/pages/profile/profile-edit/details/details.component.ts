@@ -4,6 +4,7 @@ import { DomSanitizer } from '@angular/platform-browser';
 import { Router } from '@angular/router';
 import { UpdateProfileInfoModel } from 'src/app/models/http-formatting.model';
 import { User } from 'src/app/models/user.model';
+import { ImageService } from 'src/app/services/image.service';
 import { UsersHttpService } from 'src/app/services/users-http.service';
 
 @Component({
@@ -28,7 +29,7 @@ export class DetailsComponent implements OnInit, OnDestroy{
   activeUser: User;
   imagePath: any = "https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_960_720.png";
 
-  constructor(private userHttpService: UsersHttpService, private sanitizer: DomSanitizer, private router: Router) {}
+  constructor(private userHttpService: UsersHttpService, private imageService: ImageService, private router: Router) {}
 
   ngOnInit() {
     this.activeUserSub = this.userHttpService.user.subscribe({
@@ -38,7 +39,7 @@ export class DetailsComponent implements OnInit, OnDestroy{
         }
         this.activeUser = value;
         if (this.activeUser.profile_image) {
-          this.imagePath = this.sanitizer.bypassSecurityTrustResourceUrl(this.activeUser.profile_image)
+          this.imagePath = this.imageService.loadImage(this.activeUser.profile_image);
           console.log(this.imagePath);
         }
       }

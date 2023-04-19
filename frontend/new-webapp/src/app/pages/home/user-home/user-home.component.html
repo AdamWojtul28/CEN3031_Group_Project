@@ -10,6 +10,7 @@
           <div class="card-body">
             <ul class="list-group">
               <li class="list-group-item" *ngFor="let request of incomingFriends">
+                <img [src]="profileImages.get(request.sender)" class="small-pfp me-2 my-1">
                 {{ request.sender }}
                 <button class="btn-icon" (click)="onAcceptRequest(request.sender)">
                   <i class="fa fa-check p-0"></i>
@@ -33,7 +34,14 @@
                 You have no friends
               </li>
               <li class="list-group-item" *ngFor="let friend of userFriends">
+                <img [src]="profileImages.get(friend.sender === activeUser.username ? friend.reciever : friend.sender)" class="small-pfp me-2 my-1">
                 {{ friend.sender === activeUser.username ? friend.reciever : friend.sender }}
+                <button class="btn-icon" (click)="chatWith(friend.sender === activeUser.username ? friend.reciever : friend.sender)">
+                  <i class="fa fa-comment p-0"></i>
+                </button>
+                <button class="btn-icon" (click)="onRemoveFriend(friend)">
+                  <i class="fa fa-trash p-0"></i>
+                </button>
               </li>
             </ul>
           </div>
@@ -62,6 +70,7 @@
               <hr>
               <ul class="list-group">
                 <li class="list-group-item" *ngFor="let request of outgoingFriends">
+                  <img [src]="profileImages.get(request.reciever)" class="small-pfp me-2 my-1">
                   {{ request.reciever }}
                   <button class="btn-icon" (click)="onUndoRequest(request.reciever)">
                     <i class="fa fa-trash p-0"></i>
