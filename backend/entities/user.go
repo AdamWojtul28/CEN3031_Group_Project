@@ -100,3 +100,7 @@ type Admin struct {
 	Username string `json:"username"`
 	Password string `json:"password"`
 }
+
+type SingleColumnValue struct {
+	Value string `json:"single_value"`
+}
