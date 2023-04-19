@@ -497,6 +497,7 @@ func UpdateTags(w http.ResponseWriter, r *http.Request) {
 	}
 	// ensures that a host does not create a listing for a time frame where they already have a listing posted
 	var updated bool
+	updated = false
 	if len(tagsToAdd) > 0 {
 		// send information to the database (success)
 		database.Instance.Create(&tagsToAdd)
@@ -981,12 +982,14 @@ func (s *Server) handle(ws *websocket.Conn) {
 func (s *Server) readLoop(ws *websocket.Conn, sender string) {
 	for {
 		var dMData entities.DMData
+		var jsonMessage string
 		for connections, values := range s.conns {
 			if values == sender {
-				if err := connections.ReadJSON(dMData); err != nil {
+				if err := connections.ReadJSON(jsonMessage); err != nil {
 					fmt.Println(err)
 					return
 				}
+				json.Unmarshal([]byte(jsonMessage), &dMData)
 				break
 			}
 			// looks through the map for the connection that involves the sender and reading that socket will give the right JSON
