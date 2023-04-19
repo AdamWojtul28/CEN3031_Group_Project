@@ -12,7 +12,6 @@ export class SocketService{
 
   private isOpen: boolean = false;
   private socket: WebSocket;
-  //private messageList: {[friend: string] : Message[]} = {};
   private messageList: Map<string, Message[]> = new Map();
   private messageEmitter: EventEmitter<any> = new EventEmitter()
 
@@ -22,10 +21,12 @@ export class SocketService{
     if (this.isOpen) return;
     this.socket = new WebSocket("ws://localhost:5000/api/ws?sender=" + encodeURIComponent(this.userHttpService.user.value.username));
     this.socket.onopen = event => {
-      console.log('Opening incoming websocket connection')
+      console.log('Opening websocket connection')
+      console.log(event)
     }
     this.socket.onclose = event => {
-      console.log('Closing incoming websocket connection')
+      console.log('Closing websocket connection')
+      console.log(event)
     }
     this.socket.onmessage = event => {
       if (event.data[0] != '{') return;
@@ -50,14 +51,15 @@ export class SocketService{
     this.isOpen = true;
   }
 
-  public sentMessage(friend: string, message: string) {
-    if (this.messageList.has(friend)){
-      this.messageList.get(friend).push({ time: new Date(), message: message, sender: this.userHttpService.user.value.username })
+  public sendMessage(data: {receiver: string, message: string}) {
+    this.socket.send(JSON.stringify(data));
+    if (this.messageList.has(data.receiver)){
+      this.messageList.get(data.receiver).push({ time: new Date(), message: data.message, sender: this.userHttpService.user.value.username })
     }
     else {
-      this.messageList.set(friend, [{ time: new Date(), message: message, sender: this.userHttpService.user.value.username }])
+      this.messageList.set(data.receiver, [{ time: new Date(), message: data.message, sender: this.userHttpService.user.value.username }])
     }
-    let writeEvent = {friend: friend, messages: this.messageList.get(friend)}
+    let writeEvent = {friend: data.receiver, messages: this.messageList.get(data.receiver)}
     this.messageEmitter.emit(writeEvent);
   }
 
