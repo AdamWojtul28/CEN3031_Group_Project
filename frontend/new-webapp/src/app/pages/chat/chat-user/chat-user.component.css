@@ -1,0 +1,11 @@
+.chat-message-friend{
+  color: black;
+  background-color: #eeeeee;
+  border-radius: 5px;
+}
+
+.chat-message-user{
+  color: white;
+  background-color: #507464;
+  border-radius: 5px;
+}

@@ -1,0 +1,24 @@
+<div class="card" *ngIf="chattingWith != null">
+  <div class="card-header">
+    {{ chattingWith }}
+  </div>
+
+  <div class="card-body px-4 pb-4">
+    <ul id="messages" class="list-group">
+      <div *ngFor="let message of messages" class="my-1">
+        <div class="py-2 px-3" [ngClass]="{'chat-message-friend pull-left': message.sender === chattingWith, 'chat-message-user pull-right': message.sender != chattingWith}">
+          {{ message.message }}
+        </div>
+      </div>
+    </ul>
+    <hr>
+    <form>
+      <div class="input-group">
+        <input type="text" class="form-control" [(ngModel)]="chatBox" [ngModelOptions]="{standalone: true}">
+        <div class="input-group-append">
+          <button class="btn btn-secondary" (click)="send()" [disabled]="chatBox.length === 0">Send Message</button>
+        </div>
+      </div>
+    </form>
+  </div>
+</div>

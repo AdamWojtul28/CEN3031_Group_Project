@@ -1,19 +1,68 @@
 
 <div class="container">
   <div class="row">
-      <div class="col-lg-8 mx-auto mb-4">
-        <ul class="list-group">
-          <li class="list-group-item bg-light" *ngFor="let user of users">
+      <div class="col col-lg-8 mx-auto mb-4">
+
+        <h5>Pending Users</h5>
+        <ul class="list-group mb-4 mt-1">
+          <li class="list-group-item bg-light" *ngFor="let user of pendingUsers">
+            <div class="d-flex w-100 justify-content-center">
+              <div class="col col-md-6">
+                <b>{{ user.username }}</b> (ID: {{ user.id }})
+              </div>
+              <div class="col col-md-6">
+                <button type="button" class="btn btn-danger pull-right" (click)="onDeleteUser(user.id)">Delete</button>
+                <button type="button" class="btn btn-secondary pull-right mx-2" (click)="onDenyUser(user.username)">Deny</button>
+                <button type="button" class="btn btn-success pull-right" (click)="onAcceptUser(user.username)">Accept</button>
+              </div>
+            </div>
+          </li>
+        </ul>
+
+        <h5>Accepted Users</h5>
+        <ul class="list-group mb-4 mt-1">
+          <li class="list-group-item bg-light" *ngFor="let user of acceptedUsers">
             <div class="d-flex w-100 justify-content-center">
               <div class="col-6">
                 <b>{{ user.username }}</b> (ID: {{ user.id }})
               </div>
               <div class="col-6">
-                <button type="button" class="btn btn-danger pull-right" (click)="onDeleteUser(user.id)">Delete User</button>
+                <button type="button" class="btn btn-danger pull-right" (click)="onDeleteUser(user.id)">Delete</button>
+                <button type="button" class="btn btn-secondary pull-right mx-2" (click)="onBanUser(user.username)">Ban</button>
               </div>
             </div>
           </li>
         </ul>
+
+        <h5>Banned Users</h5>
+        <ul class="list-group mb-4 mt-1">
+          <li class="list-group-item bg-light" *ngFor="let user of bannedUsers">
+            <div class="d-flex w-100 justify-content-center">
+              <div class="col col-md-6">
+                <b>{{ user.username }}</b> (ID: {{ user.id }})
+              </div>
+              <div class="col col-md-6">
+                <button type="button" class="btn btn-danger pull-right" (click)="onDeleteUser(user.id)">Delete</button>
+                <button type="button" class="btn btn-success pull-right mx-2" (click)="onAcceptUser(user.username)">Unban</button>
+              </div>
+            </div>
+          </li>
+        </ul>
+
+        <h5>Denied Users</h5>
+        <ul class="list-group mt-1">
+          <li class="list-group-item bg-light" *ngFor="let user of deniedUsers">
+            <div class="d-flex w-100 justify-content-center">
+              <div class="col col-md-6">
+                <b>{{ user.username }}</b> (ID: {{ user.id }})
+              </div>
+              <div class="col col-md-6">
+                <button type="button" class="btn btn-danger pull-right" (click)="onDeleteUser(user.id)">Delete</button>
+              </div>
+            </div>
+          </li>
+        </ul>
+
       </div>
   </div>  
 </div>

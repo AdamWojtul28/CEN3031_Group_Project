@@ -100,3 +100,13 @@ type Admin struct {
 	Username string `json:"username"`
 	Password string `json:"password"`
 }
+
+type SingleColumnValue struct {
+	Value string `json:"single_value"`
+}
+
+type DirectMessage struct {
+	Message  string `json:"message"`
+	TimeSent string `json:"time"`
+	Sender   string `json:"sender"`
+}

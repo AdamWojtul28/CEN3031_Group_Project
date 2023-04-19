@@ -6,6 +6,7 @@ export class User {
     public email: string,
     public bio: string,
     public profile_image: string,
+    public status: string,
 
     private _token: string,
     private _tokenExpiration: Date
@@ -20,6 +21,11 @@ export class User {
 
   get tokenExpiration() {
     return this._tokenExpiration;
+  }
+
+  renewToken(token: string, tokenExpiration: Date) {
+    this._token = token;
+    this._tokenExpiration = tokenExpiration;
   }
 }
 
@@ -46,6 +52,7 @@ export interface ResponseData {
   password : string;
   phone : string;
   session_token : string;
+  status: string;
   username : string;
   profile_image : string;
 }

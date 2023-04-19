@@ -1,7 +1,10 @@
 package main
 
 import (
+	"encoding/json"
 	"fmt"
+	"golang_angular/database"
+	"golang_angular/entities"
 	"net/http"
 	"os"
 
@@ -61,6 +64,8 @@ func httpHandler() http.Handler {
 
 	// Web Sockets
 	router.HandleFunc("/api/ws", func(w http.ResponseWriter, r *http.Request) {
+		sender := r.URL.Query().Get("sender")
+		receiver := r.URL.Query().Get("receiver")
 		upgrader.CheckOrigin = func(r *http.Request) bool { return true }
 
 		ws, err := upgrader.Upgrade(w, r, nil)
@@ -68,12 +73,54 @@ func httpHandler() http.Handler {
 			fmt.Println(err)
 		}
 
-		server.conns[ws] = true
+		server.conns[ws] = sender
 
 		fmt.Println("Client Successfully Connected...")
-		server.readLoop(ws)
+		server.readLoop(ws, sender, receiver)
 	})
 
+	router.HandleFunc("/api/getAllOnlineUsers", func(w http.ResponseWriter, r *http.Request) {
+		sender := r.URL.Query().Get("sender")
+		var allOnlineUsers map[string]bool
+
+		for _, values := range server.conns {
+			if values != sender {
+				allOnlineUsers[values] = true
+			}
+		}
+		// Get the usernames of everyone who is online
+
+		var allFriends []entities.SingleColumnValue
+		database.Instance.Raw(`SELECT DISTINCT reciever AS single_value
+							   FROM connections;
+							   WHERE sender = ?
+							   UNION 
+							   SELECT DISTINCT sender AS single_value
+							   FROM connections
+							   WHERE reciever = ?`, sender, sender).Find(&allFriends)
+		// Get all connections/friends of the sender
+
+		var onlineUsers []entities.User
+		var tempUser entities.User
+		for i := 0; i < len(allFriends); i++ {
+			_, ok := allOnlineUsers[allFriends[i].Value]
+			if ok {
+				database.Instance.Where("username = ?", allFriends[i].Value).Find(&tempUser)
+				onlineUsers = append(onlineUsers, tempUser)
+			}
+			// For each value, if friend is in the online slice (which is being checked with value of ok), appends this value to users
+		}
+
+		if len(onlineUsers) > 0 {
+			w.Header().Set("Content-Type", "application/json")
+			w.WriteHeader(http.StatusOK)
+			json.NewEncoder(w).Encode(onlineUsers)
+		} else {
+			w.WriteHeader(http.StatusNotFound)
+			json.NewEncoder(w).Encode("No friends currently online")
+		}
+
+	})
 	// WARNING: this route must be the last route defined.
 	router.PathPrefix("/").Handler(AngularHandler).Methods("GET")
 
