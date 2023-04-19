@@ -978,7 +978,7 @@ func (s *Server) handle(ws *websocket.Conn) {
 	//s.readLoop(ws)
 }
 
-func (s *Server) readLoop(ws *websocket.Conn, receiver string) {
+func (s *Server) readLoop(ws *websocket.Conn, sender string, receiver string) {
 	for {
 		messageType, p, err := ws.ReadMessage()
 		if err != nil {
@@ -991,6 +991,14 @@ func (s *Server) readLoop(ws *websocket.Conn, receiver string) {
 		for connections, values := range s.conns {
 			if receiver != "" && values == receiver {
 				if err := connections.WriteMessage(messageType, p); err != nil {
+					fmt.Println(err)
+					return
+				}
+				var messageStruct entities.DirectMessage
+				messageStruct.Message = string(p)
+				messageStruct.TimeSent = (time.Time{}).String()
+				messageStruct.Sender = sender
+				if err := connections.WriteJSON(messageStruct); err != nil {
 					fmt.Println(err)
 					return
 				}
