@@ -12,6 +12,8 @@ import { DetailsComponent } from './pages/profile/profile-edit/details/details.c
 import { InterestsComponent } from './pages/profile/profile-edit/interests/interests.component';
 import { AuthGuard } from './services/auth.guard';
 import { UserHomeComponent } from './pages/home/user-home/user-home.component';
+import { ChatComponent } from './pages/chat/chat.component';
+import { ChatUserComponent } from './pages/chat/chat-user/chat-user.component';
 
 const routes: Routes = [
   {path: '', component: HomeComponent},
@@ -24,6 +26,9 @@ const routes: Routes = [
   {path: 'profile', component: ProfileEditComponent, canActivate: [AuthGuard], children: [
     {path: 'details', component: DetailsComponent},
     {path: 'interests', component: InterestsComponent}
+  ]},
+  {path: 'chat', component: ChatComponent, canActivate: [AuthGuard], children: [
+    {path: ':username', component: ChatUserComponent}
   ]},
   {path:'admin', component: AdminComponent}
 ];
