@@ -3,7 +3,7 @@ import { Injectable } from "@angular/core";
 import { Friendship, ResponseData, User } from "../models/user.model";
 import { LoginUserInfo } from "../models/user.model";
 
-import { map, tap, take } from 'rxjs/operators';
+import { map, tap } from 'rxjs/operators';
 import { BehaviorSubject } from "rxjs";
 import { Router } from "@angular/router";
 import { UpdateProfileInfoModel } from "../models/http-formatting.model";
@@ -28,6 +28,7 @@ export class UsersHttpService {
           res.email, 
           res.biography, 
           res.profile_image,
+          res.status,
           res.session_token, 
           res.expiry);
         this.user.next(user);
@@ -47,6 +48,7 @@ export class UsersHttpService {
           res.email, 
           res.biography, 
           res.profile_image,
+          res.status,
           res.session_token, 
           res.expiry);
         this.user.next(user);
@@ -63,6 +65,7 @@ export class UsersHttpService {
       email: string,
       bio: string,
       profile_image: string,
+      status: string,
       _token: string,
       _tokenExpiration: Date
     } = JSON.parse(localStorage.getItem('userData'));
@@ -77,13 +80,42 @@ export class UsersHttpService {
       userData.email,
       userData.bio,
       userData.profile_image,
+      userData.status,
       userData._token,
-      userData._tokenExpiration);
+      userData._tokenExpiration,);
     
-    if (loadedUser.token) {
+    //if (loadedUser.token && new Date(loadedUser.tokenExpiration) > new Date()) {
       this.user.next(loadedUser);
       this.autoLogout(loadedUser.tokenExpiration);
-    }
+    //}
+  }
+
+  refreshUser() {
+    if (this.user.value === null || new Date(this.user.value.tokenExpiration).getTime() - new Date().getTime() > 110000) return;
+    return;
+
+    const data = {username: this.user.value.username, password: this.user.value.password}
+    this.http.post<ResponseData>('http://localhost:5000/api/refresh', data).subscribe({
+      next: (res: ResponseData) => {
+        this.tokenExpirationTimer = null;
+        const user = new User(
+          res.username, 
+          res.password, 
+          res.id, 
+          res.email, 
+          res.biography, 
+          res.profile_image,
+          res.status,
+          res.session_token, 
+          res.expiry);
+        this.user.next(user);
+        this.autoLogout(user.tokenExpiration);
+        localStorage.setItem('userData', JSON.stringify(user));
+      },
+      error: (err) => {
+        console.log(err);
+      }
+    })
   }
 
   logoutUser() {
@@ -97,16 +129,32 @@ export class UsersHttpService {
   }
 
   autoLogout(expirationDate: Date) {
-    var expirationDuration = new Date(expirationDate).getTime() - new Date().getTime();
-    console.log(expirationDuration);
-    //this.tokenExpirationTimer = setTimeout(() => {
-    //  this.logoutUser();
-    //}, expirationDuration);
+    // CHANGE THIS
+    var expirationDuration = new Date(expirationDate).getTime() - new Date().getTime() + 10000000000000;
+    console.log('Refresh: ' + expirationDuration / 1000 + 's');
+    this.tokenExpirationTimer = null;
+    this.tokenExpirationTimer = setTimeout(() => {
+      this.logoutUser();
+    }, expirationDuration);
   }
 
   deleteUser(userId: string) {
     return this.http.delete('http://localhost:5000/api/users/' + userId);
   }
+
+  acceptUser(username: string) {
+    let data = {username: username};
+    return this.http.post('http://localhost:5000/api/acceptUser', data);
+  }
+
+  denyUser(username: string) {
+    return this.http.post('http://localhost:5000/api/acceptUser', username);
+  }
+
+  banUser(username: string) {
+    return this.http.post('http://localhost:5000/api/acceptUser', username);
+  }
+
 
   fetchUsers() {
     return this.http
@@ -138,6 +186,7 @@ export class UsersHttpService {
         res.email, 
         res.biography, 
         res.profile_image,
+        res.status,
         res.session_token, 
         res.expiry);
       this.user.next(user);
@@ -175,4 +224,22 @@ export class UsersHttpService {
     const data = {sender: sender, reciever: receiver};
     return this.http.post('http://localhost:5000/api/removeFriend', data);
   }
+
+  // Requests dealing with tags
+  
+  addTags(tags_to_add: string, tags_to_remove: string){
+    const data = {tags_to_add: tags_to_add, tags_to_remove: tags_to_remove};
+    let searchURL = 'http://localhost:5000/api/tags'
+    searchURL += '?username=' + encodeURIComponent(this.user.value.username);
+
+    return this.http.post(searchURL, data);
+  }
+
+  getTags(username: string = this.user.value.username){
+    let searchURL = 'http://localhost:5000/api/tags'
+    searchURL += '?username=' + encodeURIComponent(username);
+
+    return this.http.get(searchURL);
+  }
+
 }

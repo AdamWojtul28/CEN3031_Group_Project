@@ -1,7 +1,7 @@
-import { Component, Input, OnDestroy, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { User } from 'src/app/models/user.model';
-import { SocketService } from 'src/app/services/socket.service';
+import { Message, SocketService } from 'src/app/services/socket.service';
 import { UsersHttpService } from 'src/app/services/users-http.service';
 
 @Component({
@@ -12,8 +12,9 @@ import { UsersHttpService } from 'src/app/services/users-http.service';
 export class ChatUserComponent implements OnInit, OnDestroy{
   chattingWith: string;
   friendUser: User;
+  socket: WebSocket;
   chatBox: string = '';
-  messages: Array<any> = [];
+  messages: Message[];
 
   constructor (private route: ActivatedRoute, private socketService: SocketService, private userHttpService: UsersHttpService) {}
 
@@ -27,21 +28,24 @@ export class ChatUserComponent implements OnInit, OnDestroy{
         this.friendUser = res;
       },
       error: (err) => console.log(err)
-    })
-
-    this.socketService.getEventListener().subscribe(event => {
-      console.log(event);
-      if (event.type == "message") {
-        if (event.data.content){
-          let data = event.data.content;
-          if(event.data.sender) {
-            data = event.data.sender + ": " + data;
-          }
-          this.messages.push(data);
-          console.log(this.messages);
-        } 
-      }
     });
+
+    this.messages = this.socketService.getMessages(this.chattingWith);
+
+    this.socket = new WebSocket("ws://localhost:5000/api/ws?sender=" + encodeURIComponent(this.userHttpService.user.value.username) + "&receiver=" + this.chattingWith);
+    this.socket.onopen = event => {
+      console.log('Opening connection to ' + this.chattingWith)
+      console.log(event);
+    }
+    this.socket.onmessage = event => {
+      this.messages = this.socketService.getMessages(this.chattingWith);
+      console.log(this.messages);
+    }
+    this.socket.onclose = event => {
+      console.log('Closing connection to ' + this.chattingWith);
+      console.log(event);
+    }
+
   }
 
   ngOnDestroy() {
@@ -49,10 +53,11 @@ export class ChatUserComponent implements OnInit, OnDestroy{
   }
 
   send() {
-    console.log(this.chatBox)
     if (this.chatBox) {
-      this.socketService.send(this.chatBox, this.friendUser.username);
+      this.socket.send(this.chatBox)
+      this.socketService.sentMessage(this.chattingWith, this.chatBox);
       this.chatBox = "";
     }
+    this.messages = this.socketService.getMessages(this.chattingWith);
   }
 }

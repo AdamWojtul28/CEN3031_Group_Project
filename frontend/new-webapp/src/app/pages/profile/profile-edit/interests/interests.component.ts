@@ -1,5 +1,6 @@
-import { Component, ViewChild } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { NgForm } from '@angular/forms';
+import { UsersHttpService } from 'src/app/services/users-http.service';
 
 interface interestGroup {
   name: string
@@ -11,7 +12,7 @@ interface interestGroup {
   templateUrl: './interests.component.html',
   styleUrls: ['./interests.component.css']
 })
-export class InterestsComponent {
+export class InterestsComponent implements OnInit{
   creativeInterests: interestGroup = {name: 'Creative', interests: [
     {interest: 'Art', selected: false},
     {interest: 'Acting', selected: false},
@@ -83,18 +84,52 @@ export class InterestsComponent {
   miscInterests: interestGroup = {name: 'Miscellaneous', interests: [
     {interest: 'Astronomy', selected: false},
     {interest: 'Astrology', selected: false},
-    {interest: 'Vintage Shopping', selected: false},
-    {interest: 'Thrifting', selected: false},
     {interest: 'Car Restoration', selected: false},
+    {interest: 'Thrifting', selected: false},
+    {interest: 'Vintage Shopping', selected: false},
   ]}
 
   @ViewChild('f') interestsForm!: NgForm;
 
-  constructor() {}
+  constructor(private userHttpService: UsersHttpService) {}
+
+  ngOnInit() {
+    this.userHttpService.getTags().subscribe({
+      next: (res) => { console.log(res) },
+      error: (err) => { 
+        console.log(err);
+        if (err.type = 404) {
+          this.onSaveChanges();
+        }
+      }
+    })
+  }
 
   onSaveChanges() {
-    console.log('saving changes');
-    console.log(this.interestsForm);
+    const form = this.interestsForm.value;
+    let tags_to_add: string = "";
+    let tags_to_remove: string = "";
+
+    for (const interest in form){
+      if (form[interest]){
+        tags_to_add += interest + ',';
+      }
+      else {
+        tags_to_remove += interest + ',';
+      }
+    }
+
+    if(tags_to_add.length > 0) tags_to_add = tags_to_add.substring(0, tags_to_add.length-1);
+    if(tags_to_remove.length > 0) tags_to_remove = tags_to_remove.substring(0, tags_to_remove.length-1);
+
+    console.log('trying');
+    console.log(tags_to_add);
+    console.log(tags_to_remove);
+
+    this.userHttpService.addTags(tags_to_add, tags_to_remove).subscribe({
+      next: (res) => { console.log(res) },
+      error: (err) => { console.log(err) }
+    })
   }
 
 }
