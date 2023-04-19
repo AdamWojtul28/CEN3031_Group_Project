@@ -76,7 +76,7 @@ func httpHandler() http.Handler {
 		server.conns[ws] = sender
 
 		fmt.Println("Client Successfully Connected...")
-		server.readLoop(ws, receiver)
+		server.readLoop(ws, sender, receiver)
 	})
 
 	router.HandleFunc("/api/getAllOnlineUsers", func(w http.ResponseWriter, r *http.Request) {

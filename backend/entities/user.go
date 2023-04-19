@@ -104,3 +104,9 @@ type Admin struct {
 type SingleColumnValue struct {
 	Value string `json:"single_value"`
 }
+
+type DirectMessage struct {
+	Message  string `json:"message"`
+	TimeSent string `json:"time"`
+	Sender   string `json:"sender"`
+}
