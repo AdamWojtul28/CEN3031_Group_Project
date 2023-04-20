@@ -65,8 +65,6 @@ func httpHandler() http.Handler {
 	// Web Sockets
 	router.HandleFunc("/api/ws", func(w http.ResponseWriter, r *http.Request) {
 		sender := r.URL.Query().Get("sender")
-		var receiver string
-		var message string
 		upgrader.CheckOrigin = func(r *http.Request) bool { return true }
 
 		ws, err := upgrader.Upgrade(w, r, nil)
@@ -77,8 +75,7 @@ func httpHandler() http.Handler {
 		server.conns[ws] = sender
 
 		fmt.Println("Client Successfully Connected...")
-		server.readLoop(ws, sender, &receiver, &message)
-		server.writeLoop(ws, sender, receiver, message)
+		server.readLoop(ws, sender)
 	})
 
 	router.HandleFunc("/api/getAllOnlineUsers", func(w http.ResponseWriter, r *http.Request) {

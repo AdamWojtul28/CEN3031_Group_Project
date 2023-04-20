@@ -464,15 +464,16 @@ func UpdateTags(w http.ResponseWriter, r *http.Request) {
 	tagsToAddStrings := strings.Split(TagsToUpdate.TagsToAdd, ",")
 	//fmt.Println(tagsToAddStrings)
 
+	var updated bool
+	updated = false
+
 	for i := 0; i < len(tagsToAddStrings); i++ {
-		if tagsToAddStrings[i] == "" {
-			continue
-		}
 		database.Instance.Where("username = ? AND tag_name = ?", username, tagsToAddStrings[i]).Find(&addQueryResults)
 		if len(addQueryResults) == 0 {
 			tagToAdd.Username = username
 			tagToAdd.TagName = tagsToAddStrings[i]
 			tagsToAdd = append(tagsToAdd, tagToAdd)
+			updated = true
 		}
 		addQueryResults = nil
 	}
@@ -484,40 +485,36 @@ func UpdateTags(w http.ResponseWriter, r *http.Request) {
 	//fmt.Println(tagsToAddStrings)
 
 	for i := 0; i < len(tagsToRemoveStrings); i++ {
-		if tagsToRemoveStrings[i] == "" {
-			continue
-		}
 		database.Instance.Where("username = ? AND tag_name = ?", username, tagsToRemoveStrings[i]).Find(&removeQueryResults)
-		if len(removeQueryResults) != 0 {
+		if len(removeQueryResults) > 0 {
 			tagToDelete.Username = username
 			tagToDelete.TagName = tagsToRemoveStrings[i]
 			tagsToRemove = append(tagsToRemove, tagToDelete)
+			updated = true
 		}
 		removeQueryResults = nil
 	}
 	// ensures that a host does not create a listing for a time frame where they already have a listing posted
-	var updated bool
-	updated = false
-	if len(tagsToAdd) > 0 {
-		// send information to the database (success)
-		database.Instance.Create(&tagsToAdd)
-		w.Header().Set("Content-Type", "application/json")
-		json.NewEncoder(w).Encode(tagsToAdd)
-		updated = true
-	}
-	if len(tagsToRemove) > 0 {
-		// send information to the database (success)
-		var currentTag entities.Tag
-		for i := 0; i < len(tagsToRemove); i++ {
-			database.Instance.Where("username = ? AND tag_name = ?", tagsToRemove[i].Username, tagsToRemove[i].TagName).Delete(&currentTag)
-		}
-		// Deletes all tags with the desired attributes
-		updated = true
-	}
+
 	if updated {
 		w.WriteHeader(202)
+		if len(tagsToRemove) > 0 {
+			// send information to the database (success)
+			var currentTag entities.Tag
+			for i := 0; i < len(tagsToRemove); i++ {
+				database.Instance.Where("username = ? AND tag_name = ?", tagsToRemove[i].Username, tagsToRemove[i].TagName).Delete(&currentTag)
+			}
+			// Deletes all tags with the desired attributes
+		}
+		if len(tagsToAdd) > 0 {
+			// send information to the database (success)
+			database.Instance.Create(&tagsToAdd)
+			w.Header().Set("Content-Type", "application/json")
+			json.NewEncoder(w).Encode(tagsToAdd)
+		}
 	} else {
 		w.WriteHeader(400)
+		json.NewEncoder(w).Encode("No tags updated")
 	}
 }
 
@@ -956,11 +953,6 @@ func BanUser(w http.ResponseWriter, r *http.Request) {
 }
 
 // ///////////////////////////////////// ** Websocket Functions ** ///////////////////////////////////////
-var upgrader = websocket.Upgrader{
-	ReadBufferSize:  1024,
-	WriteBufferSize: 1024,
-}
-
 const (
 	// Time allowed to write a message to the peer.
 	writeWait = 30 * time.Second
@@ -974,6 +966,11 @@ const (
 	// Maximum message size allowed from peer.
 	maxMessageSize = 512
 )
+
+var upgrader = websocket.Upgrader{
+	ReadBufferSize:  1024,
+	WriteBufferSize: 1024,
+}
 
 type Server struct {
 	conns map[*websocket.Conn]string
@@ -993,26 +990,26 @@ func (s *Server) handle(ws *websocket.Conn) {
 	//s.readLoop(ws)
 }
 
-func (s *Server) readLoop(ws *websocket.Conn, sender string, receiver *string, message *string) {
-	var currentConnection *websocket.Conn
+func (s *Server) readLoop(ws *websocket.Conn, sender string) {
+	var connection *websocket.Conn
 	for connections, values := range s.conns {
 		if values == sender {
-			currentConnection = connections
+			connection = connections
 			break
 		}
 		// looks through the map for the connection that involves the sender and reading that socket will give the right JSON
 	}
-	currentConnection.SetReadLimit(maxMessageSize)
-	currentConnection.SetReadDeadline(time.Now().Add(pongWait))
-	currentConnection.SetPongHandler(func(string) error { currentConnection.SetReadDeadline(time.Now().Add(pongWait)); return nil })
+	connection.SetReadLimit(maxMessageSize)
+	connection.SetReadDeadline(time.Now().Add(pongWait))
+	connection.SetPongHandler(func(string) error { connection.SetReadDeadline(time.Now().Add(pongWait)); return nil })
 	for {
 		var dMData entities.DMData
-		if err := currentConnection.ReadJSON(dMData); err != nil {
+		if err := connection.ReadJSON(&dMData); err != nil {
 			fmt.Println(err)
 			return
 		}
-		*receiver = dMData.Receiver
-		*message = dMData.Message
+		receiver := dMData.Receiver
+		message := dMData.Message
 		//messageType, p, err := ws.ReadMessage()
 		//if err != nil {
 		//	fmt.Println(err)
@@ -1020,35 +1017,24 @@ func (s *Server) readLoop(ws *websocket.Conn, sender string, receiver *string, m
 		//}
 		fmt.Println(message)
 		// Add to the DB here
-	}
-}
 
-func (s *Server) writeLoop(ws *websocket.Conn, sender string, receiver string, message string) {
-	var currentConnection *websocket.Conn
-	for connections, values := range s.conns {
-		if receiver != "" && values == receiver {
-			currentConnection = connections
-			break
-		}
-		// looks through the map for the connection that involves the sender and reading that socket will give the right JSON
-	}
-	currentConnection.SetWriteDeadline(time.Now().Add(writeWait))
-	for {
-		if receiver != "" && message != "" {
-			//if err := connections.WriteMessage(messageType, p); err != nil {
-			//	fmt.Println(err)
-			//	return
-			//}
-			var messageStruct entities.DirectMessage
-			messageStruct.Message = message
-			messageStruct.TimeSent = time.Now().String()
-			messageStruct.Sender = sender
-			if err := currentConnection.WriteJSON(messageStruct); err != nil {
-				fmt.Println(err)
-				return
+		for connections, values := range s.conns {
+			if receiver != "" && values == receiver {
+				//if err := connections.WriteMessage(messageType, p); err != nil {
+				//	fmt.Println(err)
+				//	return
+				//}
+				connections.SetWriteDeadline(time.Now().Add(writeWait))
+				var messageStruct entities.DirectMessage
+				messageStruct.Message = message
+				messageStruct.TimeSent = time.Now().String()
+				messageStruct.Sender = sender
+				if err := connections.WriteJSON(messageStruct); err != nil {
+					fmt.Println(err)
+					return
+				}
 			}
-			receiver = ""
-			message = ""
+
 		}
 	}
 }
