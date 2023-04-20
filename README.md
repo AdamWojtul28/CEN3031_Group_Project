@@ -8,11 +8,11 @@ Before running the project, you will need to have the following installed on you
 
 - Node.js (https://nodejs.org/en/download/)
 - Angular CLI (https://angular.io/guide/setup-local)
+- golang(https://go.dev/doc/install)
 Run the following command to start the development server:
-- Download and open MySQL workbench
+- Download and open MySQL workbench (This must be open to run the backend)
   - Import the SQL file into a new schema
   - Manually add the admins into your admin table
--
 
 Installation:
 - Clone the repository to your local machine.
@@ -28,6 +28,11 @@ Running the project:
 """
 ng serve
 """
+- Open a new terminal and navigate to the backend folder
+- Type "Go Build"
+- Type "Go run ."
+- The server should now be running
+
 General Overview: Development of a social media/service that would be targeted towards university students traveling outside of the country, such as through foreign exchange or simply those who would like a place to stay on a vacation away from home.
 
 Detailed Project Description: After you register/login, you would build your profile, including the city you live and information about you, including what you like to do, what you study, and similar content. Once your profile is set up, on the application, on the application’s calendar, you would mark certain time periods that you would like a place to stay; let’s say you would like to spend a week in Krakow, Poland the week of March 7th, 2023, so you would post that on your profile. In return, you provide a list of dates that you can house someone at your place. Once you post the dates that you can house someone, our software would provide a list of people who live in the place you would like to visit, and you can match with these people to open a chat (matchmaking would bear some resemblance to Tinder). After you match with people, you chat with them to see whether you think you would want to live with them and vice versa for the allocated time slot. Once you agree details, you fill out a form that would detail the parties, dates involved, and the addresses of the housing in each instance; these forms would ensure that both parties follow through with their plans. After the experience is over, you rate the person once for how they were as a host and how they were as a guest.
