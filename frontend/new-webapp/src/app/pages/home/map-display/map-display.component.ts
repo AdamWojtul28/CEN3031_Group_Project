@@ -22,8 +22,6 @@ export class MapDisplayComponent implements OnInit{
 
   ngOnInit(){
     this.getUserLocation();
-    this.mapCenter = this.userPosition;
-    this.map.setCenter(this.mapCenter);
 
   }
 
@@ -59,6 +57,7 @@ export class MapDisplayComponent implements OnInit{
           const lat = position.coords.latitude;
           const lng = position.coords.longitude;
           this.userPosition = { lat, lng };
+          this.updateMapCenter(`${lat},${lng}`);
         },
         (error) => {
           console.error('Geolocation error:', error);
