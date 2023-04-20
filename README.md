@@ -16,21 +16,25 @@ Before running the project, you will need to have the following installed on you
 Installation:
 - Clone the repository to your local machine.
 - Open your terminal or command prompt and navigate to the project directory.
-- Run the following command to install the dependencies:
-"""
+- Run the following command to install the frontend dependencies:
+```
 npm install
-"""
+```
 Running the project:
-- Open your terminal or command prompt and navigate to the project directory.
+- Open your terminal or command prompt and navigate to the backend folder
 
-- Run the following command to start the development server:
-"""
+- Start the backend server by running the following command:
+```
+go build
+go run . 
+```
+- Open a new terminal and navigate to the frontend folder
+- Start the frontend server by running the following command
+```
 ng serve
-"""
-- Open a new terminal and navigate to the backend folder
-- Type "Go build"
-- Type "Go run ."
+```
 - The server should now be running
+- Open your web browser and go to http://localhost:5000 to view the application.
 
 General Overview: Development of a social media/service that would be targeted towards university students traveling outside of the country, such as through foreign exchange or simply those who would like a place to stay on a vacation away from home.
 
