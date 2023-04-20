@@ -16,6 +16,10 @@
     - Ability to add friends and accept friend requests
     - Click on chat button to chat with a friend
     - Interactive map implemented with angular google maps
+- Implemented a global map
+    - Users that are logged in have access to a map on the home page
+    - Location search by city moves the map
+    - Marker to display the user location
 - Landing page
     - For users who are not signed in
     - Contains animated text and call to create account
@@ -24,6 +28,7 @@
 - Route Authentication
     - Users must be logged in to access most pages
     - User must be an admin to access admin page
+
 
 
 #### Work Completed by Backend During this Sprint
