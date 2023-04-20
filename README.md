@@ -9,7 +9,6 @@ Before running the project, you will need to have the following installed on you
 - Node.js (https://nodejs.org/en/download/)
 - Angular CLI (https://angular.io/guide/setup-local)
 - golang(https://go.dev/doc/install)
-Run the following command to start the development server:
 - Download and open MySQL workbench (This must be open to run the backend)
   - Import the SQL file into a new schema
   - Manually add the admins into your admin table
@@ -29,7 +28,7 @@ Running the project:
 ng serve
 """
 - Open a new terminal and navigate to the backend folder
-- Type "Go Build"
+- Type "Go build"
 - Type "Go run ."
 - The server should now be running
 
