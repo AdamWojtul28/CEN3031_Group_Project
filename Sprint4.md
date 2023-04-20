@@ -1,5 +1,7 @@
 # Sprint 4
 
+Video Link: https://youtu.be/BrdFxvaGe9c
+
 ## Detail work you've completed in Sprint 4
 
 
@@ -16,6 +18,10 @@
     - Ability to add friends and accept friend requests
     - Click on chat button to chat with a friend
     - Interactive map implemented with angular google maps
+- Implemented a global map
+    - Users that are logged in have access to a map on the home page
+    - Location search by city moves the map
+    - Marker to display the user location
 - Landing page
     - For users who are not signed in
     - Contains animated text and call to create account
@@ -26,6 +32,7 @@
     - User must be an admin to access admin page
 
 
+
 #### Work Completed by Backend During this Sprint
 - Finished friend connection functionality so that now all of a users friends can be sent to the front end.
 - Completed current admin functionality goals:
@@ -34,6 +41,17 @@
     - Admins must now accept or deny new users. New users will not be able to access the site until they are approved
     - Admins can also ban users from the site 
 - Added websocket functionality so that users can chat with each other:
+    - There is a direct connection between users; therefore, users can have personal messages without another person knowing thanks to server of clients 
+    - User can navigate between different pages on the website and the Websocket connection will remain alive
+       -- Only issue is that does not work during refresh route
+- Users can include tags in their profile which include their interests
+    - Tags can be added, deleted, or a combination of the two, depending on the endpoint selected    
+    - Endpoint returned that demonstrates the number of shared tags someone has with everyone in the database 
+- The search functionality from Sprint 3 has expanded and changed from searching for listings (like AirBNB) to searching for users close to a certain point picked on the map, displaying the following info
+    - Information about the users
+    - Their proximity from the point selected on the map
+    - Number of shared tags the searching user has with everyone from that area
+    - A list of the exact tags that each of the users share
 - Added the ability to store images as blobs of data so that users can have profile pictures
 - Changed the SQL table values to be specific character lengths to save space
 
@@ -112,8 +130,6 @@ it('should have an email input field', () => {
 ```
 
 CYPRESS TESTS
-
-Sprint 3 only cypress tests listed:
 ```
 describe ('Test Admin / Logout / Listing Search', () => {
   it('Signs up and logs out', () => {
@@ -141,6 +157,40 @@ describe ('Test Admin / Logout / Listing Search', () => {
     cy.get("[data-cy='unit-input']").select('mi')
     cy.get("[data-cy='search-btn']").click()
     cy.get("[data-cy='http-sent']").should('contain', "Search was sent!")
+  })
+})
+```
+
+```
+describe ('Test Friend Requests / Update Profile', () => {
+  it('Creates a friendship and then destroys it', () => {
+    cy.visit('http://localhost:5000')
+    cy.get("[data-cy='login-header']").click()
+    cy.get("[data-cy='username']").type('testuser1')
+    cy.get("[data-cy='password']").type('password')
+    cy.get("[data-cy='login-btn']").click()
+    cy.get("[data-cy='home-btn']").click()
+    cy.url().should('eq', 'http://localhost:5000/home')
+    cy.get("[data-cy='add-friend-text']").type('testuser2')
+    cy.get("[data-cy='add-friend-btn']").click()
+    cy.get("[data-cy='add-friend-pending']").should('contain.text','testuser2')
+    cy.get("[data-cy='profile-nav']").click()
+    cy.get("[data-cy='logout-btn']").click()
+    cy.url().should('eq', 'http://localhost:5000/')
+
+    cy.visit('http://localhost:5000')
+    cy.get("[data-cy='login-header']").click()
+    cy.get("[data-cy='username']").type('testuser2')
+    cy.get("[data-cy='password']").type('password')
+    cy.get("[data-cy='login-btn']").click()
+    cy.get("[data-cy='home-btn']").click()
+    cy.get("[data-cy='incoming-request']").should('contain.text', 'testuser1')
+    cy.get("[data-cy='accept-request-btn']").click()
+    cy.get("[data-cy='incoming-request']").should('not.exist')
+    cy.get("[data-cy='friend-item']").should('contain.text', 'testuser1')
+    cy.get("[data-cy='delete-friend-btn']").click()
+    cy.get("[data-cy='no-friends']").should('contain.text', 'You have no friends')
+    
   })
 })
 ```
@@ -420,7 +470,193 @@ pm.test("must send unauthorized response", function () {
      pm.response.to.have.status(401);
 });
 ```
+### Sprint 4 Tests
 
+- POST - Retrieve Friends - Successful
+- Endpoint: http://localhost:5000/api/retrieveFriends
+- Tests that a list of connections where a user is present can be returned
+```
+pm.test("must send code 200", function () {
+     pm.response.to.have.status(200);
+});
+```
+
+- POST - Retrieve Friends - Unsuccessful
+- Endpoint: http://localhost:5000/api/retrieveFriends
+- Tests that when a user has no friends, returns a not found error
+```
+pm.test("must send code 404", function () {
+     pm.response.to.have.status(404);
+});
+```
+
+- POST - Valid Admin Check - Successful
+- Endpoint: http://localhost:5000/api/validAdmin
+- Tests that if the current logged in user is an admin, it returns authorized code
+```
+pm.test("must send code 202", function () {
+     pm.response.to.have.status(202);
+});
+```
+
+- POST - Accept User - Successful
+- Endpoint: http://localhost:5000/api/acceptUser
+- Tests that a logged in admin can alter the status of a user to accepted
+```
+pm.test("must send code 200", function () {
+     pm.response.to.have.status(200);
+});
+```
+
+- POST - Accept User - Unsuccessful
+- Endpoint: http://localhost:5000/api/acceptUser
+- Tests that if the user the admin tries to change does not exist, returns a 404 status
+```
+pm.test("must send code 404", function () {
+     pm.response.to.have.status(404);
+});
+```
+
+- POST - Deny User - Successful
+- Endpoint: http://localhost:5000/api/denyUser
+- Tests that a logged in admin can alter the status of a user to denied
+```
+pm.test("must send code 200", function () {
+     pm.response.to.have.status(200);
+});
+```
+
+- POST - Deny User - Unsuccessful
+- Endpoint: http://localhost:5000/api/denyUser
+- Tests that if the user the admin tries to change does not exist, returns a 404 status
+```
+pm.test("must send code 404", function () {
+     pm.response.to.have.status(404);
+});
+```
+
+- POST - Ban User - Successful
+- Endpoint: http://localhost:5000/api/banUser
+- Tests that a logged in admin can alter the status of a user to banned
+```
+pm.test("must send code 200", function () {
+     pm.response.to.have.status(200);
+});
+```
+
+- POST - Ban User - Unsuccessful
+- Endpoint: http://localhost:5000/api/banUser
+- Tests that if an admin is not logged in, a user's status can not be changed to banned
+```
+pm.test("must send code 401", function () {
+     pm.response.to.have.status(401);
+});
+```
+
+- POST - Valid Admin Check - Unsuccessful
+- Endpoint: http://localhost:5000/api/validAdmin
+- Tests that if the user logged in is not an admin, returns unauthorized status
+```
+pm.test("must send code 401", function () {
+     pm.response.to.have.status(401);
+});
+```
+
+- POST - Add Tags to User Success
+- Endpoint: http://localhost:5000/api/tags?username=Ally
+- Tests if user adds new tags to the database that were not previously selected
+```
+pm.test("must have body and send 202", function () {
+     pm.response.to.be.withBody;
+     pm.response.to.have.status(202);
+});
+```
+
+- POST - Add Tags to User Fail
+- Endpoint: http://localhost:5000/api/tags?username=Ally
+- Tests if user tries to add tags that they had previously added to the DB
+```
+pm.test("must have body and send 400", function () {
+     pm.response.to.be.withBody;
+     pm.response.to.have.status(400);
+});
+```
+
+- DELETE - Delete Tags from User Success
+- Endpoint: http://localhost:5000/api/tags?username=Ally
+- Tests if user tries to delete tags that currently exist in the DB
+```
+pm.test("must have body and send 202", function () {
+     pm.response.to.have.status(202);
+});
+```
+
+- DELETE - Add Tags from User Fail
+- Endpoint: http://localhost:5000/api/tags?username=Ally
+- Tests if user tries to delete tags that do not exist in the DB
+```
+pm.test("must have body and send 400", function () {
+     pm.response.to.be.withBody;
+     pm.response.to.have.status(400);
+});
+```
+
+- PUT - Update User Tags - No Changes
+- Endpoint: http://localhost:5000/api/tags?username=Jimmy123
+- Tests if user does not make any changes to tags in the DB
+```
+pm.test("must have body and send 400", function () {
+     pm.response.to.be.withBody;
+     pm.response.to.have.status(400);
+});
+```
+
+- PUT - Update Tags to User Success
+- Endpoint: http://localhost:5000/api/tags?username=Jimmy123
+- Tests if user does not make any changes to tags in the DB
+```
+pm.test("must have body and send 200", function () {
+     pm.response.to.be.withBody;
+     pm.response.to.have.status(200);
+});
+```
+
+- GET - Same Tags Retreival
+- Endpoint: http://localhost:5000/api/tagging?username=Jack%20Daniels
+- Successfully retreives all shared tags between user in Query Parameter with every user in DB that has tags
+```
+pm.test("must have body and send 200", function () {
+     pm.response.to.be.withBody;
+     pm.response.to.have.status(200);
+});
+```
+
+- GET - Users with Shared Interests Near Oxford, England
+- Endpoint: http://localhost:5000/api/search?username=John&location=Oxford%2C%20England&maxDistance=1000&unit=mi
+- Successfully retreives all users 1000 miles from Oxford, England, along with the number of shared tags they have with user and the full list of those tags
+```
+pm.test("users near desired destination exist", function () {
+     pm.response.to.be.ok;
+});
+```
+
+- GET - Users with Shared Interests Near Krakow, Poland
+- Endpoint: http://localhost:5000/api/search?username=John&location=Krakow%2C%20Poland&maxDistance=1000&unit=mi
+- Successfully retreives all users 1000 miles from Oxford, England, along with the number of shared tags they have with user and the full list of those tags
+```
+pm.test("users near desired destination exist", function () {
+     pm.response.to.be.ok;
+});
+```
+
+- GET - Users with Shared Interests Near Auckland, New Zealand
+- Endpoint: http://localhost:5000/api/search?username=John&location=Krakow%2C%20Poland&maxDistance=1000&unit=mi
+- Retreives no users, as no user is within 1000 miles Auckland, New Zealand
+```
+pm.test("no users near desired destination exist", function () {
+     pm.response.to.have.status(204);
+});
+```
 ## Documentation for Backend API
 
 ### Basic User Routes: 
@@ -494,20 +730,6 @@ POST http://localhost:5000/api/logout
 - This API call will be used to bring the user to logout the user from their current session. This means that the users cookie and the token in the database will be removed and the expiry time will be changed to the current time.
     - If session is expired, or there is no matching token returns a 401 error code. Any other error when checking session will return 400
 
-### Listing Routes
-#### Add Listing:
-
-POST http://localhost:5000/api/listings
-
- - The above API call requires the frontend to send a Listing Object, which contains information about the listing, including start date, end date, status, capacity, and information about the host and guests. If a listing conflicts with another listing, the host will not be able to post the listing, as a host can only put up one listing at a time as it currently stands.
-
-#### Searching Test:
-
-GET http://localhost:5000/api/search
-
-- The above API call, when provided with URL query parameters, retreives other users platform who are close the desired location of the user, sent as a JSON Object to the frontend in sorted fashion, where users closest to the desired location are retreived first and furthest users from the desired location, but still within the radius of search (represented by the maxDistance parameter) are retreived last. Currently, this endpoint only works when all 3 parameters are provided.
-  - In the case of the following endpoint: http://localhost:5000/api/search?location=Oxford%2C%20England&maxDistance=1000&unit=mi, all users who are within 1000 miles of Oxford, England are retreived.
-
 ### Friend Routes
 #### Send Friend Request:
 
@@ -563,3 +785,36 @@ POST http://localhost:5000/api/denyUser
 POST http://localhost:5000/api/banUser
 
 - Operates the same as Accept user, but modifies the status so that it reads "Banned".
+
+### Tagging Routes
+
+#### Add List of Tags:
+
+POST http://localhost:5000/api/tags
+
+- Receives a JSON object that contains a string of comma separated tags. The tags are first separated and then stored in a splice. After this is complete it is determine whether these are unique tags for the user in the query parameter (whether they exist in the DB or not). If they do not yet exist they are added. 
+    - If no new tags are added to the DB, will return 400
+
+#### Delete List of Tags:
+
+DELETE http://localhost:5000/api/tags
+
+- Receives a JSON object that contains a string of comma separated tags. The tags are first separated and then stored in a splice. After this is complete it is determine whether these are unique tags for the user in the query parameter (whether they exist in the DB or not). If they exist, they are deleted.  
+    - If no tags in the JSON object are in the DB, will return 400
+
+#### Update All Tags:
+PUT http://localhost:5000/api/tags
+- Receives a JSON object that contains a 2 strings of comma separated tags, one of all tags selected and one of all tags not selected. The tags for each are first separated and then stored in splices. After this is complete it is determine whether these are unique tags for the user in the query parameter (whether they exist in the DB or not). If new tags are to be added that are not in the DB, they are added. If there are tags to be deleted that exist in the DB, they are deleted. All other values are ignored. 
+    - If no changes are made, will return 400
+
+#### Get All Shared Tags with Other Users:
+GET http://localhost:5000/api/tagging
+- Receives a query parameter of the current user. Then this endpoint will generate how many tags this user shares with other users along with what those tags are.
+
+### Chat Functionality
+GET http://localhost:5000/api/tagging
+- Receives a query parameter of the current user and a JSON object that is sent through the newly established connection containing a JSON with the name of the receiver and the message for that receives. For successful connections, direct messages are sent to users. 
+
+### User Search Functionality
+GET http://localhost:5000/api/search
+- Receives 4 query parameters: 1) the username of the current user, 2) the location of users to search for, 3) distance from the location, and 4) distance unit. Then users who fall within the radius of that point are returned along with the number of shared tags and the full list of those shared tags.

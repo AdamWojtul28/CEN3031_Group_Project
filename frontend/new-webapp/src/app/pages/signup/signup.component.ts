@@ -35,7 +35,7 @@ export class SignupComponent {
         next: (res) => {
           // -------------------------
           console.log(res);
-          this.router.navigate(['users', this.loginForm.value.username]);
+          this.router.navigate(['profile/details']);
         },
         error: (err) => {
           // -------------------------

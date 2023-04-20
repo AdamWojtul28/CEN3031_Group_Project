@@ -419,38 +419,7 @@ func Logout(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
-/////////////////////////////////////// ** Listing Functions ** ///////////////////////////////////////
-/*
-select dr1.* from date_ranges dr1
-inner join date_ranges dr2
-on dr2.start > dr1.start -- start after dr1 is started
-  and dr2.start < dr1.end -- start before dr1 is finished
-
-
-select name
-from professors
-where not exists (select *
-				  from lectures
-				  where pers-id = held_by);
-*/
-func CreateListing(w http.ResponseWriter, r *http.Request) {
-	w.Header().Set("Content-Type", "application/json")
-	var listing entities.Listing
-	var overlappingListing []entities.Listing
-	json.NewDecoder(r.Body).Decode(&listing)
-	database.Instance.Where("host_username = ? AND ((start_date BETWEEN ? AND ?) OR (end_date BETWEE N ? AND ?))", listing.HostUsername, listing.StartDate, listing.EndDate, listing.StartDate, listing.EndDate).Find(&overlappingListing)
-	// ensures that a host does not create a listing for a time frame where they already have a listing posted
-	if len(overlappingListing) > 0 {
-		w.WriteHeader(400)
-		json.NewEncoder(w).Encode("Conflict with another reservation!")
-	} else {
-		// send information to the database (success)
-		database.Instance.Create(&listing)
-		w.WriteHeader(202)
-		// Code for 'Accepted' when unique username
-		json.NewEncoder(w).Encode(listing)
-	}
-}
+/////////////////////////////////////// ** Tags Functions ** ///////////////////////////////////////
 
 func UpdateTags(w http.ResponseWriter, r *http.Request) {
 	username := r.URL.Query().Get("username")
@@ -1005,6 +974,7 @@ func (s *Server) readLoop(ws *websocket.Conn, sender string) {
 	for {
 		var dMData entities.DMData
 		if err := connection.ReadJSON(&dMData); err != nil {
+			connection.Close()
 			fmt.Println(err)
 			return
 		}
@@ -1025,12 +995,14 @@ func (s *Server) readLoop(ws *websocket.Conn, sender string) {
 				//	return
 				//}
 				connections.SetWriteDeadline(time.Now().Add(writeWait))
+				connections.SetPongHandler(func(string) error { connections.SetReadDeadline(time.Now().Add(pongWait)); return nil })
 				var messageStruct entities.DirectMessage
 				messageStruct.Message = message
 				messageStruct.TimeSent = time.Now().String()
 				messageStruct.Sender = sender
 				if err := connections.WriteJSON(messageStruct); err != nil {
 					fmt.Println(err)
+					connections.Close()
 					return
 				}
 			}
