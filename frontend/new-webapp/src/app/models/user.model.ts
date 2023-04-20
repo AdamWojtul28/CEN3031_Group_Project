@@ -8,6 +8,18 @@ export class User {
     public profile_image: string,
     public status: string,
 
+    public phone : string,
+    public address1: string,
+    public address2: string,
+    public address3: string,
+    public country: string,
+    public birthday: string,
+    public gender: string,
+    public emergency_contact_address: string,
+    public emergency_contact_name : string,
+    public emergency_contact_phone_number : string,
+
+
     private _token: string,
     private _tokenExpiration: Date
   ) {}

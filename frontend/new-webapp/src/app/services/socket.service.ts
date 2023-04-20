@@ -52,6 +52,8 @@ export class SocketService{
   }
 
   public sendMessage(data: {receiver: string, message: string}) {
+    console.log(typeof JSON.stringify(data));
+    console.log(JSON.stringify(data));
     this.socket.send(JSON.stringify(data));
     if (this.messageList.has(data.receiver)){
       this.messageList.get(data.receiver).push({ time: new Date(), message: data.message, sender: this.userHttpService.user.value.username })

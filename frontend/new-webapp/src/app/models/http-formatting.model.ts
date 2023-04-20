@@ -4,4 +4,5 @@ export interface UpdateProfileInfoModel{
   email? : string;
   password? : string;
   profile_image? : string | ArrayBuffer;
+  biography? : string;
 }
