@@ -23,9 +23,9 @@ npm install
 Running the project:
 - Navigate to the config.json in the backend folder and edit the following line
 ```
-"connection_string": "root:2003Lopera@tcp(127.0.0.1:3306)/newschema"
+"connection_string": "root:YOUR_PASSWORD@tcp(127.0.0.1:3306)/YOUR_SCHEMA"
 ```
-  - Replace <password> with your local password, and <newschema> with the schema you created 
+  - Replace YOUR_PASSWORD with your password for your local instance, and YOUR_SCHEMA with the name of the schema you created 
 - Open your terminal or command prompt and navigate to the backend folder
 
 - Start the backend server by running the following command:
