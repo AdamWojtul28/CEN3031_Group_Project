@@ -84,9 +84,11 @@
       </div>
 
       <div class="col-12 col-lg-8 mb-4 mb-lg-0">
+        <div class="d-flex align-items-start">
+          <app-booking (locationSearch)="onLocationSearch($event)"></app-booking>
+
         <!-- MAP -->
-        <div class="col-12 col-lg-8 mb-4 mb-lg-0">
-          <app-map-display></app-map-display>
+          <app-map-display [location]="location"></app-map-display>
         </div>
       </div>
 

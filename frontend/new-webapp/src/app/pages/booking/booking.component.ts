@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, EventEmitter, Output } from '@angular/core';
 import { NgForm } from '@angular/forms';
 import { SearchData } from 'src/app/models/listing_search.model';
 import { ListingsHttpService } from 'src/app/services/listings-http.service';
@@ -11,6 +11,8 @@ import { ListingsHttpService } from 'src/app/services/listings-http.service';
 export class BookingComponent {
   searchData: SearchData = {location: '', max_distance: 0, unit: ''};
   isSent: boolean = false;
+
+  @Output() locationSearch = new EventEmitter<string>();
 
   constructor(public listingsHttpService: ListingsHttpService) {}
 
@@ -30,5 +32,6 @@ export class BookingComponent {
           console.log(err);
         }
       })
+    this.locationSearch.emit(form.value.city);
   }
 }

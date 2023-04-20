@@ -20,6 +20,8 @@ export class UserHomeComponent implements OnInit, OnDestroy{
   incomingFriends: Friendship[] = [];
   outgoingFriends: Friendship[] = [];
   profileImages: Map<string, string> = new Map();
+
+  location: string;
   
   constructor(private userHttpService: UsersHttpService, private imageService: ImageService, private router: Router) { }
 
@@ -145,6 +147,12 @@ export class UserHomeComponent implements OnInit, OnDestroy{
         console.log(err);
       }
     })
+  }
+
+  onLocationSearch(location: string) {
+    console.log('Location:', location);
+    this.location = location;
+    // Pass the location to the map component to update the map center
   }
 
   chatWith(friend: string) {

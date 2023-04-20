@@ -25,3 +25,17 @@ body
     border-style: solid;
     border-color: #ddd;
   }
+
+  .map-container {
+    height: 400px;
+    width: 300px;
+    position: relative;
+  }
+  
+  google-map {
+    height: 100%;
+    width: 100%;
+    position: absolute;
+    top: 0;
+    left: 0;
+  }
