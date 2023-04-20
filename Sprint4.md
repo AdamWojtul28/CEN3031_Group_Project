@@ -39,6 +39,17 @@
     - Admins must now accept or deny new users. New users will not be able to access the site until they are approved
     - Admins can also ban users from the site 
 - Added websocket functionality so that users can chat with each other:
+    - There is a direct connection between users; therefore, users can have personal messages without another person knowing thanks to server of clients 
+    - User can navigate between different pages on the website and the Websocket connection will remain alive
+       -- Only issue is that does not work during refresh route
+- Users can include tags in their profile which include their interests
+    - Tags can be added, deleted, or a combination of the two, depending on the endpoint selected    
+    - Endpoint returned that demonstrates the number of shared tags someone has with everyone in the database 
+- The search functionality from Sprint 3 has expanded and changed from searching for listings (like AirBNB) to searching for users close to a certain point picked on the map, displaying the following info
+    - Information about the users
+    - Their proximity from the point selected on the map
+    - Number of shared tags the searching user has with everyone from that area
+    - A list of the exact tags that each of the users share
 - Added the ability to store images as blobs of data so that users can have profile pictures
 - Changed the SQL table values to be specific character lengths to save space
 
