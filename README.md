@@ -15,20 +15,26 @@ Before running the project, you will need to have the following installed on you
 
 Installation:
 - Clone the repository to your local machine.
-- Open your terminal or command prompt and navigate to the project directory.
+- Open your terminal or command prompt and navigate to the application directory (frontend/new-webapp).
 - Run the following command to install the frontend dependencies:
 ```
 npm install
 ```
 Running the project:
+- Navigate to the config.json in the backend folder and edit the following line
+```
+"connection_string": "root:2003Lopera@tcp(127.0.0.1:3306)/newschema"
+```
+  - Replace <password> with your local password, and <newschema> with the schema you created 
 - Open your terminal or command prompt and navigate to the backend folder
 
 - Start the backend server by running the following command:
+
 ```
 go build
 go run . 
 ```
-- Open a new terminal and navigate to the frontend folder
+- Open a new terminal and navigate to the application in the frontend folder (frontend/new-webapp)
 - Start the frontend server by running the following command
 ```
 ng serve
