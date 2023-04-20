@@ -728,20 +728,6 @@ POST http://localhost:5000/api/logout
 - This API call will be used to bring the user to logout the user from their current session. This means that the users cookie and the token in the database will be removed and the expiry time will be changed to the current time.
     - If session is expired, or there is no matching token returns a 401 error code. Any other error when checking session will return 400
 
-### Listing Routes
-#### Add Listing:
-
-POST http://localhost:5000/api/listings
-
- - The above API call requires the frontend to send a Listing Object, which contains information about the listing, including start date, end date, status, capacity, and information about the host and guests. If a listing conflicts with another listing, the host will not be able to post the listing, as a host can only put up one listing at a time as it currently stands.
-
-#### Searching Test:
-
-GET http://localhost:5000/api/search
-
-- The above API call, when provided with URL query parameters, retreives other users platform who are close the desired location of the user, sent as a JSON Object to the frontend in sorted fashion, where users closest to the desired location are retreived first and furthest users from the desired location, but still within the radius of search (represented by the maxDistance parameter) are retreived last. Currently, this endpoint only works when all 3 parameters are provided.
-  - In the case of the following endpoint: http://localhost:5000/api/search?location=Oxford%2C%20England&maxDistance=1000&unit=mi, all users who are within 1000 miles of Oxford, England are retreived.
-
 ### Friend Routes
 #### Send Friend Request:
 
