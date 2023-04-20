@@ -3,7 +3,7 @@
 Project Name:
 # Worldlier Application
 
-How to run application:
+## How to run application:
 Before running the project, you will need to have the following installed on your machine:
 
 - Node.js (https://nodejs.org/en/download/)
