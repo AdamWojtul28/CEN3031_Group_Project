@@ -464,15 +464,16 @@ func UpdateTags(w http.ResponseWriter, r *http.Request) {
 	tagsToAddStrings := strings.Split(TagsToUpdate.TagsToAdd, ",")
 	//fmt.Println(tagsToAddStrings)
 
+	var updated bool
+	updated = false
+
 	for i := 0; i < len(tagsToAddStrings); i++ {
-		if tagsToAddStrings[i] == "" {
-			continue
-		}
 		database.Instance.Where("username = ? AND tag_name = ?", username, tagsToAddStrings[i]).Find(&addQueryResults)
 		if len(addQueryResults) == 0 {
 			tagToAdd.Username = username
 			tagToAdd.TagName = tagsToAddStrings[i]
 			tagsToAdd = append(tagsToAdd, tagToAdd)
+			updated = true
 		}
 		addQueryResults = nil
 	}
@@ -484,40 +485,36 @@ func UpdateTags(w http.ResponseWriter, r *http.Request) {
 	//fmt.Println(tagsToAddStrings)
 
 	for i := 0; i < len(tagsToRemoveStrings); i++ {
-		if tagsToRemoveStrings[i] == "" {
-			continue
-		}
 		database.Instance.Where("username = ? AND tag_name = ?", username, tagsToRemoveStrings[i]).Find(&removeQueryResults)
-		if len(removeQueryResults) != 0 {
+		if len(removeQueryResults) > 0 {
 			tagToDelete.Username = username
 			tagToDelete.TagName = tagsToRemoveStrings[i]
 			tagsToRemove = append(tagsToRemove, tagToDelete)
+			updated = true
 		}
 		removeQueryResults = nil
 	}
 	// ensures that a host does not create a listing for a time frame where they already have a listing posted
-	var updated bool
-	updated = false
-	if len(tagsToAdd) > 0 {
-		// send information to the database (success)
-		database.Instance.Create(&tagsToAdd)
-		w.Header().Set("Content-Type", "application/json")
-		json.NewEncoder(w).Encode(tagsToAdd)
-		updated = true
-	}
-	if len(tagsToRemove) > 0 {
-		// send information to the database (success)
-		var currentTag entities.Tag
-		for i := 0; i < len(tagsToRemove); i++ {
-			database.Instance.Where("username = ? AND tag_name = ?", tagsToRemove[i].Username, tagsToRemove[i].TagName).Delete(&currentTag)
-		}
-		// Deletes all tags with the desired attributes
-		updated = true
-	}
+
 	if updated {
 		w.WriteHeader(202)
+		if len(tagsToRemove) > 0 {
+			// send information to the database (success)
+			var currentTag entities.Tag
+			for i := 0; i < len(tagsToRemove); i++ {
+				database.Instance.Where("username = ? AND tag_name = ?", tagsToRemove[i].Username, tagsToRemove[i].TagName).Delete(&currentTag)
+			}
+			// Deletes all tags with the desired attributes
+		}
+		if len(tagsToAdd) > 0 {
+			// send information to the database (success)
+			database.Instance.Create(&tagsToAdd)
+			w.Header().Set("Content-Type", "application/json")
+			json.NewEncoder(w).Encode(tagsToAdd)
+		}
 	} else {
 		w.WriteHeader(400)
+		json.NewEncoder(w).Encode("No tags updated")
 	}
 }
 
