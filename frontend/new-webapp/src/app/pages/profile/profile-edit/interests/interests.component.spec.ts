@@ -1,6 +1,8 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { FormsModule, NgForm } from '@angular/forms';
 
 import { InterestsComponent } from './interests.component';
+import { HttpClientModule } from '@angular/common/http';
 
 describe('InterestsComponent', () => {
   let component: InterestsComponent;
@@ -8,7 +10,8 @@ describe('InterestsComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ InterestsComponent ]
+      declarations: [ InterestsComponent ],
+      imports: [HttpClientModule, FormsModule]
     })
     .compileComponents();
 

@@ -1,4 +1,4 @@
 {
-    "connection_string": "root:2003Lopera@tcp(127.0.0.1:3306)/newschema",
+    "connection_string": "root:YOUR_PASSWORD@tcp(127.0.0.1:3306)/YOUR_SCHEMA",
     "port": 5000
 }
