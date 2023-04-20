@@ -956,11 +956,6 @@ func BanUser(w http.ResponseWriter, r *http.Request) {
 }
 
 // ///////////////////////////////////// ** Websocket Functions ** ///////////////////////////////////////
-var upgrader = websocket.Upgrader{
-	ReadBufferSize:  1024,
-	WriteBufferSize: 1024,
-}
-
 const (
 	// Time allowed to write a message to the peer.
 	writeWait = 30 * time.Second
@@ -974,6 +969,11 @@ const (
 	// Maximum message size allowed from peer.
 	maxMessageSize = 512
 )
+
+var upgrader = websocket.Upgrader{
+	ReadBufferSize:  1024,
+	WriteBufferSize: 1024,
+}
 
 type Server struct {
 	conns map[*websocket.Conn]string
@@ -993,26 +993,26 @@ func (s *Server) handle(ws *websocket.Conn) {
 	//s.readLoop(ws)
 }
 
-func (s *Server) readLoop(ws *websocket.Conn, sender string, receiver *string, message *string) {
-	var currentConnection *websocket.Conn
+func (s *Server) readLoop(ws *websocket.Conn, sender string) {
+	var connection *websocket.Conn
 	for connections, values := range s.conns {
 		if values == sender {
-			currentConnection = connections
+			connection = connections
 			break
 		}
 		// looks through the map for the connection that involves the sender and reading that socket will give the right JSON
 	}
-	currentConnection.SetReadLimit(maxMessageSize)
-	currentConnection.SetReadDeadline(time.Now().Add(pongWait))
-	currentConnection.SetPongHandler(func(string) error { currentConnection.SetReadDeadline(time.Now().Add(pongWait)); return nil })
+	connection.SetReadLimit(maxMessageSize)
+	connection.SetReadDeadline(time.Now().Add(pongWait))
+	connection.SetPongHandler(func(string) error { connection.SetReadDeadline(time.Now().Add(pongWait)); return nil })
 	for {
 		var dMData entities.DMData
-		if err := currentConnection.ReadJSON(dMData); err != nil {
+		if err := connection.ReadJSON(&dMData); err != nil {
 			fmt.Println(err)
 			return
 		}
-		*receiver = dMData.Receiver
-		*message = dMData.Message
+		receiver := dMData.Receiver
+		message := dMData.Message
 		//messageType, p, err := ws.ReadMessage()
 		//if err != nil {
 		//	fmt.Println(err)
@@ -1020,35 +1020,24 @@ func (s *Server) readLoop(ws *websocket.Conn, sender string, receiver *string, m
 		//}
 		fmt.Println(message)
 		// Add to the DB here
-	}
-}
 
-func (s *Server) writeLoop(ws *websocket.Conn, sender string, receiver string, message string) {
-	var currentConnection *websocket.Conn
-	for connections, values := range s.conns {
-		if receiver != "" && values == receiver {
-			currentConnection = connections
-			break
-		}
-		// looks through the map for the connection that involves the sender and reading that socket will give the right JSON
-	}
-	currentConnection.SetWriteDeadline(time.Now().Add(writeWait))
-	for {
-		if receiver != "" && message != "" {
-			//if err := connections.WriteMessage(messageType, p); err != nil {
-			//	fmt.Println(err)
-			//	return
-			//}
-			var messageStruct entities.DirectMessage
-			messageStruct.Message = message
-			messageStruct.TimeSent = time.Now().String()
-			messageStruct.Sender = sender
-			if err := currentConnection.WriteJSON(messageStruct); err != nil {
-				fmt.Println(err)
-				return
+		for connections, values := range s.conns {
+			if receiver != "" && values == receiver {
+				//if err := connections.WriteMessage(messageType, p); err != nil {
+				//	fmt.Println(err)
+				//	return
+				//}
+				connections.SetWriteDeadline(time.Now().Add(writeWait))
+				var messageStruct entities.DirectMessage
+				messageStruct.Message = message
+				messageStruct.TimeSent = time.Now().String()
+				messageStruct.Sender = sender
+				if err := connections.WriteJSON(messageStruct); err != nil {
+					fmt.Println(err)
+					return
+				}
 			}
-			receiver = ""
-			message = ""
+
 		}
 	}
 }
