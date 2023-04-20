@@ -16,10 +16,13 @@ export class MapDisplayComponent implements OnInit{
   @Input() location: string;
 
   private map: google.maps.Map;
+  userPosition: google.maps.LatLngLiteral
 
   constructor() { }
 
-  ngOnInit(): void {
+  ngOnInit(){
+    this.getUserLocation();
+
   }
 
   ngOnChanges(changes: SimpleChanges) {
@@ -45,5 +48,23 @@ export class MapDisplayComponent implements OnInit{
         console.error('Geocode error:', status);
       }
     });
+  }
+
+  getUserLocation() {
+    if (navigator.geolocation) {
+      navigator.geolocation.getCurrentPosition(
+        (position) => {
+          const lat = position.coords.latitude;
+          const lng = position.coords.longitude;
+          this.userPosition = { lat, lng };
+          this.updateMapCenter(`${lat},${lng}`);
+        },
+        (error) => {
+          console.error('Geolocation error:', error);
+        }
+      );
+    } else {
+      console.error('Geolocation is not supported by this browser.');
+    }
   }
 }

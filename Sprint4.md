@@ -16,6 +16,10 @@
     - Ability to add friends and accept friend requests
     - Click on chat button to chat with a friend
     - Interactive map implemented with angular google maps
+- Implemented a global map
+    - Users that are logged in have access to a map on the home page
+    - Location search by city moves the map
+    - Marker to display the user location
 - Landing page
     - For users who are not signed in
     - Contains animated text and call to create account
@@ -26,6 +30,7 @@
     - User must be an admin to access admin page
 
 
+
 #### Work Completed by Backend During this Sprint
 - Finished friend connection functionality so that now all of a users friends can be sent to the front end.
 - Completed current admin functionality goals:
@@ -34,6 +39,17 @@
     - Admins must now accept or deny new users. New users will not be able to access the site until they are approved
     - Admins can also ban users from the site 
 - Added websocket functionality so that users can chat with each other:
+    - There is a direct connection between users; therefore, users can have personal messages without another person knowing thanks to server of clients 
+    - User can navigate between different pages on the website and the Websocket connection will remain alive
+       -- Only issue is that does not work during refresh route
+- Users can include tags in their profile which include their interests
+    - Tags can be added, deleted, or a combination of the two, depending on the endpoint selected    
+    - Endpoint returned that demonstrates the number of shared tags someone has with everyone in the database 
+- The search functionality from Sprint 3 has expanded and changed from searching for listings (like AirBNB) to searching for users close to a certain point picked on the map, displaying the following info
+    - Information about the users
+    - Their proximity from the point selected on the map
+    - Number of shared tags the searching user has with everyone from that area
+    - A list of the exact tags that each of the users share
 - Added the ability to store images as blobs of data so that users can have profile pictures
 - Changed the SQL table values to be specific character lengths to save space
 
@@ -420,7 +436,97 @@ pm.test("must send unauthorized response", function () {
      pm.response.to.have.status(401);
 });
 ```
+### Sprint 4 Tests
 
+- POST - Retrieve Friends - Successful
+- Endpoint: http://localhost:5000/api/retrieveFriends
+- Tests that a list of connections where a user is present can be returned
+```
+pm.test("must send code 200", function () {
+     pm.response.to.have.status(200);
+});
+```
+
+- POST - Retrieve Friends - Unsuccessful
+- Endpoint: http://localhost:5000/api/retrieveFriends
+- Tests that when a user has no friends, returns a not found error
+```
+pm.test("must send code 404", function () {
+     pm.response.to.have.status(404);
+});
+```
+
+- POST - Valid Admin Check - Successful
+- Endpoint: http://localhost:5000/api/validAdmin
+- Tests that if the current logged in user is an admin, it returns authorized code
+```
+pm.test("must send code 202", function () {
+     pm.response.to.have.status(202);
+});
+```
+
+- POST - Accept User - Successful
+- Endpoint: http://localhost:5000/api/acceptUser
+- Tests that a logged in admin can alter the status of a user to accepted
+```
+pm.test("must send code 200", function () {
+     pm.response.to.have.status(200);
+});
+```
+
+- POST - Accept User - Unsuccessful
+- Endpoint: http://localhost:5000/api/acceptUser
+- Tests that if the user the admin tries to change does not exist, returns a 404 status
+```
+pm.test("must send code 404", function () {
+     pm.response.to.have.status(404);
+});
+```
+
+- POST - Deny User - Successful
+- Endpoint: http://localhost:5000/api/denyUser
+- Tests that a logged in admin can alter the status of a user to denied
+```
+pm.test("must send code 200", function () {
+     pm.response.to.have.status(200);
+});
+```
+
+- POST - Deny User - Unsuccessful
+- Endpoint: http://localhost:5000/api/denyUser
+- Tests that if the user the admin tries to change does not exist, returns a 404 status
+```
+pm.test("must send code 404", function () {
+     pm.response.to.have.status(404);
+});
+```
+
+- POST - Ban User - Successful
+- Endpoint: http://localhost:5000/api/banUser
+- Tests that a logged in admin can alter the status of a user to banned
+```
+pm.test("must send code 200", function () {
+     pm.response.to.have.status(200);
+});
+```
+
+- POST - Ban User - Unsuccessful
+- Endpoint: http://localhost:5000/api/banUser
+- Tests that if an admin is not logged in, a user's status can not be changed to banned
+```
+pm.test("must send code 401", function () {
+     pm.response.to.have.status(401);
+});
+```
+
+- POST - Valid Admin Check - Unsuccessful
+- Endpoint: http://localhost:5000/api/validAdmin
+- Tests that if the user logged in is not an admin, returns unauthorized status
+```
+pm.test("must send code 401", function () {
+     pm.response.to.have.status(401);
+});
+```
 ## Documentation for Backend API
 
 ### Basic User Routes: 

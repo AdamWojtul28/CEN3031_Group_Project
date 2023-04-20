@@ -419,38 +419,7 @@ func Logout(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
-/////////////////////////////////////// ** Listing Functions ** ///////////////////////////////////////
-/*
-select dr1.* from date_ranges dr1
-inner join date_ranges dr2
-on dr2.start > dr1.start -- start after dr1 is started
-  and dr2.start < dr1.end -- start before dr1 is finished
-
-
-select name
-from professors
-where not exists (select *
-				  from lectures
-				  where pers-id = held_by);
-*/
-func CreateListing(w http.ResponseWriter, r *http.Request) {
-	w.Header().Set("Content-Type", "application/json")
-	var listing entities.Listing
-	var overlappingListing []entities.Listing
-	json.NewDecoder(r.Body).Decode(&listing)
-	database.Instance.Where("host_username = ? AND ((start_date BETWEEN ? AND ?) OR (end_date BETWEE N ? AND ?))", listing.HostUsername, listing.StartDate, listing.EndDate, listing.StartDate, listing.EndDate).Find(&overlappingListing)
-	// ensures that a host does not create a listing for a time frame where they already have a listing posted
-	if len(overlappingListing) > 0 {
-		w.WriteHeader(400)
-		json.NewEncoder(w).Encode("Conflict with another reservation!")
-	} else {
-		// send information to the database (success)
-		database.Instance.Create(&listing)
-		w.WriteHeader(202)
-		// Code for 'Accepted' when unique username
-		json.NewEncoder(w).Encode(listing)
-	}
-}
+/////////////////////////////////////// ** Tags Functions ** ///////////////////////////////////////
 
 func UpdateTags(w http.ResponseWriter, r *http.Request) {
 	username := r.URL.Query().Get("username")
@@ -464,15 +433,16 @@ func UpdateTags(w http.ResponseWriter, r *http.Request) {
 	tagsToAddStrings := strings.Split(TagsToUpdate.TagsToAdd, ",")
 	//fmt.Println(tagsToAddStrings)
 
+	var updated bool
+	updated = false
+
 	for i := 0; i < len(tagsToAddStrings); i++ {
-		if tagsToAddStrings[i] == "" {
-			continue
-		}
 		database.Instance.Where("username = ? AND tag_name = ?", username, tagsToAddStrings[i]).Find(&addQueryResults)
 		if len(addQueryResults) == 0 {
 			tagToAdd.Username = username
 			tagToAdd.TagName = tagsToAddStrings[i]
 			tagsToAdd = append(tagsToAdd, tagToAdd)
+			updated = true
 		}
 		addQueryResults = nil
 	}
@@ -484,40 +454,36 @@ func UpdateTags(w http.ResponseWriter, r *http.Request) {
 	//fmt.Println(tagsToAddStrings)
 
 	for i := 0; i < len(tagsToRemoveStrings); i++ {
-		if tagsToRemoveStrings[i] == "" {
-			continue
-		}
 		database.Instance.Where("username = ? AND tag_name = ?", username, tagsToRemoveStrings[i]).Find(&removeQueryResults)
-		if len(removeQueryResults) != 0 {
+		if len(removeQueryResults) > 0 {
 			tagToDelete.Username = username
 			tagToDelete.TagName = tagsToRemoveStrings[i]
 			tagsToRemove = append(tagsToRemove, tagToDelete)
+			updated = true
 		}
 		removeQueryResults = nil
 	}
 	// ensures that a host does not create a listing for a time frame where they already have a listing posted
-	var updated bool
-	updated = false
-	if len(tagsToAdd) > 0 {
-		// send information to the database (success)
-		database.Instance.Create(&tagsToAdd)
-		w.Header().Set("Content-Type", "application/json")
-		json.NewEncoder(w).Encode(tagsToAdd)
-		updated = true
-	}
-	if len(tagsToRemove) > 0 {
-		// send information to the database (success)
-		var currentTag entities.Tag
-		for i := 0; i < len(tagsToRemove); i++ {
-			database.Instance.Where("username = ? AND tag_name = ?", tagsToRemove[i].Username, tagsToRemove[i].TagName).Delete(&currentTag)
-		}
-		// Deletes all tags with the desired attributes
-		updated = true
-	}
+
 	if updated {
 		w.WriteHeader(202)
+		if len(tagsToRemove) > 0 {
+			// send information to the database (success)
+			var currentTag entities.Tag
+			for i := 0; i < len(tagsToRemove); i++ {
+				database.Instance.Where("username = ? AND tag_name = ?", tagsToRemove[i].Username, tagsToRemove[i].TagName).Delete(&currentTag)
+			}
+			// Deletes all tags with the desired attributes
+		}
+		if len(tagsToAdd) > 0 {
+			// send information to the database (success)
+			database.Instance.Create(&tagsToAdd)
+			w.Header().Set("Content-Type", "application/json")
+			json.NewEncoder(w).Encode(tagsToAdd)
+		}
 	} else {
 		w.WriteHeader(400)
+		json.NewEncoder(w).Encode("No tags updated")
 	}
 }
 

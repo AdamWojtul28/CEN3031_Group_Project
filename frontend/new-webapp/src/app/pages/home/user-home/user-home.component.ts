@@ -4,6 +4,7 @@ import { Subscription } from 'rxjs';
 import { Friendship, User } from 'src/app/models/user.model';
 import { ImageService } from 'src/app/services/image.service';
 import { UsersHttpService } from 'src/app/services/users-http.service';
+import { GoogleMapsModule } from '@angular/google-maps';
 
 @Component({
   selector: 'app-user-home',
