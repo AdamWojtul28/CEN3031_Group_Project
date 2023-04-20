@@ -1,6 +1,5 @@
 import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { NgForm } from '@angular/forms';
-import { DomSanitizer } from '@angular/platform-browser';
 import { Router } from '@angular/router';
 import { UpdateProfileInfoModel } from 'src/app/models/http-formatting.model';
 import { User } from 'src/app/models/user.model';
@@ -15,14 +14,20 @@ import { UsersHttpService } from 'src/app/services/users-http.service';
 export class DetailsComponent implements OnInit, OnDestroy{
   @ViewChild('f') infoForm!: NgForm;
   @ViewChild('p') pfpForm!: NgForm;
+  @ViewChild('d') detailsForm!: NgForm;
 
   isEditingInfo: boolean = false;
   isEditingPfp: boolean = false;
+  isEditingDetails: boolean = false;
 
   inputValuesInfo = {
     newUsername: "Username",
     newEmail: "Email",
     newPassword: "********"
+  }
+
+  inputValuesDetails = {
+    newBio: "Bio"
   }
 
   activeUserSub: any;
@@ -69,6 +74,15 @@ export class DetailsComponent implements OnInit, OnDestroy{
     this.inputValuesInfo.newPassword = "";
   }
 
+  onClickEditDetails() {
+    if (this.isEditingDetails) {
+      this.detailsForm.resetForm();
+    }
+
+    this.isEditingDetails = !this.isEditingDetails;
+    this.inputValuesDetails.newBio = this.activeUser.bio;
+  }
+
   onUploadPfp(event: Event) {
     const target= event.target as HTMLInputElement;
     const file: File = (target.files as FileList)[0];
@@ -107,6 +121,23 @@ export class DetailsComponent implements OnInit, OnDestroy{
     this.userHttpService.updateUserInfo(changes).subscribe({
       next: (res) => {
         this.isEditingInfo = false;
+        console.log(res);
+      },
+      error: (err) => {
+        console.log(err);
+      }
+    })
+  }
+
+  onSubmitChangesDetails() {
+    let changes: UpdateProfileInfoModel = {};
+    if (this.activeUser.bio != this.inputValuesDetails.newBio) {
+      changes.biography = this.inputValuesDetails.newBio;
+    }
+
+    this.userHttpService.updateUserInfo(changes).subscribe({
+      next: (res) => {
+        this.isEditingDetails = false;
         console.log(res);
       },
       error: (err) => {

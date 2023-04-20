@@ -9,7 +9,7 @@ import { fromEvent } from 'rxjs';
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.css']
 })
-export class AppComponent implements OnInit, OnDestroy{
+export class AppComponent implements OnInit {
   title = 'worldlier-webapp';
   private events: string[] = ['keydown', 'click', 'wheel'];
 
@@ -29,9 +29,5 @@ export class AppComponent implements OnInit, OnDestroy{
         }
       }
     })
-  }
-
-  ngOnDestroy() {
-    this.socketService.close();
   }
 }

@@ -127,12 +127,56 @@
     <div class="row">
       <div class="col">Details</div>
       <div class="col">
-        <button type="button" class="btn btn-outline-secondary pull-right py-0 my-0">Edit</button>
+        <button
+          type="button"
+          class="btn pull-right py-0 my-0"
+          [class]="isEditingDetails? 'btn-outline-danger' : 'btn-outline-secondary'"
+          (click)="onClickEditDetails()">
+          {{ isEditingDetails? 'Stop Editing' : 'Edit' }}
+        </button>
       </div>
     </div>
     
   </div>
   <div class="card-body">
+    <form (ngSubmit)="onSubmitChangesDetails()" #d="ngForm">
+      <div class="row">
+        <div class="col-10 mx-auto">
+          <ul class="list-group list-group-flush">
 
+            <!-- Input For Bio -->
+            <li class="list-group-item mb-3 pb-4">
+              <div class="row">
+                <div class="col-4 pb-1">
+                  Biography
+                </div>
+                <div class="col-8">
+                  <label *ngIf="!isEditingDetails" class="py-0">{{ activeUser.bio }}</label>
+                  <label *ngIf="!isEditingDetails && activeUser.bio.length === 0" class="py-0"><small>NO BIO</small></label>
+                  <textarea
+                    required
+                    autocomplete="off"
+                    *ngIf="isEditingDetails"
+                    ngModel
+                    [(ngModel)]="inputValuesDetails.newBio"
+                    type="text"
+                    id="newbio"
+                    name="newbio"
+                    class="form-control py-0"></textarea>
+                </div>
+              </div>
+            </li>
+
+            <li *ngIf="!isEditingDetails || !d.dirty" class="list-group-item"></li>
+            <button
+              *ngIf="isEditingDetails && d.dirty"
+              [disabled]="!d.valid"
+              type="submit"
+              class="btn btn-primary my-1 py-1 mx-auto">Save Changes
+            </button>
+          </ul>
+        </div>
+      </div>
+    </form>
   </div>
 </div>

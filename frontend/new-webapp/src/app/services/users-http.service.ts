@@ -29,6 +29,16 @@ export class UsersHttpService {
           res.biography, 
           res.profile_image,
           res.status,
+          res.phone,
+          res.address_1,
+          res.address_2,
+          res.address_3,
+          res.country,
+          res.birthday,
+          res.gender,
+          res.emergency_contact_address,
+          res.emergency_contact_name,
+          res.emergency_contact_phone_number,
           res.session_token, 
           res.expiry);
         this.user.next(user);
@@ -49,6 +59,16 @@ export class UsersHttpService {
           res.biography, 
           res.profile_image,
           res.status,
+          res.phone,
+          res.address_1,
+          res.address_2,
+          res.address_3,
+          res.country,
+          res.birthday,
+          res.gender,
+          res.emergency_contact_address,
+          res.emergency_contact_name,
+          res.emergency_contact_phone_number,
           res.session_token, 
           res.expiry);
         this.user.next(user);
@@ -58,17 +78,7 @@ export class UsersHttpService {
   }
 
   autoLogin() {
-    const userData: {
-      username: string,
-      password: string,
-      id: string,
-      email: string,
-      bio: string,
-      profile_image: string,
-      status: string,
-      _token: string,
-      _tokenExpiration: Date
-    } = JSON.parse(localStorage.getItem('userData'));
+    const userData = JSON.parse(localStorage.getItem('userData'));
     if (!userData) {
       return;
     }
@@ -81,6 +91,16 @@ export class UsersHttpService {
       userData.bio,
       userData.profile_image,
       userData.status,
+      userData.phone,
+      userData.address1,
+      userData.address2,
+      userData.address3,
+      userData.country,
+      userData.birthday,
+      userData.gender,
+      userData.emergency_contact_address,
+      userData.emergency_contact_name,
+      userData.emergency_contact_phone_number,
       userData._token,
       userData._tokenExpiration,);
     
@@ -106,6 +126,16 @@ export class UsersHttpService {
           res.biography, 
           res.profile_image,
           res.status,
+          res.phone,
+          res.address_1,
+          res.address_2,
+          res.address_3,
+          res.country,
+          res.birthday,
+          res.gender,
+          res.emergency_contact_address,
+          res.emergency_contact_name,
+          res.emergency_contact_phone_number,
           res.session_token, 
           res.expiry);
         this.user.next(user);
@@ -187,6 +217,16 @@ export class UsersHttpService {
         res.biography, 
         res.profile_image,
         res.status,
+        res.phone,
+        res.address_1,
+        res.address_2,
+        res.address_3,
+        res.country,
+        res.birthday,
+        res.gender,
+        res.emergency_contact_address,
+        res.emergency_contact_name,
+        res.emergency_contact_phone_number,
         res.session_token, 
         res.expiry);
       this.user.next(user);
