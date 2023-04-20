@@ -425,7 +425,97 @@ pm.test("must send unauthorized response", function () {
      pm.response.to.have.status(401);
 });
 ```
+### Sprint 4 Tests
 
+- POST - Retrieve Friends - Successful
+- Endpoint: http://localhost:5000/api/retrieveFriends
+- Tests that a list of connections where a user is present can be returned
+```
+pm.test("must send code 200", function () {
+     pm.response.to.have.status(200);
+});
+```
+
+- POST - Retrieve Friends - Unsuccessful
+- Endpoint: http://localhost:5000/api/retrieveFriends
+- Tests that when a user has no friends, returns a not found error
+```
+pm.test("must send code 404", function () {
+     pm.response.to.have.status(404);
+});
+```
+
+- POST - Valid Admin Check - Successful
+- Endpoint: http://localhost:5000/api/validAdmin
+- Tests that if the current logged in user is an admin, it returns authorized code
+```
+pm.test("must send code 202", function () {
+     pm.response.to.have.status(202);
+});
+```
+
+- POST - Accept User - Successful
+- Endpoint: http://localhost:5000/api/acceptUser
+- Tests that a logged in admin can alter the status of a user to accepted
+```
+pm.test("must send code 200", function () {
+     pm.response.to.have.status(200);
+});
+```
+
+- POST - Accept User - Unsuccessful
+- Endpoint: http://localhost:5000/api/acceptUser
+- Tests that if the user the admin tries to change does not exist, returns a 404 status
+```
+pm.test("must send code 404", function () {
+     pm.response.to.have.status(404);
+});
+```
+
+- POST - Deny User - Successful
+- Endpoint: http://localhost:5000/api/denyUser
+- Tests that a logged in admin can alter the status of a user to denied
+```
+pm.test("must send code 200", function () {
+     pm.response.to.have.status(200);
+});
+```
+
+- POST - Deny User - Unsuccessful
+- Endpoint: http://localhost:5000/api/denyUser
+- Tests that if the user the admin tries to change does not exist, returns a 404 status
+```
+pm.test("must send code 404", function () {
+     pm.response.to.have.status(404);
+});
+```
+
+- POST - Ban User - Successful
+- Endpoint: http://localhost:5000/api/banUser
+- Tests that a logged in admin can alter the status of a user to banned
+```
+pm.test("must send code 200", function () {
+     pm.response.to.have.status(200);
+});
+```
+
+- POST - Ban User - Unsuccessful
+- Endpoint: http://localhost:5000/api/banUser
+- Tests that if an admin is not logged in, a user's status can not be changed to banned
+```
+pm.test("must send code 401", function () {
+     pm.response.to.have.status(401);
+});
+```
+
+- POST - Valid Admin Check - Unsuccessful
+- Endpoint: http://localhost:5000/api/validAdmin
+- Tests that if the user logged in is not an admin, returns unauthorized status
+```
+pm.test("must send code 401", function () {
+     pm.response.to.have.status(401);
+});
+```
 ## Documentation for Backend API
 
 ### Basic User Routes: 
