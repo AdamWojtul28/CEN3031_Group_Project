@@ -1008,6 +1008,7 @@ func (s *Server) readLoop(ws *websocket.Conn, sender string) {
 	for {
 		var dMData entities.DMData
 		if err := connection.ReadJSON(&dMData); err != nil {
+			connection.Close()
 			fmt.Println(err)
 			return
 		}
@@ -1028,12 +1029,14 @@ func (s *Server) readLoop(ws *websocket.Conn, sender string) {
 				//	return
 				//}
 				connections.SetWriteDeadline(time.Now().Add(writeWait))
+				connections.SetPongHandler(func(string) error { connections.SetReadDeadline(time.Now().Add(pongWait)); return nil })
 				var messageStruct entities.DirectMessage
 				messageStruct.Message = message
 				messageStruct.TimeSent = time.Now().String()
 				messageStruct.Sender = sender
 				if err := connections.WriteJSON(messageStruct); err != nil {
 					fmt.Println(err)
+					connections.Close()
 					return
 				}
 			}

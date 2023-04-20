@@ -31,7 +31,7 @@ export class SocketService{
     this.socket.onmessage = event => {
       if (event.data[0] != '{') return;
       let data : {sender: string, message: string, time: Date} = JSON.parse(event.data);
-      console.log('Message from: ' + data.sender)
+      data.time = new Date();
 
       if (this.messageList.has(data.sender)){
         this.messageList.get(data.sender).push({ time: data.time, message: data.message, sender: data.sender })

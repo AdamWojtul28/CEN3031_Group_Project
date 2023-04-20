@@ -9,10 +9,10 @@
           </div>
           <div class="card-body">
             <ul class="list-group">
-              <li class="list-group-item" *ngFor="let request of incomingFriends">
+              <li class="list-group-item" *ngFor="let request of incomingFriends" data-cy="incoming-request">
                 <img [src]="profileImages.get(request.sender)" class="small-pfp me-2 my-1">
                 {{ request.sender }}
-                <button class="btn-icon" (click)="onAcceptRequest(request.sender)">
+                <button class="btn-icon" (click)="onAcceptRequest(request.sender)" data-cy="accept-request-btn">
                   <i class="fa fa-check p-0"></i>
                 </button>
                 <button class="btn-icon" (click)="onDeclineRequest(request.sender)">
@@ -30,16 +30,16 @@
           
           <div class="card-body">
             <ul class="list-group">
-              <li class="list-group-item" *ngIf="userFriends.length === 0">
+              <li class="list-group-item" *ngIf="userFriends.length === 0" data-cy="no-friends">
                 You have no friends
               </li>
-              <li class="list-group-item" *ngFor="let friend of userFriends">
+              <li class="list-group-item" *ngFor="let friend of userFriends" data-cy="friend-item">
                 <img [src]="profileImages.get(friend.sender === activeUser.username ? friend.reciever : friend.sender)" class="small-pfp me-2 my-1">
                 {{ friend.sender === activeUser.username ? friend.reciever : friend.sender }}
                 <button class="btn-icon" (click)="chatWith(friend.sender === activeUser.username ? friend.reciever : friend.sender)">
                   <i class="fa fa-comment p-0"></i>
                 </button>
-                <button class="btn-icon" (click)="onRemoveFriend(friend)">
+                <button class="btn-icon" (click)="onRemoveFriend(friend)" data-cy="delete-friend-btn">
                   <i class="fa fa-trash p-0"></i>
                 </button>
               </li>
@@ -60,16 +60,17 @@
                 class="form-control"
                 placeholder="Username"
                 name="friendname"
-                required>
+                required
+                data-cy="add-friend-text">
               <div class="input-group-append">
-                <button class="btn btn-outline-secondary" type="submit" (click)="onAddFriend()">Add</button>
+                <button class="btn btn-outline-secondary" type="submit" (click)="onAddFriend()" data-cy="add-friend-btn">Add</button>
               </div>
             </div>
 
             <div *ngIf="outgoingFriends.length > 0">
               <hr>
               <ul class="list-group">
-                <li class="list-group-item" *ngFor="let request of outgoingFriends">
+                <li class="list-group-item" *ngFor="let request of outgoingFriends" data-cy="add-friend-pending">
                   <img [src]="profileImages.get(request.reciever)" class="small-pfp me-2 my-1">
                   {{ request.reciever }}
                   <button class="btn-icon" (click)="onUndoRequest(request.reciever)">

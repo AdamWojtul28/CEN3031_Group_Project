@@ -13,7 +13,7 @@
             <a class="nav-link" routerLink="" routerLinkActive="active-link" [routerLinkActiveOptions]="{exact: true}">Home</a>
           </li>
           <li class="nav-item" *ngIf="isAuthenticated">
-            <a class="nav-link" routerLink="home" routerLinkActive="active-link">Home</a>
+            <a class="nav-link" routerLink="home" routerLinkActive="active-link" data-cy="home-btn">Home</a>
           </li>
           <li class="nav-item" *ngIf="isAuthenticated">
             <a class="nav-link" routerLink="chat" routerLinkActive="active-link">Chat</a>
@@ -22,11 +22,11 @@
             <a class="nav-link" routerLink="booking" routerLinkActive="active-link">Find</a>
           </li>
           <li class="nav-item" *ngIf="isAuthenticated">
-            <a class="nav-link" routerLink="profile/details" routerLinkActive="active-link">Profile</a>
+            <a class="nav-link" routerLink="profile/details" routerLinkActive="active-link" data-cy="profile-nav">Profile</a>
           </li>
         </ul>
         <div class="d-flex align-items-center">
-          <button type="button" class="btn btn-primary me-3" routerLink="login" routerLinkActive="active-link" *ngIf="!isAuthenticated">
+          <button type="button" class="btn btn-primary me-3" routerLink="login" routerLinkActive="active-link" *ngIf="!isAuthenticated" data-cy="login-header">
             Login
           </button>
             <a
