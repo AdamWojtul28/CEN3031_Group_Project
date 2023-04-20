@@ -797,3 +797,36 @@ POST http://localhost:5000/api/denyUser
 POST http://localhost:5000/api/banUser
 
 - Operates the same as Accept user, but modifies the status so that it reads "Banned".
+
+### Tagging Routes
+
+#### Add List of Tags:
+
+POST http://localhost:5000/api/tags
+
+- Receives a JSON object that contains a string of comma separated tags. The tags are first separated and then stored in a splice. After this is complete it is determine whether these are unique tags for the user in the query parameter (whether they exist in the DB or not). If they do not yet exist they are added. 
+    - If no new tags are added to the DB, will return 400
+
+#### Delete List of Tags:
+
+DELETE http://localhost:5000/api/tags
+
+- Receives a JSON object that contains a string of comma separated tags. The tags are first separated and then stored in a splice. After this is complete it is determine whether these are unique tags for the user in the query parameter (whether they exist in the DB or not). If they exist, they are deleted.  
+    - If no tags in the JSON object are in the DB, will return 400
+
+#### Update All Tags:
+PUT http://localhost:5000/api/tags
+- Receives a JSON object that contains a 2 strings of comma separated tags, one of all tags selected and one of all tags not selected. The tags for each are first separated and then stored in splices. After this is complete it is determine whether these are unique tags for the user in the query parameter (whether they exist in the DB or not). If new tags are to be added that are not in the DB, they are added. If there are tags to be deleted that exist in the DB, they are deleted. All other values are ignored. 
+    - If no changes are made, will return 400
+
+#### Get All Shared Tags with Other Users:
+GET http://localhost:5000/api/tagging
+- Receives a query parameter of the current user. Then this endpoint will generate how many tags this user shares with other users along with what those tags are.
+
+### Chat Functionality
+GET http://localhost:5000/api/tagging
+- Receives a query parameter of the current user and a JSON object that is sent through the newly established connection containing a JSON with the name of the receiver and the message for that receives. For successful connections, direct messages are sent to users. 
+
+### User Search Functionality
+GET http://localhost:5000/api/search
+- Receives 4 query parameters: 1) the username of the current user, 2) the location of users to search for, 3) distance from the location, and 4) distance unit. Then users who fall within the radius of that point are returned along with the number of shared tags and the full list of those shared tags.
