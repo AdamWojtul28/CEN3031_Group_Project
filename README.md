@@ -10,7 +10,7 @@ Before running the project, you will need to have the following installed on you
 - Angular CLI (https://angular.io/guide/setup-local)
 - golang(https://go.dev/doc/install)
 - Download and open MySQL workbench (This must be open to run the backend)
-  - Import the SQL file into a new schema
+  - Import the SQL file (in the clone repo under SQL) into a new schema
   - Manually add the admins into your admin table
 
 Installation:
