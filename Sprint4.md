@@ -4,7 +4,26 @@
 
 
 #### Work Completed by Frontend During this Sprint
-
+- Implemented live chat system
+    - Connect user to websockets after loggin in
+    - Receive and send messages to and from a specific user
+    - Display chat with messages and time stamps
+- Added admin functionality
+    - Accept / Deny / Ban / Unban
+    - Users must now be accepted before they can access site
+- Improved user home page
+    - Friends list with profile images of each friend
+    - Ability to add friends and accept friend requests
+    - Click on chat button to chat with a friend
+    - Interactive map implemented with angular google maps
+- Landing page
+    - For users who are not signed in
+    - Contains animated text and call to create account
+- User Interests
+    - User can check all of their personal interests
+- Route Authentication
+    - Users must be logged in to access most pages
+    - User must be an admin to access admin page
 
 
 #### Work Completed by Backend During this Sprint
