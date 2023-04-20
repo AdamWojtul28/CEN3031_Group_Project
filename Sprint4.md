@@ -559,6 +559,102 @@ pm.test("must send code 401", function () {
      pm.response.to.have.status(401);
 });
 ```
+
+- POST - Add Tags to User Success
+- Endpoint: http://localhost:5000/api/tags?username=Ally
+- Tests if user adds new tags to the database that were not previously selected
+```
+pm.test("must have body and send 202", function () {
+     pm.response.to.be.withBody;
+     pm.response.to.have.status(202);
+});
+```
+
+- POST - Add Tags to User Fail
+- Endpoint: http://localhost:5000/api/tags?username=Ally
+- Tests if user tries to add tags that they had previously added to the DB
+```
+pm.test("must have body and send 400", function () {
+     pm.response.to.be.withBody;
+     pm.response.to.have.status(400);
+});
+```
+
+- DELETE - Delete Tags from User Success
+- Endpoint: http://localhost:5000/api/tags?username=Ally
+- Tests if user tries to delete tags that currently exist in the DB
+```
+pm.test("must have body and send 202", function () {
+     pm.response.to.have.status(202);
+});
+```
+
+- DELETE - Add Tags from User Fail
+- Endpoint: http://localhost:5000/api/tags?username=Ally
+- Tests if user tries to delete tags that do not exist in the DB
+```
+pm.test("must have body and send 400", function () {
+     pm.response.to.be.withBody;
+     pm.response.to.have.status(400);
+});
+```
+
+- PUT - Update User Tags - No Changes
+- Endpoint: http://localhost:5000/api/tags?username=Jimmy123
+- Tests if user does not make any changes to tags in the DB
+```
+pm.test("must have body and send 400", function () {
+     pm.response.to.be.withBody;
+     pm.response.to.have.status(400);
+});
+```
+
+- PUT - Update Tags to User Success
+- Endpoint: http://localhost:5000/api/tags?username=Jimmy123
+- Tests if user does not make any changes to tags in the DB
+```
+pm.test("must have body and send 200", function () {
+     pm.response.to.be.withBody;
+     pm.response.to.have.status(200);
+});
+```
+
+- GET - Same Tags Retreival
+- Endpoint: http://localhost:5000/api/tagging?username=Jack%20Daniels
+- Successfully retreives all shared tags between user in Query Parameter with every user in DB that has tags
+```
+pm.test("must have body and send 200", function () {
+     pm.response.to.be.withBody;
+     pm.response.to.have.status(200);
+});
+```
+
+- GET - Users with Shared Interests Near Oxford, England
+- Endpoint: http://localhost:5000/api/search?username=John&location=Oxford%2C%20England&maxDistance=1000&unit=mi
+- Successfully retreives all users 1000 miles from Oxford, England, along with the number of shared tags they have with user and the full list of those tags
+```
+pm.test("users near desired destination exist", function () {
+     pm.response.to.be.ok;
+});
+```
+
+- GET - Users with Shared Interests Near Krakow, Poland
+- Endpoint: http://localhost:5000/api/search?username=John&location=Krakow%2C%20Poland&maxDistance=1000&unit=mi
+- Successfully retreives all users 1000 miles from Oxford, England, along with the number of shared tags they have with user and the full list of those tags
+```
+pm.test("users near desired destination exist", function () {
+     pm.response.to.be.ok;
+});
+```
+
+- GET - Users with Shared Interests Near Auckland, New Zealand
+- Endpoint: http://localhost:5000/api/search?username=John&location=Krakow%2C%20Poland&maxDistance=1000&unit=mi
+- Retreives no users, as no user is within 1000 miles Auckland, New Zealand
+```
+pm.test("no users near desired destination exist", function () {
+     pm.response.to.have.status(204);
+});
+```
 ## Documentation for Backend API
 
 ### Basic User Routes: 
